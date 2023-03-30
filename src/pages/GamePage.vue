@@ -1,12 +1,16 @@
 <script setup>
-import { ref, computed } from 'vue';
-import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
+import { ref } from 'vue';
+import GameSetup from '@/components/gamePage/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
-import GameOver from '@/components/gamePage/gameOver/gameOver.vue';
-import NumberDartsModal from '@/components/gamePage/numberDartsModal/numberDartsModal.vue';
+import GameOver from '@/components/gamePage/gameOver.vue';
+import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
-import { defineFocusForNewLeg, defineFocusForNextPlayer } from '@/helpers/defineFocus.js';
+import {
+  defineFocusForNewLeg,
+  defineFocusForNextPlayer
+} from '@/helpers/defineFocus.js';
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
+import { useNewGame } from '@/composables/newGame.js';
 
 const numberDartsModal = ref(null);
 const seenZeroInNumberDartsModal = ref(false);
@@ -16,280 +20,22 @@ const gameSetupModal = ref(null);
 const isGameOver = ref(false);
 const isStartedGame = ref(false);
 
-const gameParameters = ref({});
-const startRemainder = ref(0);
-const legNumber = ref(1);
-const setNumber = ref(1);
-const legNumberInSets = ref([]);
+let gameParameters;
 
-const legNumberBeforeCurrentSet = computed(() =>
-  legNumberInSets.value.reduce((acc, legNumber) => acc + legNumber, 0)
-);
-
-//Вынести класс в сomposeble с переменными общего состояния
-class Player {
-  legRemainders = ref([]);
-  legPoints = ref([]);
-  pointsAndDartsLegs = ref([]);
-  dartsForDoubleSets = ref([]);
-  p180Sets = ref([]);
-  p171Sets = ref([]);
-  p131Sets = ref([]);
-  p96Sets = ref([]);
-  averagePointsForFirstNineDartsLegs = ref([]);
-  highestCheckoutSets = ref([]);
-  setsWon = ref(0);
-
-  legsWonInGame = computed(() =>
-    this.pointsAndDartsLegs.value.reduce(
-      (acc, legStat) => (legStat[0] === 501 ? acc + 1 : acc),
-      0
-    )
-  );
-  legsWonInSet = computed(() =>
-    this.pointsAndDartsLegs.value
-      .slice(legNumberBeforeCurrentSet.value)
-      .reduce((acc, legStat) => (legStat[0] === 501 ? acc + 1 : acc), 0)
-  );
-
-  averagePointsGame = computed(
-    () =>
-      Math.round(
-        ((this.pointsAndDartsLegs.value.reduce(
-          (acc, legStat) => acc + legStat[0],
-          0
-        ) /
-          this.pointsAndDartsLegs.value.reduce(
-            (acc, legStat) => acc + legStat[1],
-            0
-          )) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  averagePointsSet = computed(
-    () =>
-      Math.round(
-        ((this.pointsAndDartsLegs.value
-          .slice(legNumberBeforeCurrentSet.value)
-          .reduce((acc, legStat) => acc + legStat[0], 0) /
-          this.pointsAndDartsLegs.value
-            .slice(legNumberBeforeCurrentSet.value)
-            .reduce((acc, legStat) => acc + legStat[1], 0)) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  averagePointsLeg = computed(
-    () =>
-      Math.round(
-        ((this.pointsAndDartsLegs.value[legNumber.value - 1]?.[0] /
-          this.pointsAndDartsLegs.value[legNumber.value - 1]?.[1]) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  percentDoubleGame = computed(
-    () =>
-      Math.round(
-        ((this.legsWonInGame.value /
-          this.dartsForDoubleSets.value.reduce(
-            (acc, doubleSet) => acc + doubleSet,
-            0
-          )) *
-          100 || 0) * 100
-      ) / 100
-  );
-
-  percentDoubleSet = computed(
-    () =>
-      Math.round(
-        ((this.legsWonInSet.value /
-          this.dartsForDoubleSets.value[setNumber.value - 1]) *
-          100 || 0) * 100
-      ) / 100
-  );
-
-  p180Set = computed(() => this.p180Sets.value[setNumber.value - 1] || 0);
-  p171Set = computed(() => this.p171Sets.value[setNumber.value - 1] || 0);
-  p131Set = computed(() => this.p131Sets.value[setNumber.value - 1] || 0);
-  p96Set = computed(() => this.p96Sets.value[setNumber.value - 1] || 0);
-
-  p180Game = computed(() =>
-    this.p180Sets.value.reduce((acc, p180) => acc + p180, 0)
-  );
-  p171Game = computed(() =>
-    this.p171Sets.value.reduce((acc, p171) => acc + p171, 0)
-  );
-  p131Game = computed(() =>
-    this.p131Sets.value.reduce((acc, p131) => acc + p131, 0)
-  );
-  p96Game = computed(() =>
-    this.p96Sets.value.reduce((acc, p96) => acc + p96, 0)
-  );
-
-  averageFirstNineDartsGame = computed(
-    () =>
-      Math.round(
-        (this.averagePointsForFirstNineDartsLegs.value.reduce(
-          (acc, points) => acc + points,
-          0
-        ) / this.averagePointsForFirstNineDartsLegs.value.length || 0) * 100
-      ) / 100
-  );
-
-  averageFirstNineDartsSet = computed(
-    () =>
-      Math.round(
-        (this.averagePointsForFirstNineDartsLegs.value
-          .slice(legNumberBeforeCurrentSet.value)
-          .reduce((acc, firstNine) => acc + firstNine, 0) /
-          this.averagePointsForFirstNineDartsLegs.value.slice(
-            legNumberBeforeCurrentSet.value
-          ).length || 0) * 100
-      ) / 100
-  );
-
-  averagePointsWinLegsGame = computed(
-    () =>
-      Math.round(
-        (((this.legsWonInGame.value * 501) /
-          this.pointsAndDartsLegs.value.reduce(
-            (acc, legStat) => (legStat[0] === 501 ? acc + legStat[1] : acc),
-            0
-          )) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  averagePointsWinLegsSet = computed(
-    () =>
-      Math.round(
-        (((this.legsWonInSet.value * 501) /
-          this.pointsAndDartsLegs.value
-            .slice(legNumberBeforeCurrentSet.value)
-            .reduce(
-              (acc, legStat) => (legStat[0] === 501 ? acc + legStat[1] : acc),
-              0
-            )) *
-          3 || 0) * 100
-      ) / 100
-  );
-  averagePointsLoseLegsGame = computed(
-    () =>
-      Math.round(
-        (((this.pointsAndDartsLegs.value.reduce(
-          (acc, legStat) => (legStat[0] !== 501 ? acc + legStat[0] : acc),
-          0
-        ) -
-          (this.pointsAndDartsLegs.value[legNumber.value - 1]?.[0] || 0)) /
-          (this.pointsAndDartsLegs.value.reduce(
-            (acc, legStat) => (legStat[0] !== 501 ? acc + legStat[1] : acc),
-            0
-          ) -
-            (this.pointsAndDartsLegs.value[legNumber.value - 1]?.[1] || 0))) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  averagePointsLoseLegsSet = computed(
-    () =>
-      Math.round(
-        (((this.pointsAndDartsLegs.value
-          .slice(legNumberBeforeCurrentSet.value)
-          .reduce(
-            (acc, legStat) => (legStat[0] !== 501 ? acc + legStat[0] : acc),
-            0
-          ) -
-          (this.pointsAndDartsLegs.value[legNumber.value - 1]?.[0] || 0)) /
-          (this.pointsAndDartsLegs.value
-            .slice(legNumberBeforeCurrentSet.value)
-            .reduce(
-              (acc, legStat) => (legStat[0] !== 501 ? acc + legStat[1] : acc),
-              0
-            ) -
-            (this.pointsAndDartsLegs.value[legNumber.value - 1]?.[1] || 0))) *
-          3 || 0) * 100
-      ) / 100
-  );
-
-  highestCheckoutGame = computed(
-    () =>
-      Math.max(...JSON.parse(JSON.stringify(this.highestCheckoutSets.value)), 0)
-    //в массиве появляется null если в каких-то сетах не было закрытий - почему без json не работало не знаю
-    //обычный массив с null работал
-  );
-
-  highestCheckoutSet = computed(
-    () => this.highestCheckoutSets.value[setNumber.value - 1] || 0
-  );
-
-  constructor(name) {
-    this.name = name;
-  }
-
-  clearPointsAndRemaindersLeg() {
-    this.legRemainders.value = [];
-    this.legPoints.value = [];
-  }
-
-  setInPointsAndDartsLegs(points, darts, legNumber) {
-    if (!this.pointsAndDartsLegs.value[legNumber - 1])
-      this.pointsAndDartsLegs.value[legNumber - 1] = [0, 0];
-    this.pointsAndDartsLegs.value[legNumber - 1][0] += points;
-    this.pointsAndDartsLegs.value[legNumber - 1][1] += darts;
-  }
-  checkAndSetHighPoints(points) {
-    if (points === 180) {
-      this.p180Sets.value[setNumber.value - 1] ??= 0;
-      this.p180Sets.value[setNumber.value - 1]++;
-    }
-    if (points >= 171 && points < 180) {
-      this.p171Sets.value[setNumber.value - 1] ??= 0;
-      this.p171Sets.value[setNumber.value - 1]++;
-    }
-    if (points >= 131 && points < 171) {
-      this.p131Sets.value[setNumber.value - 1] ??= 0;
-      this.p131Sets.value[setNumber.value - 1]++;
-    }
-    if (points >= 96 && points < 131) {
-      this.p96Sets.value[setNumber.value - 1] ??= 0;
-      this.p96Sets.value[setNumber.value - 1]++;
-    }
-  }
-
-  checkAndSetHighestCheckout() {
-    this.highestCheckoutSets.value[setNumber.value - 1] ??= 0;
-    if (
-      this.legRemainders.value.at(-1) >
-      this.highestCheckoutSets.value[setNumber.value - 1]
-    )
-      this.highestCheckoutSets.value[setNumber.value - 1] =
-        this.legRemainders.value.at(-1);
-  }
-
-  setAveragePointsForFirstNineDarts() {
-    this.averagePointsForFirstNineDartsLegs.value[legNumber.value - 1] =
-      Math.round(
-        (this.pointsAndDartsLegs.value[legNumber.value - 1][0] /
-          this.pointsAndDartsLegs.value[legNumber.value - 1][1]) *
-          3 *
-          100
-      ) / 100;
-  }
-}
+const { Player, startRemainder, legNumber, setNumber, legNumberInSets } =
+  useNewGame();
 
 let playerOne;
 let playerTwo;
 
 const startGame = (parameters) => {
-  gameParameters.value = parameters;
-  startRemainder.value = gameParameters.value.startRemainder;
-  playerOne = new Player(gameParameters.value[gameParameters.value.whoStarted]);
+  gameParameters = parameters;
+  startRemainder.value = gameParameters.startRemainder;
+  playerOne = new Player(gameParameters[gameParameters.whoStarted]);
   playerTwo = new Player(
-    gameParameters.value.whoStarted === 'nameOne'
-      ? gameParameters.value.nameTwo
-      : gameParameters.value.nameOne
+    gameParameters.whoStarted === 'nameOne'
+      ? gameParameters.nameTwo
+      : gameParameters.nameOne
   );
   isStartedGame.value = true;
   gameSetupModal.value.close();
@@ -301,7 +47,8 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   if (player === 'playerOne') currentPlayer = playerOne;
   if (player === 'playerTwo') currentPlayer = playerTwo;
 
-  if (roundNumber <= currentPlayer.legRemainders.value.length) { //блок для проверки внесения изменений - вынести в функцию
+  if (roundNumber <= currentPlayer.legRemainders.value.length) {
+    //блок для проверки внесения изменений - вынести в функцию
     const difference = currentPlayer.legPoints.value[roundNumber - 1] - point;
     currentPlayer.legPoints.value[roundNumber - 1] = point;
     for (
@@ -361,7 +108,7 @@ const legCompleted = async (player) => {
   currentPlayer.checkAndSetHighestCheckout();
   currentPlayer.checkAndSetHighPoints(currentPlayer.legRemainders.value.at(-1));
 
-  if (currentPlayer.legsWonInSet.value === gameParameters.value.legs) {
+  if (currentPlayer.legsWonInSet.value === gameParameters.legs) {
     legNumberInSets.value.push(
       playerOne.legsWonInSet.value + playerTwo.legsWonInSet.value
     );
@@ -372,7 +119,7 @@ const legCompleted = async (player) => {
   playerOne.clearPointsAndRemaindersLeg();
   playerTwo.clearPointsAndRemaindersLeg();
 
-  if (currentPlayer.setsWon.value === gameParameters.value.sets) {
+  if (currentPlayer.setsWon.value === gameParameters.sets) {
     isGameOver.value = true;
     gameOverModal.value.showModal();
     legNumber.value++; //для корректного расчет среднего значения в проигранных легах при завершении игры
@@ -426,27 +173,9 @@ const startNewGame = () => {
     <div class="game__points-information points-information">
       <PlayerStatistic
         v-if="playerOne"
-        :averagePointsGame="playerOne.averagePointsGame.value"
-        :averagePointsSet="playerOne.averagePointsSet.value"
+        :gameStatistic="playerOne.gameStatistic"
+        :setStatistic="playerOne.setStatistic"
         :averagePointsLeg="playerOne.averagePointsLeg.value"
-        :percentDoubleGame="playerOne.percentDoubleGame.value"
-        :percentDoubleSet="playerOne.percentDoubleSet.value"
-        :p180Set="playerOne.p180Set.value"
-        :p171Set="playerOne.p171Set.value"
-        :p131Set="playerOne.p131Set.value"
-        :p96Set="playerOne.p96Set.value"
-        :p180Game="playerOne.p180Game.value"
-        :p171Game="playerOne.p171Game.value"
-        :p131Game="playerOne.p131Game.value"
-        :p96Game="playerOne.p96Game.value"
-        :averageFirstNineDartsGame="playerOne.averageFirstNineDartsGame.value"
-        :averageFirstNineDartsSet="playerOne.averageFirstNineDartsSet.value"
-        :averagePointsWinLegsGame="playerOne.averagePointsWinLegsGame.value"
-        :averagePointsWinLegsSet="playerOne.averagePointsWinLegsSet.value"
-        :averagePointsLoseLegsGame="playerOne.averagePointsLoseLegsGame.value"
-        :averagePointsLoseLegsSet="playerOne.averagePointsLoseLegsSet.value"
-        :highestCheckoutGame="playerOne.highestCheckoutGame.value"
-        :highestCheckoutSet="playerOne.highestCheckoutSet.value"
       />
       <form class="points-information__points points">
         <div class="points__round-information round-information">
@@ -495,27 +224,9 @@ const startNewGame = () => {
       </form>
       <PlayerStatistic
         v-if="playerTwo"
-        :averagePointsGame="playerTwo.averagePointsGame.value"
-        :averagePointsSet="playerTwo.averagePointsSet.value"
+        :gameStatistic="playerTwo.gameStatistic"
+        :setStatistic="playerTwo.setStatistic"
         :averagePointsLeg="playerTwo.averagePointsLeg.value"
-        :percentDoubleGame="playerTwo.percentDoubleGame.value"
-        :percentDoubleSet="playerTwo.percentDoubleSet.value"
-        :p180Set="playerTwo.p180Set.value"
-        :p171Set="playerTwo.p171Set.value"
-        :p131Set="playerTwo.p131Set.value"
-        :p96Set="playerTwo.p96Set.value"
-        :p180Game="playerTwo.p180Game.value"
-        :p171Game="playerTwo.p171Game.value"
-        :p131Game="playerTwo.p131Game.value"
-        :p96Game="playerTwo.p96Game.value"
-        :averageFirstNineDartsGame="playerTwo.averageFirstNineDartsGame.value"
-        :averageFirstNineDartsSet="playerTwo.averageFirstNineDartsSet.value"
-        :averagePointsWinLegsGame="playerTwo.averagePointsWinLegsGame.value"
-        :averagePointsWinLegsSet="playerTwo.averagePointsWinLegsSet.value"
-        :averagePointsLoseLegsGame="playerTwo.averagePointsLoseLegsGame.value"
-        :averagePointsLoseLegsSet="playerTwo.averagePointsLoseLegsSet.value"
-        :highestCheckoutGame="playerTwo.highestCheckoutGame.value"
-        :highestCheckoutSet="playerTwo.highestCheckoutSet.value"
       />
     </div>
   </main>
@@ -533,26 +244,8 @@ const startNewGame = () => {
       :nameP2="playerTwo.name"
       :wonP1="playerOne.setsWon.value"
       :wonP2="playerTwo.setsWon.value"
-      :averagePointsGameP2="playerTwo.averagePointsGame.value"
-      :averagePointsWinLegsGameP2="playerTwo.averagePointsWinLegsGame.value"
-      :averagePointsLoseLegsGameP2="playerTwo.averagePointsLoseLegsGame.value"
-      :averageFirstNineDartsGameP2="playerTwo.averageFirstNineDartsGame.value"
-      :p180GameP2="playerTwo.p180Game.value"
-      :p171GameP2="playerTwo.p171Game.value"
-      :p131GameP2="playerTwo.p131Game.value"
-      :p96GameP2="playerTwo.p96Game.value"
-      :percentDoubleGameP2="playerTwo.percentDoubleGame.value"
-      :highestCheckoutGameP2="playerTwo.highestCheckoutGame.value"
-      :averagePointsGameP1="playerOne.averagePointsGame.value"
-      :averagePointsWinLegsGameP1="playerOne.averagePointsWinLegsGame.value"
-      :averagePointsLoseLegsGameP1="playerOne.averagePointsLoseLegsGame.value"
-      :averageFirstNineDartsGameP1="playerOne.averageFirstNineDartsGame.value"
-      :p180GameP1="playerOne.p180Game.value"
-      :p171GameP1="playerOne.p171Game.value"
-      :p131GameP1="playerOne.p131Game.value"
-      :p96GameP1="playerOne.p96Game.value"
-      :percentDoubleGameP1="playerOne.percentDoubleGame.value"
-      :highestCheckoutGameP1="playerOne.highestCheckoutGame.value"
+      :gameStatisticP1="playerOne.gameStatistic"
+      :gameStatisticP2="playerTwo.gameStatistic"
     />
   </dialog>
 </template>
@@ -619,7 +312,7 @@ const startNewGame = () => {
     font: inherit;
     font-size: 16px;
     background-color: transparent;
-    transition: all 0.5s linear;
+    transition: background-color 0.5s linear, color 0.5s linear;
 
     &:focus,
     &:hover {
@@ -662,10 +355,10 @@ const startNewGame = () => {
 }
 
 .darts-icon {
-  width: 96px;
-  height: 96px;
   margin-left: 16px;
   margin-right: 16px;
+  width: 96px;
+  height: 96px;
 }
 
 .points-information__points {

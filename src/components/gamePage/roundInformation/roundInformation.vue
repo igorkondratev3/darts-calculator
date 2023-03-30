@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import RoundPoints from './roundPoints/roundPoints.vue';
 const props = defineProps({
   remainderPlayerOne: Number,
@@ -14,32 +13,32 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['setPointsAndRemainder', 'legCompleted']);
-const newRemainderPlayerOne = ref();
-const newRemainderPlayerTwo = ref();
+let newRemainderPlayerOne;
+let newRemainderPlayerTwo;
 
 const calculateRemainder = (roundPoints, player) => {
   //попробовать сделать динамически(передавать ссылку в функцию)
   if (player === 'playerOne') {
-    newRemainderPlayerOne.value = props.remainderPlayerOne - roundPoints;
-    if (newRemainderPlayerOne.value > 1)
+    newRemainderPlayerOne = props.remainderPlayerOne - roundPoints;
+    if (newRemainderPlayerOne > 1)
       emit(
         'setPointsAndRemainder',
         roundPoints,
-        newRemainderPlayerOne.value,
+        newRemainderPlayerOne,
         'playerOne', props.roundNumber
       );
-    if (newRemainderPlayerOne.value === 0) emit('legCompleted', 'playerOne');
+    if (newRemainderPlayerOne === 0) emit('legCompleted', 'playerOne');
   }
   if (player === 'playerTwo') {
-    newRemainderPlayerTwo.value = props.remainderPlayerTwo - roundPoints;
-    if (newRemainderPlayerTwo.value > 1)
+    newRemainderPlayerTwo = props.remainderPlayerTwo - roundPoints;
+    if (newRemainderPlayerTwo > 1)
       emit(
         'setPointsAndRemainder',
         roundPoints,
-        newRemainderPlayerTwo.value,
+        newRemainderPlayerTwo,
         'playerTwo', props.roundNumber
       );
-    if (newRemainderPlayerTwo.value === 0) emit('legCompleted', 'playerTwo');
+    if (newRemainderPlayerTwo === 0) emit('legCompleted', 'playerTwo');
   }
 };
 </script>

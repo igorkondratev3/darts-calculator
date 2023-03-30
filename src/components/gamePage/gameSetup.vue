@@ -173,11 +173,15 @@ const handleClick = () => {
     width: 180px;
     padding: 4px;
     outline: none;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 4px;
     font: inherit;
     text-align: center;
     background-color: rgb(221, 231, 231);
+
+    &:focus {
+      border: 1px solid black;
+    }
   }
 
   &__player-names {
@@ -210,7 +214,7 @@ const handleClick = () => {
     border-radius: 8px;
     font: inherit;
     background-color: rgb(221, 231, 231);
-    transition: all 0.5s linear;
+    transition: background-color 0.5s linear, color 0.5s linear;
   }
 
   &__start-game-button:hover {
@@ -230,14 +234,26 @@ const handleClick = () => {
   background-color: rgb(221, 231, 231);
 }
 
+.start-remainder__value:focus {
+  background-color: red;
+}
+
+.start-remainder__value:hover {
+  background-color: red;
+}
+
 .player-names__name {
   width: 250px;
   padding: 8px;
   outline: none;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 4px;
   font: inherit;
   background-color: rgb(221, 231, 231);
+
+  &:focus {
+    border: 1px solid black;
+  }
 }
 
 .player-names__name_margin-right {
@@ -254,10 +270,15 @@ const handleClick = () => {
   appearance: none;
   width: 20px;
   height: 20px;
+  outline: none;
   border: 1px solid black;
   border-radius: 50%;
   background-color: rgb(221, 231, 231);
-  transition: all 0.3s linear;
+  transition: background-color 0.3s linear, border 0.3s linear;
+
+  &:focus {
+    border: 1px solid white;
+  }
 }
 
 .who-starts__radio-button:checked {
@@ -268,11 +289,15 @@ const handleClick = () => {
   width: 100px;
   padding: 8px;
   outline: none;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 4px;
   font: inherit;
   text-align: center;
   background-color: rgb(221, 231, 231);
+
+  &:focus {
+    border: 1px solid black;
+  }
 }
 
 .sets-legs__value_margin_right {

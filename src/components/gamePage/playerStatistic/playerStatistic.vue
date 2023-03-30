@@ -1,27 +1,10 @@
 <script setup>
+import StatisticVisibility from './components/statisticVisibility.vue';
 import { ref, computed } from 'vue';
 const props = defineProps({
-  averagePointsGame: Number,
-  averagePointsSet: Number,
-  averagePointsLeg: Number,
-  percentDoubleGame: Number,
-  percentDoubleSet: Number,
-  p180Set: Number,
-  p171Set: Number,
-  p131Set: Number,
-  p96Set: Number,
-  p180Game: Number,
-  p171Game: Number,
-  p131Game: Number,
-  p96Game: Number,
-  averageFirstNineDartsGame: Number,
-  averageFirstNineDartsSet: Number,
-  averagePointsWinLegsGame: Number,
-  averagePointsWinLegsSet: Number,
-  averagePointsLoseLegsGame: Number,
-  averagePointsLoseLegsSet: Number,
-  highestCheckoutGame: Number,
-  highestCheckoutSet: Number
+  gameStatistic: Object,
+  setStatistic: Object,
+  averagePointsLeg: Number
 });
 
 const seenSetupVisisbility = ref(false);
@@ -46,6 +29,54 @@ const seenPercentDoubleGame = ref(true);
 const seenPercentDoubleSet = ref(true);
 const seenHighestCheckoutGame = ref(true);
 const seenHighestCheckoutSet = ref(true);
+
+const selectAll = () => {
+  seenAveragePointsGame.value = true;
+  seenAveragePointsSet.value = true;
+  seenAveragePointsLeg.value = true;
+  seenAverageFirstNineDartsGame.value = true;
+  seenAverageFirstNineDartsSet.value = true;
+  seenAveragePointsWinLegsGame.value = true;
+  seenAveragePointsWinLegsSet.value = true;
+  seenAveragePointsLoseLegsGame.value = true;
+  seenAveragePointsLoseLegsSet.value = true;
+  seenP180Game.value = true;
+  seenP171Game.value = true;
+  seenP131Game.value = true;
+  seenP96Game.value = true;
+  seenP180Set.value = true;
+  seenP171Set.value = true;
+  seenP131Set.value = true;
+  seenP96Set.value = true;
+  seenPercentDoubleGame.value = true;
+  seenPercentDoubleSet.value = true;
+  seenHighestCheckoutGame.value = true;
+  seenHighestCheckoutSet.value = true;
+};
+
+const removeSelection = () => {
+  seenAveragePointsGame.value = false;
+  seenAveragePointsSet.value = false;
+  seenAveragePointsLeg.value = false;
+  seenAverageFirstNineDartsGame.value = false;
+  seenAverageFirstNineDartsSet.value = false;
+  seenAveragePointsWinLegsGame.value = false;
+  seenAveragePointsWinLegsSet.value = false;
+  seenAveragePointsLoseLegsGame.value = false;
+  seenAveragePointsLoseLegsSet.value = false;
+  seenP180Game.value = false;
+  seenP171Game.value = false;
+  seenP131Game.value = false;
+  seenP96Game.value = false;
+  seenP180Set.value = false;
+  seenP171Set.value = false;
+  seenP131Set.value = false;
+  seenP96Set.value = false;
+  seenPercentDoubleGame.value = false;
+  seenPercentDoubleSet.value = false;
+  seenHighestCheckoutGame.value = false;
+  seenHighestCheckoutSet.value = false;
+};
 
 const seenAverageFirstNineDarts = computed(
   () =>
@@ -107,6 +138,7 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
         src="/src/assets/images/menu.svg"
         @click="seenSetupVisisbility = true"
         title="Настроить видимость параметров"
+        alt="меню"
       />
       <div
         class="statistic__average statistic-average"
@@ -119,10 +151,10 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
         </h4>
         <div class="statistic-average__points">
           <div class="statistic__values" v-if="seenAveragePointsGame">
-            матч<br />{{ props.averagePointsGame.toFixed(2) }}
+            матч<br />{{ props.gameStatistic.averagePoints.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsSet">
-            сет<br />{{ props.averagePointsSet.toFixed(2) }}
+            сет<br />{{ props.setStatistic.averagePoints.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsLeg">
             лег<br />{{ props.averagePointsLeg.toFixed(2) }}
@@ -135,11 +167,11 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
           <h5 class="statistic__parameter-header">9 дротиков</h5>
           <div class="statistic__values" v-if="seenAverageFirstNineDartsGame">
             матч<br />
-            {{ props.averageFirstNineDartsGame.toFixed(2) }}
+            {{ props.gameStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAverageFirstNineDartsSet">
             сет<br />
-            {{ props.averageFirstNineDartsSet.toFixed(2) }}
+            {{ props.setStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
         </div>
         <div
@@ -149,11 +181,11 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
           <h5 class="statistic__parameter-header">выигранные леги</h5>
           <div class="statistic__values" v-if="seenAveragePointsWinLegsGame">
             матч<br />
-            {{ props.averagePointsWinLegsGame.toFixed(2) }}
+            {{ props.gameStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsWinLegsSet">
             сет<br />
-            {{ props.averagePointsWinLegsSet.toFixed(2) }}
+            {{ props.setStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
         </div>
         <div
@@ -163,303 +195,100 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
           <h5 class="statistic__parameter-header">проигранные леги</h5>
           <div class="statistic__values" v-if="seenAveragePointsLoseLegsGame">
             матч<br />
-            {{ props.averagePointsLoseLegsGame.toFixed(2) }}
+            {{ props.gameStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsLoseLegsSet">
             сет<br />
-            {{ props.averagePointsLoseLegsSet.toFixed(2) }}
+            {{ props.setStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
         </div>
       </div>
       <div class="statistic__points statistic-points" v-if="seenPoints">
         <h4 class="statistic__group-header">Очки</h4>
         <div class="statistic-points__game-points" v-if="seenPointsGame">
-          <h5
-            class="statistic__parameter-header"
-          >
-            матч
-          </h5>
+          <h5 class="statistic__parameter-header">матч</h5>
           <div class="statistic__values" v-if="seenP180Game">
-            180<br />{{ props.p180Game }}
+            180<br />{{ props.gameStatistic.p180.value }}
           </div>
           <div class="statistic__values" v-if="seenP171Game">
-            171+<br />{{ props.p171Game }}
+            171+<br />{{ props.gameStatistic.p171.value }}
           </div>
           <div class="statistic__values" v-if="seenP131Game">
-            131+<br />{{ props.p131Game }}
+            131+<br />{{ props.gameStatistic.p131.value }}
           </div>
           <div class="statistic__values" v-if="seenP96Game">
-            96+<br />{{ props.p96Game }}
+            96+<br />{{ props.gameStatistic.p96.value }}
           </div>
         </div>
         <div class="statistic-points__set-points" v-if="seenPointsSet">
           <h5 class="statistic__parameter-header">сет</h5>
           <div class="statistic__values" v-if="seenP180Set">
-            180<br />{{ props.p180Set }}
+            180<br />{{ props.setStatistic.p180.value }}
           </div>
           <div class="statistic__values" v-if="seenP171Set">
-            171+<br />{{ props.p171Set }}
+            171+<br />{{ props.setStatistic.p171.value }}
           </div>
           <div class="statistic__values" v-if="seenP131Set">
-            131+<br />{{ props.p131Set }}
+            131+<br />{{ props.setStatistic.p131.value }}
           </div>
           <div class="statistic__values" v-if="seenP96Set">
-            96+<br />{{ props.p96Set }}
+            96+<br />{{ props.setStatistic.p96.value }}
           </div>
         </div>
       </div>
       <div class="statistic__closing statistic-closing" v-if="seenClosing">
         <h4 class="statistic__group-header">Закрытия</h4>
         <div class="statistic-closing__double" v-if="seenDouble">
-          <h5
-            class="statistic__parameter-header"
-          >
-            % удвоений
-          </h5>
+          <h5 class="statistic__parameter-header">% удвоений</h5>
           <div class="statistic__values" v-if="seenPercentDoubleGame">
             матч<br />
-            {{ props.percentDoubleGame.toFixed(2) }} %
+            {{ props.gameStatistic.percentDouble.value.toFixed(2) }} %
           </div>
           <div class="statistic__values" v-if="seenPercentDoubleSet">
             сет<br />
-            {{ props.percentDoubleSet.toFixed(2) }} %
+            {{ props.setStatistic.percentDouble.value.toFixed(2) }} %
           </div>
         </div>
         <div class="statistic-closing__highest" v-if="seenHighest">
           <h5 class="statistic__parameter-header">наибольшее</h5>
           <div class="statistic__values" v-if="seenHighestCheckoutGame">
             матч<br />
-            {{ props.highestCheckoutGame }}
+            {{ props.gameStatistic.highestCheckout.value }}
           </div>
           <div class="statistic__values" v-if="seenHighestCheckoutSet">
             сет<br />
-            {{ props.highestCheckoutSet }}
+            {{ props.setStatistic.highestCheckout.value }}
           </div>
         </div>
       </div>
     </div>
-
-    <div
-      class="statistic__player-statistic statistic__visibility"
-      v-show="seenSetupVisisbility"
-    >
-      <img
-        class="statistic__setup-visibility"
-        src="/src/assets/images/close.svg"
-        @click="seenSetupVisisbility = false"
-        title="Закрыть настройку видимости параметров"
-      />
-      <div class="statistic__average statistic-average">
-        <h4 class="statistic__group-header statistic__group-header_margin-bottom">
-          Средний набор
-        </h4>
-        <div class="statistic-average__points">
-          <label class="statistic__values statistic-values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsSet"
-            />
-          </label>
-          <label class="statistic__values">
-            лег<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsLeg"
-            />
-          </label>
-        </div>
-        <div class="statistic-average__nine-darts">
-          <h5 class="statistic__parameter-header">9 дротиков</h5>
-          <label class="statistic__values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAverageFirstNineDartsGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAverageFirstNineDartsSet"
-            />
-          </label>
-        </div>
-        <div class="statistic-average__win-legs">
-          <h5 class="statistic__parameter-header">выигранные леги</h5>
-          <label class="statistic__values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsWinLegsGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsWinLegsSet"
-            />
-          </label>
-        </div>
-        <div class="statistic-average__lose-legs">
-          <h5 class="statistic__parameter-header">проигранные леги</h5>
-          <label class="statistic__values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsLoseLegsGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenAveragePointsLoseLegsSet"
-            />
-          </label>
-        </div>
-      </div>
-      <div class="statistic__points statistic-points">
-        <h4 class="statistic__group-header">Очки</h4>
-        <div class="statistic-points__game-points">
-          <h5
-            class="statistic__parameter-header"
-          >
-            матч
-          </h5>
-          <label class="statistic__values"
-            >180<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP180Game"
-            />
-          </label>
-          <label class="statistic__values"
-            >171+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP171Game"
-            />
-          </label>
-          <label class="statistic__values"
-            >131+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP131Game"
-            />
-          </label>
-          <label class="statistic__values"
-            >96+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP96Game"
-            />
-          </label>
-        </div>
-        <div class="statistic-points__set-points">
-          <h5 class="statistic__parameter-header">сет</h5>
-          <label class="statistic__values"
-            >180<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP180Set"
-            />
-          </label>
-          <label class="statistic__values"
-            >171+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP171Set"
-            />
-          </label>
-          <label class="statistic__values"
-            >131+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP131Set"
-            />
-          </label>
-          <label class="statistic__values"
-            >96+<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenP96Set"
-            />
-          </label>
-        </div>
-      </div>
-      <div class="statistic__closing statistic-closing">
-        <h4 class="statistic__group-header">Закрытия</h4>
-        <div class="statistic-closing__double">
-          <h5
-            class="statistic__parameter-header"
-          >
-            % удвоений
-          </h5>
-          <label class="statistic__values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenPercentDoubleGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenPercentDoubleSet"
-            />
-          </label>
-        </div>
-        <div class="statistic-closing__highest">
-          <h5 class="statistic__parameter-header">наибольшее</h5>
-          <label class="statistic__values">
-            матч<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenHighestCheckoutGame"
-            />
-          </label>
-          <label class="statistic__values">
-            сет<br />
-            <input
-              type="checkbox"
-              class="statistic-values__visibility"
-              v-model="seenHighestCheckoutSet"
-            />
-          </label>
-        </div>
-      </div>
-    </div>
+    <StatisticVisibility
+      :seenSetupVisisbility="seenSetupVisisbility"
+      @closeStatisticVisibility="seenSetupVisisbility = false"
+      @selectAll="selectAll"
+      @removeSelection="removeSelection"
+      v-model:seenAveragePointsGame="seenAveragePointsGame"
+      v-model:seenAveragePointsSet="seenAveragePointsSet"
+      v-model:seenAveragePointsLeg="seenAveragePointsLeg"
+      v-model:seenAverageFirstNineDartsGame="seenAverageFirstNineDartsGame"
+      v-model:seenAverageFirstNineDartsSet="seenAverageFirstNineDartsSet"
+      v-model:seenAveragePointsWinLegsGame="seenAveragePointsWinLegsGame"
+      v-model:seenAveragePointsWinLegsSet="seenAveragePointsWinLegsSet"
+      v-model:seenAveragePointsLoseLegsGame="seenAveragePointsLoseLegsGame"
+      v-model:seenAveragePointsLoseLegsSet="seenAveragePointsLoseLegsSet"
+      v-model:seenP180Game="seenP180Game"
+      v-model:seenP171Game="seenP171Game"
+      v-model:seenP131Game="seenP131Game"
+      v-model:seenP96Game="seenP96Game"
+      v-model:seenP180Set="seenP180Set"
+      v-model:seenP171Set="seenP171Set"
+      v-model:seenP131Set="seenP131Set"
+      v-model:seenP96Set="seenP96Set"
+      v-model:seenPercentDoubleGame="seenPercentDoubleGame"
+      v-model:seenPercentDoubleSet="seenPercentDoubleSet"
+      v-model:seenHighestCheckoutGame="seenHighestCheckoutGame"
+      v-model:seenHighestCheckoutSet="seenHighestCheckoutSet"
+    />
   </div>
 </template>
 
@@ -563,21 +392,5 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-}
-
-.statistic-values__visibility {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 1px solid black;
-  border-radius: 4px;
-  background: rgb(232, 238, 233);
-  transition: all 0.3s linear;
-
-  &:checked {
-    background: rgb(66, 63, 63) url('/src/assets/images/check.svg');
-  }
 }
 </style>

@@ -5,26 +5,8 @@ const props = defineProps({
   nameP1: String,
   wonP1: Number,
   wonP2: Number,
-  averagePointsGameP2: Number,
-  averagePointsWinLegsGameP2: Number,
-  averagePointsLoseLegsGameP2: Number,
-  averageFirstNineDartsGameP2: Number,
-  p180GameP2: Number,
-  p171GameP2: Number,
-  p131GameP2: Number,
-  p96GameP2: Number,
-  percentDoubleGameP2: Number,
-  highestCheckoutGameP2: Number,
-  averagePointsGameP1: Number,
-  averagePointsWinLegsGameP1: Number,
-  averagePointsLoseLegsGameP1: Number,
-  averageFirstNineDartsGameP1: Number,
-  p180GameP1: Number,
-  p171GameP1: Number,
-  p131GameP1: Number,
-  p96GameP1: Number,
-  percentDoubleGameP1: Number,
-  highestCheckoutGameP1: Number
+  gameStatisticP1: Object,
+  gameStatisticP2: Object
 });
 </script>
 
@@ -51,78 +33,78 @@ const props = defineProps({
       <div class="game-statistic__header-group">Средний набор</div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.averagePointsGameP1.toFixed(2) }}
+          {{ props.gameStatisticP1.averagePoints.value.toFixed(2) }}
         </div>
         <div class="statistic-parameters__header">матч</div>
         <div class="statistic-parameters__values">
-          {{ props.averagePointsGameP2.toFixed(2) }}
+          {{ props.gameStatisticP2.averagePoints.value.toFixed(2) }}
         </div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.averagePointsWinLegsGameP1.toFixed(2) }}
+          {{ props.gameStatisticP1.averagePointsWinLegs.value.toFixed(2) }}
         </div>
         <div class="statistic-parameters__header">выигранные леги</div>
         <div class="statistic-parameters__values">
-          {{ props.averagePointsWinLegsGameP2.toFixed(2) }}
+          {{ props.gameStatisticP2.averagePointsWinLegs.value.toFixed(2) }}
         </div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.averagePointsLoseLegsGameP1.toFixed(2) }}
+          {{ props.gameStatisticP1.averagePointsLoseLegs.value.toFixed(2) }}
         </div>
         <div class="statistic-parameters__header">проигранные леги</div>
         <div class="statistic-parameters__values">
-          {{ props.averagePointsLoseLegsGameP2.toFixed(2) }}
+          {{ props.gameStatisticP2.averagePointsLoseLegs.value.toFixed(2) }}
         </div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.averageFirstNineDartsGameP1.toFixed(2) }}
+          {{ props.gameStatisticP1.averageFirstNineDarts.value.toFixed(2) }}
         </div>
         <div class="statistic-parameters__header">9 дротиков</div>
         <div class="statistic-parameters__values">
-          {{ props.averageFirstNineDartsGameP2.toFixed(2) }}
+          {{ props.gameStatisticP2.averageFirstNineDarts.value.toFixed(2) }}
         </div>
       </div>
       <div class="game-statistic__header-group">Очки</div>
       <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.p180GameP1 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p180.value }}</div>
         <div class="statistic-parameters__header">180</div>
-        <div class="statistic-parameters__values">{{ props.p180GameP2 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p180.value }}</div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.p171GameP1 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p171.value }}</div>
         <div class="statistic-parameters__header">171+</div>
-        <div class="statistic-parameters__values">{{ props.p171GameP2 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p171.value }}</div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.p131GameP1 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p131.value }}</div>
         <div class="statistic-parameters__header">131+</div>
-        <div class="statistic-parameters__values">{{ props.p131GameP2 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p131.value }}</div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.p96GameP1 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p96.value }}</div>
         <div class="statistic-parameters__header">96+</div>
-        <div class="statistic-parameters__values">{{ props.p96GameP2 }}</div>
+        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p96.value }}</div>
       </div>
       <div class="game-statistic__header-group">Закрытия</div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.percentDoubleGameP1.toFixed(2) }} %
+          {{ props.gameStatisticP1.percentDouble.value.toFixed(2) }} %
         </div>
         <div class="statistic-parameters__header">%</div>
         <div class="statistic-parameters__values">
-          {{ props.percentDoubleGameP2.toFixed(2) }} %
+          {{ props.gameStatisticP2.percentDouble.value.toFixed(2) }} %
         </div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.highestCheckoutGameP1 }}
+          {{ props.gameStatisticP1.highestCheckout.value }}
         </div>
         <div class="statistic-parameters__header">наибольшее</div>
         <div class="statistic-parameters__values">
-          {{ props.highestCheckoutGameP2 }}
+          {{ props.gameStatisticP2.highestCheckout.value }}
         </div>
       </div>
     </div>
@@ -242,7 +224,7 @@ const props = defineProps({
   border-radius: 8px;
   font:inherit;
   background-color: rgb(221, 231, 231);
-  transition: all 0.5s linear;
+  transition: background-color 0.5s linear, color 0.5s linear;
 
   &:hover {
     background-color: black;

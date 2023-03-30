@@ -75,7 +75,7 @@ const handleClick = () => {
     font-size: 32px;
     color: white;
     background-color: rgb(66, 63, 63);
-    transition: all 0.5s linear;
+    transition: background-color 0.5s linear, color 0.5s linear;
   }
 
   &__value:hover,
