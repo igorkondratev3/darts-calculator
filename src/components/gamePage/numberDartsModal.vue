@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 const props = defineProps({
   seenZero: Boolean,
+  seenOne: Boolean,
+  seenThree: Boolean,
   message: String
 });
 
@@ -34,7 +36,12 @@ const handleClick = () => {
         v-for="n in 4"
         :key="n + 'darts'"
         ref="buttons"
-        v-show="props.seenZero || n !== 1"
+        v-show="
+          (n === 1 && props.seenZero) ||
+          (n === 2 && props.seenOne) ||
+          n === 3 ||
+          (n === 4 && props.seenThree)
+        "
       >
         {{ n - 1 }}
       </button>

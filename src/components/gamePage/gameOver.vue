@@ -6,7 +6,9 @@ const props = defineProps({
   wonP1: Number,
   wonP2: Number,
   gameStatisticP1: Object,
-  gameStatisticP2: Object
+  gameStatisticP2: Object,
+  isPercentDoubleP1: Boolean,
+  isPercentDoubleP2: Boolean
 });
 </script>
 
@@ -69,33 +71,52 @@ const props = defineProps({
       </div>
       <div class="game-statistic__header-group">Очки</div>
       <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p180.value }}</div>
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP1.p180.value }}
+        </div>
         <div class="statistic-parameters__header">180</div>
-        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p180.value }}</div>
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP2.p180.value }}
+        </div>
       </div>
-      <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p171.value }}</div>
-        <div class="statistic-parameters__header">171+</div>
-        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p171.value }}</div>
-      </div>
-      <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p131.value }}</div>
-        <div class="statistic-parameters__header">131+</div>
-        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p131.value }}</div>
-      </div>
-      <div class="game-statistic__parameters statistic-parameters">
-        <div class="statistic-parameters__values">{{ props.gameStatisticP1.p96.value }}</div>
-        <div class="statistic-parameters__header">96+</div>
-        <div class="statistic-parameters__values">{{ props.gameStatisticP2.p96.value }}</div>
-      </div>
-      <div class="game-statistic__header-group">Закрытия</div>
       <div class="game-statistic__parameters statistic-parameters">
         <div class="statistic-parameters__values">
-          {{ props.gameStatisticP1.percentDouble.value.toFixed(2) }} %
+          {{ props.gameStatisticP1.p171.value }}
+        </div>
+        <div class="statistic-parameters__header">171+</div>
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP2.p171.value }}
+        </div>
+      </div>
+      <div class="game-statistic__parameters statistic-parameters">
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP1.p131.value }}
+        </div>
+        <div class="statistic-parameters__header">131+</div>
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP2.p131.value }}
+        </div>
+      </div>
+      <div class="game-statistic__parameters statistic-parameters">
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP1.p96.value }}
+        </div>
+        <div class="statistic-parameters__header">96+</div>
+        <div class="statistic-parameters__values">
+          {{ props.gameStatisticP2.p96.value }}
+        </div>
+      </div>
+      <div class="game-statistic__header-group">Закрытия</div>
+      <div
+        class="game-statistic__parameters statistic-parameters"
+        v-if="props.isPercentDoubleP1 || props.isPercentDoubleP2"
+      >
+        <div class="statistic-parameters__values">
+         <span v-if="props.isPercentDoubleP1"> {{ props.gameStatisticP1.percentDouble.value.toFixed(2) }} % </span>
         </div>
         <div class="statistic-parameters__header">%</div>
         <div class="statistic-parameters__values">
-          {{ props.gameStatisticP2.percentDouble.value.toFixed(2) }} %
+          <span v-if="props.isPercentDoubleP2"> {{ props.gameStatisticP2.percentDouble.value.toFixed(2) }} % </span>
         </div>
       </div>
       <div class="game-statistic__parameters statistic-parameters">
@@ -157,8 +178,10 @@ const props = defineProps({
   justify-content: space-around;
 
   &__name {
+    max-width: 400px;
     font-size: 48px;
     text-align: center;
+    overflow: hidden;
   }
 
   &__name_margin-right {
@@ -222,7 +245,7 @@ const props = defineProps({
   outline: none;
   border: none;
   border-radius: 8px;
-  font:inherit;
+  font: inherit;
   background-color: rgb(221, 231, 231);
   transition: background-color 0.5s linear, color 0.5s linear;
 

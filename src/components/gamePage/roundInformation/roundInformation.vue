@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 import RoundPoints from './roundPoints/roundPoints.vue';
 const props = defineProps({
   remainderPlayerOne: Number,
@@ -25,7 +26,8 @@ const calculateRemainder = (roundPoints, player) => {
         'setPointsAndRemainder',
         roundPoints,
         newRemainderPlayerOne,
-        'playerOne', props.roundNumber
+        'playerOne',
+        props.roundNumber
       );
     if (newRemainderPlayerOne === 0) emit('legCompleted', 'playerOne');
   }
@@ -36,11 +38,42 @@ const calculateRemainder = (roundPoints, player) => {
         'setPointsAndRemainder',
         roundPoints,
         newRemainderPlayerTwo,
-        'playerTwo', props.roundNumber
+        'playerTwo',
+        props.roundNumber
       );
     if (newRemainderPlayerTwo === 0) emit('legCompleted', 'playerTwo');
   }
 };
+
+const seenRoundPointsP1 = computed(
+  () =>
+    (props.legNumber % 2 && props.setNumber % 2 && props.remainderPlayerTwo) ||
+    (props.legNumber % 2 === 0 &&
+      props.setNumber % 2 &&
+      props.newRemainderPlayerTwo) ||
+    (props.legNumber % 2 === 0 &&
+      props.setNumber % 2 === 0 &&
+      props.remainderPlayerTwo) ||
+    (props.legNumber % 2 &&
+      props.setNumber % 2 === 0 &&
+      props.newRemainderPlayerTwo)
+);
+
+const seenRoundPointsP2 = computed(
+  () =>
+    (props.legNumber % 2 === 0 &&
+      props.setNumber % 2 &&
+      props.remainderPlayerOne) ||
+    (props.legNumber % 2 &&
+      props.setNumber % 2 &&
+      props.newRemainderPlayerOne) ||
+    (props.legNumber % 2 &&
+      props.setNumber % 2 === 0 &&
+      props.remainderPlayerOne) ||
+    (props.legNumber % 2 === 0 &&
+      props.setNumber % 2 === 0 &&
+      props.newRemainderPlayerOne)
+);
 </script>
 
 <template>
@@ -49,12 +82,7 @@ const calculateRemainder = (roundPoints, player) => {
       class="round-information__points-area round-information__points-area_margin-right"
     >
       <RoundPoints
-        v-show="
-          (props.legNumber % 2 && props.setNumber % 2 && props.remainderPlayerTwo) ||
-          (props.legNumber % 2 === 0 && props.setNumber % 2 && props.newRemainderPlayerTwo) ||
-          (props.legNumber % 2 === 0 && props.setNumber % 2 === 0 && props.remainderPlayerTwo) ||
-          (props.legNumber % 2 && props.setNumber % 2 === 0 && props.newRemainderPlayerTwo)
-        "
+        v-show="seenRoundPointsP1"
         :remainder="props.remainderPlayerOne"
         :points="props.roundPointsPlayerOne"
         @setPoints="
@@ -75,12 +103,7 @@ const calculateRemainder = (roundPoints, player) => {
       class="round-information__points-area round-information__points-area_margin-left"
     >
       <RoundPoints
-        v-show="
-          (props.legNumber % 2 === 0 && props.setNumber % 2 && props.remainderPlayerOne) ||
-          (props.legNumber % 2 && props.setNumber % 2 && props.newRemainderPlayerOne) ||
-          (props.legNumber % 2 && props.setNumber % 2 === 0 && props.remainderPlayerOne) ||
-          (props.legNumber % 2 === 0 && props.setNumber % 2 === 0 && props.newRemainderPlayerOne)
-        "
+        v-show="seenRoundPointsP2"
         :remainder="props.remainderPlayerTwo"
         :points="props.roundPointsPlayerTwo"
         @setPoints="
@@ -93,6 +116,8 @@ const calculateRemainder = (roundPoints, player) => {
 
 <style lang="scss">
 .round-information__points-area {
+  display: flex;
+  align-items: center;
   width: 140px;
 }
 

@@ -55,7 +55,7 @@ const setPoints = () => {
   width: 140px;
   padding: 8px;
   outline: none;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 8px;
   font: inherit;
   font-size: 48px;

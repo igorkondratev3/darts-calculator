@@ -5,6 +5,7 @@ import RoundInformation from '@/components/gamePage/roundInformation/roundInform
 import GameOver from '@/components/gamePage/gameOver.vue';
 import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
+import PalyerScore from '@/components/gamePage/palyerScore.vue';
 import {
   defineFocusForNewLeg,
   defineFocusForNextPlayer
@@ -14,6 +15,8 @@ import { useNewGame } from '@/composables/newGame.js';
 
 const numberDartsModal = ref(null);
 const seenZeroInNumberDartsModal = ref(false);
+const seenOneInNumberDartsModal = ref(true);
+const seenThreeInNumberDartsModal = ref(true);
 const messageNumberDartsModal = ref('');
 const gameOverModal = ref(null);
 const gameSetupModal = ref(null);
@@ -63,7 +66,11 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
     return;
   }
 
-  if (remainder <= 50) {
+  if (
+    remainder <= 50 &&
+    ((player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
+      (player === 'playerTwo' && gameParameters.isPercentDoubleP2))
+  ) {
     seenZeroInNumberDartsModal.value = true;
     messageNumberDartsModal.value = 'Количество дротиков на удвоение';
     const endNumberDarts = await getNumberDarts(numberDartsModal.value);
@@ -86,11 +93,46 @@ const legCompleted = async (player) => {
   const currentPlayer = player === 'playerOne' ? playerOne : playerTwo;
   const otherPlayer = player === 'playerOne' ? playerTwo : playerOne;
 
-  messageNumberDartsModal.value = 'Количество дротиков в подходе';
-  const endNumberDarts = await getNumberDarts(numberDartsModal.value);
-  messageNumberDartsModal.value = 'Количество дротиков на удвоение';
-  const doubleNumberDarts = await getNumberDarts(numberDartsModal.value);
+  let endNumberDarts;
 
+  if (
+    currentPlayer.legRemainders.value.at(-1) > 100 &&
+    currentPlayer.legRemainders.value.at(-1) !== 110
+  )
+    endNumberDarts = 3;
+
+  if (!endNumberDarts) {
+    messageNumberDartsModal.value = 'Количество дротиков в подходе';
+    if (
+      currentPlayer.legRemainders.value.at(-1) > 40 &&
+      currentPlayer.legRemainders.value.at(-1) !== 50
+    )
+      seenOneInNumberDartsModal.value = false;
+    endNumberDarts = await getNumberDarts(numberDartsModal.value);
+    seenOneInNumberDartsModal.value = true;
+  }
+
+  let doubleNumberDarts;
+  if (
+    (player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
+    (player === 'playerTwo' && gameParameters.isPercentDoubleP2)
+  ) {
+    if (
+      currentPlayer.legRemainders.value.at(-1) > 100 &&
+      currentPlayer.legRemainders.value.at(-1) !== 110
+    )
+      doubleNumberDarts = 1;
+    if (!doubleNumberDarts) {
+      messageNumberDartsModal.value = 'Количество дротиков на удвоение';
+      if (
+        currentPlayer.legRemainders.value.at(-1) > 40 &&
+        currentPlayer.legRemainders.value.at(-1) !== 50
+      )
+        seenThreeInNumberDartsModal.value = false;
+      doubleNumberDarts = await getNumberDarts(numberDartsModal.value);
+      seenThreeInNumberDartsModal.value = true;
+    }
+  }
   currentPlayer.setInPointsAndDartsLegs(
     currentPlayer.legRemainders.value.at(-1),
     endNumberDarts,
@@ -101,10 +143,15 @@ const legCompleted = async (player) => {
     if (otherPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 6)
       otherPlayer.setAveragePointsForFirstNineDarts();
   }
-
-  currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] ??= 0;
-  currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] +=
-    doubleNumberDarts;
+  if (
+    (player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
+    (player === 'playerTwo' && gameParameters.isPercentDoubleP2)
+  ) {
+    //объеденить если ничего не сломается с логическим блоком сверху
+    currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] ??= 0;
+    currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] +=
+      doubleNumberDarts;
+  }
   currentPlayer.checkAndSetHighestCheckout();
   currentPlayer.checkAndSetHighPoints(currentPlayer.legRemainders.value.at(-1));
 
@@ -147,7 +194,7 @@ const startNewGame = () => {
 
 <template>
   <dialog open class="dialog" ref="gameSetupModal" @cancel.prevent="">
-    <GameSetup v-if="!isStartedGame" @startGame="startGame" />
+    <GameSetup v-show="!isStartedGame" @startGame="startGame" />
   </dialog>
   <main class="game-page game">
     <button class="game__new-game-button" @click="startNewGame">
@@ -155,19 +202,19 @@ const startNewGame = () => {
     </button>
     <div class="game__players-information players-information">
       <div class="players-information__name">{{ playerOne?.name }}</div>
-      <div class="players-information__legs-won" v-if="playerOne">
-        L: {{ playerOne.legsWonInSet.value }}
-      </div>
-      <div class="players-information__sets-won" v-if="playerTwo">
-        S: {{ playerOne.setsWon.value }}
-      </div>
+      <PalyerScore
+        :isSets="gameParameters?.isSets"
+        :seenPlayerScore="Boolean(playerOne)"
+        :setsWon="playerOne?.setsWon.value"
+        :legsWonInSet="playerOne?.legsWonInSet.value"
+      />
       <img class="darts-icon" src="/src/assets/images/darts.svg" alt="darts" />
-      <div class="players-information__sets-won" v-if="playerTwo">
-        S: {{ playerTwo.setsWon.value }}
-      </div>
-      <div class="players-information__legs-won" v-if="playerTwo">
-        L: {{ playerTwo.legsWonInSet.value }}
-      </div>
+      <PalyerScore
+        :isSets="gameParameters?.isSets"
+        :seenPlayerScore="Boolean(playerTwo)"
+        :setsWon="playerTwo?.setsWon.value"
+        :legsWonInSet="playerTwo?.legsWonInSet.value"
+      />
       <div class="players-information__name">{{ playerTwo?.name }}</div>
     </div>
     <div class="game__points-information points-information">
@@ -176,6 +223,8 @@ const startNewGame = () => {
         :gameStatistic="playerOne.gameStatistic"
         :setStatistic="playerOne.setStatistic"
         :averagePointsLeg="playerOne.averagePointsLeg.value"
+        :isSets="gameParameters?.isSets"
+        :isPercentDouble="gameParameters?.isPercentDoubleP1"
       />
       <form class="points-information__points points">
         <div class="points__round-information round-information">
@@ -227,6 +276,8 @@ const startNewGame = () => {
         :gameStatistic="playerTwo.gameStatistic"
         :setStatistic="playerTwo.setStatistic"
         :averagePointsLeg="playerTwo.averagePointsLeg.value"
+        :isSets="gameParameters?.isSets"
+        :isPercentDouble="gameParameters?.isPercentDoubleP2"
       />
     </div>
   </main>
@@ -234,6 +285,8 @@ const startNewGame = () => {
     <NumberDartsModal
       :message="messageNumberDartsModal"
       :seenZero="seenZeroInNumberDartsModal"
+      :seenOne="seenOneInNumberDartsModal"
+      :seenThree="seenThreeInNumberDartsModal"
     />
   </dialog>
   <dialog class="dialog" ref="gameOverModal" @cancel.prevent="">
@@ -242,10 +295,20 @@ const startNewGame = () => {
       @startNewGame="startNewGame"
       :nameP1="playerOne.name"
       :nameP2="playerTwo.name"
-      :wonP1="playerOne.setsWon.value"
-      :wonP2="playerTwo.setsWon.value"
+      :wonP1="
+        gameParameters.isSets
+          ? playerOne.setsWon.value
+          : playerOne.legsWonInGame.value
+      "
+      :wonP2="
+        gameParameters.isSets
+          ? playerTwo.setsWon.value
+          : playerTwo.legsWonInGame.value
+      "
       :gameStatisticP1="playerOne.gameStatistic"
       :gameStatisticP2="playerTwo.gameStatistic"
+      :isPercentDoubleP1="gameParameters.isPercentDoubleP1"
+      :isPercentDoubleP2="gameParameters.isPercentDoubleP2"
     />
   </dialog>
 </template>
@@ -324,6 +387,7 @@ const startNewGame = () => {
   &__players-information {
     display: flex;
     justify-content: center;
+    margin-bottom: 32px;
     overflow-x: hidden;
   }
 
@@ -334,24 +398,15 @@ const startNewGame = () => {
   }
 }
 
-.players-information {
-  &__name {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    flex-basis: 0;
-    font-size: 48px;
-    white-space: nowrap;
-    overflow-x: hidden;
-  }
-  &__sets-won,
-  &__legs-won {
-    width: 80px;
-    align-self: center;
-    font-size: 32px;
-    text-align: center;
-  }
+.players-information__name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-basis: 0;
+  font-size: 48px;
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 
 .darts-icon {
@@ -371,20 +426,20 @@ const startNewGame = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 .round-information {
   &__remainder {
     width: 140px;
-    font-size: 48px;
+    font-size: 56px;
     text-align: center;
   }
   &__number-darts {
     width: 108px;
     margin-left: 32px;
     margin-right: 32px;
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 700;
     text-align: center;
   }

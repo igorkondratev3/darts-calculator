@@ -1,133 +1,38 @@
 <script setup>
 import StatisticVisibility from './components/statisticVisibility.vue';
-import { ref, computed } from 'vue';
+import { SeenParameters, SeenGroups } from './seenClases.js'
+import { ref } from 'vue';
 const props = defineProps({
   gameStatistic: Object,
   setStatistic: Object,
-  averagePointsLeg: Number
+  averagePointsLeg: Number,
+  isSets: Boolean,
+  isPercentDouble: Boolean
 });
 
 const seenSetupVisisbility = ref(false);
-const seenAveragePointsGame = ref(true);
-const seenAveragePointsSet = ref(true);
 const seenAveragePointsLeg = ref(true);
-const seenAverageFirstNineDartsGame = ref(true);
-const seenAverageFirstNineDartsSet = ref(true);
-const seenAveragePointsWinLegsGame = ref(true);
-const seenAveragePointsWinLegsSet = ref(true);
-const seenAveragePointsLoseLegsGame = ref(true);
-const seenAveragePointsLoseLegsSet = ref(true);
-const seenP180Game = ref(true);
-const seenP171Game = ref(true);
-const seenP131Game = ref(true);
-const seenP96Game = ref(true);
-const seenP180Set = ref(true);
-const seenP171Set = ref(true);
-const seenP131Set = ref(true);
-const seenP96Set = ref(true);
-const seenPercentDoubleGame = ref(true);
-const seenPercentDoubleSet = ref(true);
-const seenHighestCheckoutGame = ref(true);
-const seenHighestCheckoutSet = ref(true);
+const seenParametersGame = new SeenParameters(true, props.isPercentDouble);
+const seenParametersSet = props.isSets ? new SeenParameters(true, props.isPercentDouble) : new SeenParameters(false, props.isPercentDouble);
+const seenGroups = new SeenGroups(
+  seenParametersGame,
+  seenParametersSet,
+  seenAveragePointsLeg
+);
 
 const selectAll = () => {
-  seenAveragePointsGame.value = true;
-  seenAveragePointsSet.value = true;
+  seenParametersGame.selectAll();
+  if (props.isSets)
+    seenParametersSet.selectAll();
   seenAveragePointsLeg.value = true;
-  seenAverageFirstNineDartsGame.value = true;
-  seenAverageFirstNineDartsSet.value = true;
-  seenAveragePointsWinLegsGame.value = true;
-  seenAveragePointsWinLegsSet.value = true;
-  seenAveragePointsLoseLegsGame.value = true;
-  seenAveragePointsLoseLegsSet.value = true;
-  seenP180Game.value = true;
-  seenP171Game.value = true;
-  seenP131Game.value = true;
-  seenP96Game.value = true;
-  seenP180Set.value = true;
-  seenP171Set.value = true;
-  seenP131Set.value = true;
-  seenP96Set.value = true;
-  seenPercentDoubleGame.value = true;
-  seenPercentDoubleSet.value = true;
-  seenHighestCheckoutGame.value = true;
-  seenHighestCheckoutSet.value = true;
 };
 
 const removeSelection = () => {
-  seenAveragePointsGame.value = false;
-  seenAveragePointsSet.value = false;
+  seenParametersGame.removeSelection();
+  if (props.isSets)
+    seenParametersSet.removeSelection();
   seenAveragePointsLeg.value = false;
-  seenAverageFirstNineDartsGame.value = false;
-  seenAverageFirstNineDartsSet.value = false;
-  seenAveragePointsWinLegsGame.value = false;
-  seenAveragePointsWinLegsSet.value = false;
-  seenAveragePointsLoseLegsGame.value = false;
-  seenAveragePointsLoseLegsSet.value = false;
-  seenP180Game.value = false;
-  seenP171Game.value = false;
-  seenP131Game.value = false;
-  seenP96Game.value = false;
-  seenP180Set.value = false;
-  seenP171Set.value = false;
-  seenP131Set.value = false;
-  seenP96Set.value = false;
-  seenPercentDoubleGame.value = false;
-  seenPercentDoubleSet.value = false;
-  seenHighestCheckoutGame.value = false;
-  seenHighestCheckoutSet.value = false;
 };
-
-const seenAverageFirstNineDarts = computed(
-  () =>
-    seenAverageFirstNineDartsGame.value || seenAverageFirstNineDartsSet.value
-);
-
-const seenAveragePointsWinLegs = computed(
-  () => seenAveragePointsWinLegsGame.value || seenAveragePointsWinLegsSet.value
-);
-
-const seenAveragePointsLoseLegs = computed(
-  () =>
-    seenAveragePointsLoseLegsGame.value || seenAveragePointsLoseLegsSet.value
-);
-const seenAveragePoints = computed(
-  () =>
-    seenAveragePointsGame.value ||
-    seenAveragePointsSet.value ||
-    seenAveragePointsLeg.value ||
-    seenAverageFirstNineDarts.value ||
-    seenAveragePointsWinLegs.value ||
-    seenAveragePointsLoseLegs.value
-);
-
-const seenPointsGame = computed(
-  () =>
-    seenP180Game.value ||
-    seenP171Game.value ||
-    seenP131Game.value ||
-    seenP96Game.value
-);
-
-const seenPointsSet = computed(
-  () =>
-    seenP180Set.value ||
-    seenP171Set.value ||
-    seenP131Set.value ||
-    seenP96Set.value
-);
-
-const seenPoints = computed(() => seenPointsSet.value || seenPointsGame.value);
-
-const seenDouble = computed(
-  () => seenPercentDoubleGame.value || seenPercentDoubleSet.value
-);
-
-const seenHighest = computed(
-  () => seenHighestCheckoutGame.value || seenHighestCheckoutSet.value
-);
-
-const seenClosing = computed(() => seenDouble.value || seenHighest.value);
 </script>
 
 <template>
@@ -142,7 +47,7 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
       />
       <div
         class="statistic__average statistic-average"
-        v-if="seenAveragePoints"
+        v-if="seenGroups.averagePoints.value"
       >
         <h4
           class="statistic__group-header statistic__group-header_margin-bottom"
@@ -150,10 +55,16 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
           Средний набор
         </h4>
         <div class="statistic-average__points">
-          <div class="statistic__values" v-if="seenAveragePointsGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.averagePoints.value"
+          >
             матч<br />{{ props.gameStatistic.averagePoints.value.toFixed(2) }}
           </div>
-          <div class="statistic__values" v-if="seenAveragePointsSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.averagePoints.value"
+          >
             сет<br />{{ props.setStatistic.averagePoints.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsLeg">
@@ -162,100 +73,142 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
         </div>
         <div
           class="statistic-average__nine-darts"
-          v-if="seenAverageFirstNineDarts"
+          v-if="seenGroups.averageFirstNineDarts.value"
         >
           <h5 class="statistic__parameter-header">9 дротиков</h5>
-          <div class="statistic__values" v-if="seenAverageFirstNineDartsGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.averageFirstNineDarts.value"
+          >
             матч<br />
             {{ props.gameStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
-          <div class="statistic__values" v-if="seenAverageFirstNineDartsSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.averageFirstNineDarts.value"
+          >
             сет<br />
             {{ props.setStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
         </div>
         <div
           class="statistic-average__win-legs"
-          v-if="seenAveragePointsWinLegs"
+          v-if="seenGroups.averagePointsWinLegs.value"
         >
           <h5 class="statistic__parameter-header">выигранные леги</h5>
-          <div class="statistic__values" v-if="seenAveragePointsWinLegsGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.averagePointsWinLegs.value"
+          >
             матч<br />
             {{ props.gameStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
-          <div class="statistic__values" v-if="seenAveragePointsWinLegsSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.averagePointsWinLegs.value"
+          >
             сет<br />
             {{ props.setStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
         </div>
         <div
           class="statistic-average__lose-legs"
-          v-if="seenAveragePointsLoseLegs"
+          v-if="seenGroups.averagePointsLoseLegs.value"
         >
           <h5 class="statistic__parameter-header">проигранные леги</h5>
-          <div class="statistic__values" v-if="seenAveragePointsLoseLegsGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.averagePointsLoseLegs.value"
+          >
             матч<br />
             {{ props.gameStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
-          <div class="statistic__values" v-if="seenAveragePointsLoseLegsSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.averagePointsLoseLegs.value"
+          >
             сет<br />
             {{ props.setStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
         </div>
       </div>
-      <div class="statistic__points statistic-points" v-if="seenPoints">
+      <div
+        class="statistic__points statistic-points"
+        v-if="seenGroups.points.value"
+      >
         <h4 class="statistic__group-header">Очки</h4>
-        <div class="statistic-points__game-points" v-if="seenPointsGame">
+        <div
+          class="statistic-points__game-points"
+          v-if="seenParametersGame.points.value"
+        >
           <h5 class="statistic__parameter-header">матч</h5>
-          <div class="statistic__values" v-if="seenP180Game">
+          <div class="statistic__values" v-if="seenParametersGame.p180.value">
             180<br />{{ props.gameStatistic.p180.value }}
           </div>
-          <div class="statistic__values" v-if="seenP171Game">
+          <div class="statistic__values" v-if="seenParametersGame.p171.value">
             171+<br />{{ props.gameStatistic.p171.value }}
           </div>
-          <div class="statistic__values" v-if="seenP131Game">
+          <div class="statistic__values" v-if="seenParametersGame.p131.value">
             131+<br />{{ props.gameStatistic.p131.value }}
           </div>
-          <div class="statistic__values" v-if="seenP96Game">
+          <div class="statistic__values" v-if="seenParametersGame.p96.value">
             96+<br />{{ props.gameStatistic.p96.value }}
           </div>
         </div>
-        <div class="statistic-points__set-points" v-if="seenPointsSet">
+        <div
+          class="statistic-points__set-points"
+          v-if="seenParametersSet.points.value"
+        >
           <h5 class="statistic__parameter-header">сет</h5>
-          <div class="statistic__values" v-if="seenP180Set">
+          <div class="statistic__values" v-if="seenParametersSet.p180.value">
             180<br />{{ props.setStatistic.p180.value }}
           </div>
-          <div class="statistic__values" v-if="seenP171Set">
+          <div class="statistic__values" v-if="seenParametersSet.p171.value">
             171+<br />{{ props.setStatistic.p171.value }}
           </div>
-          <div class="statistic__values" v-if="seenP131Set">
+          <div class="statistic__values" v-if="seenParametersSet.p131.value">
             131+<br />{{ props.setStatistic.p131.value }}
           </div>
-          <div class="statistic__values" v-if="seenP96Set">
+          <div class="statistic__values" v-if="seenParametersSet.p96.value">
             96+<br />{{ props.setStatistic.p96.value }}
           </div>
         </div>
       </div>
-      <div class="statistic__closing statistic-closing" v-if="seenClosing">
+      <div
+        class="statistic__closing statistic-closing"
+        v-if="seenGroups.closing.value"
+      >
         <h4 class="statistic__group-header">Закрытия</h4>
-        <div class="statistic-closing__double" v-if="seenDouble">
+        <div class="statistic-closing__double" v-if="seenGroups.double.value && props.isPercentDouble">
           <h5 class="statistic__parameter-header">% удвоений</h5>
-          <div class="statistic__values" v-if="seenPercentDoubleGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.percentDouble.value"
+          >
             матч<br />
             {{ props.gameStatistic.percentDouble.value.toFixed(2) }} %
           </div>
-          <div class="statistic__values" v-if="seenPercentDoubleSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.percentDouble.value"
+          >
             сет<br />
             {{ props.setStatistic.percentDouble.value.toFixed(2) }} %
           </div>
         </div>
-        <div class="statistic-closing__highest" v-if="seenHighest">
+        <div class="statistic-closing__highest" v-if="seenGroups.highest.value">
           <h5 class="statistic__parameter-header">наибольшее</h5>
-          <div class="statistic__values" v-if="seenHighestCheckoutGame">
+          <div
+            class="statistic__values"
+            v-if="seenParametersGame.highestCheckout.value"
+          >
             матч<br />
             {{ props.gameStatistic.highestCheckout.value }}
           </div>
-          <div class="statistic__values" v-if="seenHighestCheckoutSet">
+          <div
+            class="statistic__values"
+            v-if="seenParametersSet.highestCheckout.value"
+          >
             сет<br />
             {{ props.setStatistic.highestCheckout.value }}
           </div>
@@ -264,30 +217,44 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
     </div>
     <StatisticVisibility
       :seenSetupVisisbility="seenSetupVisisbility"
+      :isSets="props.isSets"
+      :isPercentDouble="props.isPercentDouble"
       @closeStatisticVisibility="seenSetupVisisbility = false"
       @selectAll="selectAll"
       @removeSelection="removeSelection"
-      v-model:seenAveragePointsGame="seenAveragePointsGame"
-      v-model:seenAveragePointsSet="seenAveragePointsSet"
       v-model:seenAveragePointsLeg="seenAveragePointsLeg"
-      v-model:seenAverageFirstNineDartsGame="seenAverageFirstNineDartsGame"
-      v-model:seenAverageFirstNineDartsSet="seenAverageFirstNineDartsSet"
-      v-model:seenAveragePointsWinLegsGame="seenAveragePointsWinLegsGame"
-      v-model:seenAveragePointsWinLegsSet="seenAveragePointsWinLegsSet"
-      v-model:seenAveragePointsLoseLegsGame="seenAveragePointsLoseLegsGame"
-      v-model:seenAveragePointsLoseLegsSet="seenAveragePointsLoseLegsSet"
-      v-model:seenP180Game="seenP180Game"
-      v-model:seenP171Game="seenP171Game"
-      v-model:seenP131Game="seenP131Game"
-      v-model:seenP96Game="seenP96Game"
-      v-model:seenP180Set="seenP180Set"
-      v-model:seenP171Set="seenP171Set"
-      v-model:seenP131Set="seenP131Set"
-      v-model:seenP96Set="seenP96Set"
-      v-model:seenPercentDoubleGame="seenPercentDoubleGame"
-      v-model:seenPercentDoubleSet="seenPercentDoubleSet"
-      v-model:seenHighestCheckoutGame="seenHighestCheckoutGame"
-      v-model:seenHighestCheckoutSet="seenHighestCheckoutSet"
+      v-model:seenAveragePointsGame="seenParametersGame.averagePoints.value"
+      v-model:seenAverageFirstNineDartsGame="
+        seenParametersGame.averageFirstNineDarts.value
+      "
+      v-model:seenAveragePointsWinLegsGame="
+        seenParametersGame.averagePointsWinLegs.value
+      "
+      v-model:seenAveragePointsLoseLegsGame="
+        seenParametersGame.averagePointsLoseLegs.value
+      "
+      v-model:seenP180Game="seenParametersGame.p180.value"
+      v-model:seenP171Game="seenParametersGame.p171.value"
+      v-model:seenP131Game="seenParametersGame.p131.value"
+      v-model:seenP96Game="seenParametersGame.p96.value"
+      v-model:seenPercentDoubleGame="seenParametersGame.percentDouble.value"
+      v-model:seenHighestCheckoutGame="seenParametersGame.highestCheckout.value"
+      v-model:seenAveragePointsSet="seenParametersSet.averagePoints.value"
+      v-model:seenAverageFirstNineDartsSet="
+        seenParametersSet.averageFirstNineDarts.value
+      "
+      v-model:seenAveragePointsWinLegsSet="
+        seenParametersSet.averagePointsWinLegs.value
+      "
+      v-model:seenAveragePointsLoseLegsSet="
+        seenParametersSet.averagePointsLoseLegs.value
+      "
+      v-model:seenP180Set="seenParametersSet.p180.value"
+      v-model:seenP171Set="seenParametersSet.p171.value"
+      v-model:seenP131Set="seenParametersSet.p131.value"
+      v-model:seenP96Set="seenParametersSet.p96.value"
+      v-model:seenPercentDoubleSet="seenParametersSet.percentDouble.value"
+      v-model:seenHighestCheckoutSet="seenParametersSet.highestCheckout.value"
     />
   </div>
 </template>
@@ -310,6 +277,7 @@ const seenClosing = computed(() => seenDouble.value || seenHighest.value);
     flex-direction: column;
     min-height: 200px;
     max-height: 80vh;
+    min-width: 200px;
     margin-top: 8px;
     margin-left: 4px;
     margin-right: 4px;

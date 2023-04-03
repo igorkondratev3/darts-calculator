@@ -7,12 +7,17 @@ const startRemainder = ref(501);
 const whoStarted = ref('nameOne');
 const legs = ref(1);
 const sets = ref(1);
+const isSets = ref(false);
+const isPercentDoubleP1 = ref(false);
+const isPercentDoubleP2 = ref(false);
 const handleInput = (what, event) => {
   if (event.data < '0' || event.data > '9') {
     if (what === 'Legs') legs.value = 0;
     if (what === 'Sets') sets.value = 0;
   }
 };
+
+
 const handleBlur = (what) => {
   switch (what) {
     case 'Игрок 1':
@@ -36,9 +41,16 @@ const handleClick = () => {
     startRemainder: startRemainder.value,
     whoStarted: whoStarted.value,
     legs: legs.value,
-    sets: sets.value
+    sets: sets.value,
+    isSets: isSets.value,
+    isPercentDoubleP1: isPercentDoubleP1.value,
+    isPercentDoubleP2: isPercentDoubleP2.value
   };
   emit('startGame', gameParameters);
+};
+
+const handleChange = () => {
+  if (!isSets.value) sets.value = 1;
 };
 </script>
 
@@ -94,17 +106,41 @@ const handleClick = () => {
           v-model="whoStarted"
         />
       </div>
+      <div class="game-setup__is-percent-double is-percent-double">
+        <input
+          class="is-percent-double__value"
+          type="checkbox"
+          v-model="isPercentDoubleP1"
+        />
+        <h3
+          class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
+        >
+          Подсчитывать процент удвоений
+        </h3>
+        <input
+          class="is-percent-double__value"
+          type="checkbox"
+          v-model="isPercentDoubleP2"
+        />
+      </div>
       <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
       <div class="game-setup__sets-legs sets-legs">
-        <label class="sets-legs__parameter">
+        <label class="sets-legs__parameter sets-legs__value_margin_right">
           Сетов
           <input
-            class="sets-legs__value sets-legs__value_margin_right"
+            class="sets-legs__value"
             type="number"
             min="1"
             v-model="sets"
             @input="handleInput('Sets', $event)"
             @blur="handleBlur('Sets')"
+            :disabled="!isSets"
+          />
+          <input
+            class="sets-legs__is-disabled"
+            type="checkbox"
+            v-model="isSets"
+            @change="handleChange"
           />
         </label>
         <label class="sets-legs__parameter">
@@ -198,6 +234,14 @@ const handleClick = () => {
     margin-top: 16px;
   }
 
+  &__is-percent-double {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+  }
+
   &__sets-legs {
     display: flex;
     flex-direction: row;
@@ -271,18 +315,19 @@ const handleClick = () => {
   width: 20px;
   height: 20px;
   outline: none;
-  border: 1px solid black;
+  border: 1px solid white;
   border-radius: 50%;
   background-color: rgb(221, 231, 231);
   transition: background-color 0.3s linear, border 0.3s linear;
 
+  &:checked {
+    background-color: rgb(66, 63, 63);
+    border: 1px solid rgb(66, 63, 63);
+  }
+
   &:focus {
     border: 1px solid white;
   }
-}
-
-.who-starts__radio-button:checked {
-  background-color: rgb(66, 63, 63);
 }
 
 .sets-legs__value {
@@ -298,9 +343,44 @@ const handleClick = () => {
   &:focus {
     border: 1px solid black;
   }
+
+  &:disabled {
+    opacity: 50%;
+  }
 }
 
 .sets-legs__value_margin_right {
   margin-right: 128px;
+}
+
+.is-percent-double__value,
+.sets-legs__is-disabled {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  outline: none;
+  border: 1px solid white;
+  border-radius: 4px;
+  background: rgb(232, 238, 233);
+  transition: background 0.3s linear, border 0.3s linear;
+
+  &:checked {
+    background: rgb(66, 63, 63) url('/src/assets/images/check.svg');
+    border: 1px solid rgb(66, 63, 63);
+  }
+
+  &:focus {
+    border: 1px solid rgb(66, 63, 63);
+  }
+
+  &:checked:focus {
+    border: 1px solid white;
+  }
+}
+
+.sets-legs__is-disabled {
+  margin-left: 8px;
 }
 </style>
