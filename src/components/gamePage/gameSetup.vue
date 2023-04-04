@@ -17,7 +17,6 @@ const handleInput = (what, event) => {
   }
 };
 
-
 const handleBlur = (what) => {
   switch (what) {
     case 'Игрок 1':
@@ -49,23 +48,58 @@ const handleClick = () => {
   emit('startGame', gameParameters);
 };
 
-const handleChange = () => {
+const handleChange = (event) => {
   if (!isSets.value) sets.value = 1;
+  if (isSets.value) event.currentTarget.previousElementSibling.focus();
+};
+
+const isOpenRem = ref(false);
+const setStRem = (value) => {
+  startRemainder.value = value;
+  isOpenRem.value = false;
 };
 </script>
 
 <template>
-  <div class="dialog-content-wrapper">
+  <div class="dialog-content-wrapper" @click="isOpenRem = false">
     <div class="game-setup">
       <h1 class="game-setup__header">Настройка параметров матча</h1>
       <h3 class="game-setup__parameter-header">Формат матча</h3>
-      <select
-        v-model="startRemainder"
-        class="game-setup__start-remainder start-remainder"
-      >
-        <option class="start-remainder__value" :value="501">501</option>
-        <option class="start-remainder__value" :value="1001">1001</option>
-      </select>
+      <div class="game-setup__start-remainder">
+        <div
+          class="start-remainder__header"
+          tabindex="0"
+          @click.stop="isOpenRem = true"
+          @keyup.enter="isOpenRem = true"
+        >
+          {{ startRemainder }}
+          <img
+            class="arrow-down-icon"
+            src="/src/assets/images/arr_down.svg"
+            alt="open"
+          />
+        </div>
+        <div class="start-remainder__values" v-show="isOpenRem"
+        @click.stop=""
+        >
+          <div
+            class="start-remainder__value"
+            tabindex="0"
+            @click="setStRem(501)"
+            @keyup.enter="setStRem(501)"
+          >
+            501
+          </div>
+          <div
+            class="start-remainder__value"
+            tabindex="0"
+            @click="setStRem(1001)"
+            @keyup.enter="setStRem(1001)"
+          >
+            1001
+          </div>
+        </div>
+      </div>
       <h3 class="game-setup__parameter-header">Имена игроков</h3>
       <div class="game-setup__player-names player-names">
         <input
@@ -111,6 +145,7 @@ const handleChange = () => {
           class="is-percent-double__value"
           type="checkbox"
           v-model="isPercentDoubleP1"
+          @keyup.enter="isPercentDoubleP1 = !isPercentDoubleP1"
         />
         <h3
           class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
@@ -121,6 +156,7 @@ const handleChange = () => {
           class="is-percent-double__value"
           type="checkbox"
           v-model="isPercentDoubleP2"
+          @keyup.enter="isPercentDoubleP2 = !isPercentDoubleP2"
         />
       </div>
       <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
@@ -141,6 +177,7 @@ const handleChange = () => {
             type="checkbox"
             v-model="isSets"
             @change="handleChange"
+            @keyup.enter="isSets=!isSets"
           />
         </label>
         <label class="sets-legs__parameter">
@@ -206,18 +243,6 @@ const handleChange = () => {
 
   &__start-remainder {
     align-self: center;
-    width: 180px;
-    padding: 4px;
-    outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    font: inherit;
-    text-align: center;
-    background-color: rgb(221, 231, 231);
-
-    &:focus {
-      border: 1px solid black;
-    }
   }
 
   &__player-names {
@@ -251,8 +276,8 @@ const handleChange = () => {
   &__start-game-button {
     align-self: center;
     width: 450px;
-    padding: 8px;
     margin-top: 64px;
+    padding: 8px;
     outline: none;
     border: none;
     border-radius: 8px;
@@ -272,18 +297,59 @@ const handleChange = () => {
   }
 }
 
-.start-remainder__value {
-  font: inherit;
-  text-align: center;
-  background-color: rgb(221, 231, 231);
+.start-remainder {
+  &__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    padding: 8px;
+    padding-right: 16px;
+    outline: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font: inherit;
+    text-align: center;
+    cursor: default;
+    background-color: rgb(221, 231, 231);
+
+    &:focus {
+      border: 1px solid black;
+    }
+  }
+
+  &__values {
+    position: absolute;
+    z-index: 2;
+    border-radius: 4px;
+    background-color: rgb(208, 216, 216);
+  }
+
+  &__value {
+    width: 180px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 8px;
+    outline: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font: inherit;
+    text-align: center;
+    cursor: default;
+    background-color: rgb(221, 231, 231);
+
+    &:hover,
+    &:focus {
+      background-color: rgb(146, 188, 214);
+    }
+  }
 }
 
-.start-remainder__value:focus {
-  background-color: red;
-}
-
-.start-remainder__value:hover {
-  background-color: red;
+.arrow-down-icon {
+  position: absolute;
+  right: 0;
+  width: 24px;
+  height: 24px;
 }
 
 .player-names__name {
@@ -351,33 +417,6 @@ const handleChange = () => {
 
 .sets-legs__value_margin_right {
   margin-right: 128px;
-}
-
-.is-percent-double__value,
-.sets-legs__is-disabled {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  outline: none;
-  border: 1px solid white;
-  border-radius: 4px;
-  background: rgb(232, 238, 233);
-  transition: background 0.3s linear, border 0.3s linear;
-
-  &:checked {
-    background: rgb(66, 63, 63) url('/src/assets/images/check.svg');
-    border: 1px solid rgb(66, 63, 63);
-  }
-
-  &:focus {
-    border: 1px solid rgb(66, 63, 63);
-  }
-
-  &:checked:focus {
-    border: 1px solid white;
-  }
 }
 
 .sets-legs__is-disabled {

@@ -71,28 +71,41 @@ const handleKeyup = (event) => {
     @keyup.esc="$emit('closeStatisticVisibility')"
   >
     <div class="control-seen-elements">
-      <img
-        class="control-seen-elements__icon"
-        src="/src/assets/images/done.svg"
+      <button
+        class="control-seen-elements__select-all"
         title="Выделить все"
         @click="$emit('selectAll')"
-        alt="выделить"
-      />
-      <img
-        class="control-seen-elements__icon"
-        src="/src/assets/images/remove_done.svg"
+      >
+        <img
+          class="control-seen-elements__icon"
+          src="/src/assets/images/done.svg"
+          alt="выделить"
+        />
+      </button>
+      <button
+        class="control-seen-elements__select-all"
         title="Снять выделение"
         @click="$emit('removeSelection')"
-        alt="снять"
-      />
+      >
+        <img
+          class="control-seen-elements__icon"
+          src="/src/assets/images/remove_done.svg"
+          alt="снять"
+        />
+      </button>
     </div>
-    <img
+    <button
       class="statistic__setup-visibility"
-      src="/src/assets/images/close.svg"
       @click="$emit('closeStatisticVisibility')"
       title="Закрыть настройку видимости параметров"
-      alt="закрыть"
-    />
+    >
+      <img
+        class="statistic__icon"
+        src="/src/assets/images/close.svg"
+        alt="закрыть"
+      />
+    </button>
+
     <div class="statistic__average statistic-average">
       <h4 class="statistic__group-header statistic__group-header_margin-bottom">
         Средний набор
@@ -105,7 +118,8 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenAveragePointsGame', checked)
           "
           data-parameter-name="seenAveragePointsGame"
-        />
+          :isSets="true"
+        /><!--плохой вариант с true-->
         <CheckboxVisibility
           parameterName="сет"
           :parameterVisibility="seenAveragePointsSet"
@@ -114,6 +128,7 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenAveragePointsSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="лег"
@@ -122,6 +137,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenAveragePointsLeg', checked)
           "
           data-parameter-name="seenAveragePointsLeg"
+          :isSets="props.isSets"
         />
       </div>
       <div class="statistic-average__nine-darts">
@@ -133,6 +149,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenAverageFirstNineDartsGame', checked)
           "
           data-parameter-name="seenAverageFirstNineDartsGame"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="сет"
@@ -142,6 +159,7 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenAverageFirstNineDartsSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
       </div>
       <div class="statistic-average__win-legs">
@@ -153,6 +171,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenAveragePointsWinLegsGame', checked)
           "
           data-parameter-name="seenAveragePointsWinLegsGame"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="сет"
@@ -162,6 +181,7 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenAveragePointsWinLegsSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
       </div>
       <div class="statistic-average__lose-legs">
@@ -173,6 +193,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenAveragePointsLoseLegsGame', checked)
           "
           data-parameter-name="seenAveragePointsLoseLegsGame"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="сет"
@@ -182,13 +203,14 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenAveragePointsLoseLegsSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
       </div>
     </div>
     <div class="statistic__points statistic-points">
       <h4 class="statistic__group-header">Очки</h4>
       <div class="statistic-points__game-points">
-        <h5 class="statistic__parameter-header">матч</h5>
+        <h5 class="statistic__parameter-header" v-if="props.isSets">матч</h5>
         <CheckboxVisibility
           parameterName="180"
           :parameterVisibility="seenP180Game"
@@ -196,6 +218,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP180Game', checked)
           "
           data-parameter-name="seenP180Game"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="171+"
@@ -204,6 +227,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP171Game', checked)
           "
           data-parameter-name="seenP171Game"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="131+"
@@ -212,6 +236,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP131Game', checked)
           "
           data-parameter-name="seenP131Game"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="96+"
@@ -220,6 +245,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP96Game', checked)
           "
           data-parameter-name="seenP96Game"
+          :isSets="props.isSets"
         />
       </div>
       <div class="statistic-points__set-points" v-if="props.isSets">
@@ -231,6 +257,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP180Set', checked)
           "
           data-parameter-name="seenP180Set"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="171+"
@@ -239,6 +266,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP171Set', checked)
           "
           data-parameter-name="seenP171Set"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="131+"
@@ -247,6 +275,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP131Set', checked)
           "
           data-parameter-name="seenP131Set"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="96+"
@@ -255,6 +284,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenP96Set', checked)
           "
           data-parameter-name="seenP96Set"
+          :isSets="props.isSets"
         />
       </div>
     </div>
@@ -269,6 +299,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenPercentDoubleGame', checked)
           "
           data-parameter-name="seenPercentDoubleGame"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="сет"
@@ -278,6 +309,7 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenPercentDoubleSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
       </div>
       <div class="statistic-closing__highest">
@@ -289,6 +321,7 @@ const handleKeyup = (event) => {
             (checked) => $emit('update:seenHighestCheckoutGame', checked)
           "
           data-parameter-name="seenHighestCheckoutGame"
+          :isSets="props.isSets"
         />
         <CheckboxVisibility
           parameterName="сет"
@@ -298,6 +331,7 @@ const handleKeyup = (event) => {
           "
           data-parameter-name="seenHighestCheckoutSet"
           v-if="props.isSets"
+          :isSets="props.isSets"
         />
       </div>
     </div>
@@ -310,10 +344,24 @@ const handleKeyup = (event) => {
   left: 4px;
   top: 4px;
   display: flex;
+
+  &__select-all {
+    display: block;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+
+    &:focus {
+      border: 1px solid black;
+    }
+  }
+
   &__icon {
+    display: block;
     width: 24px;
     height: 24px;
-    cursor: pointer;
   }
 }
 </style>

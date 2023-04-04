@@ -1,6 +1,6 @@
 <script setup>
 import StatisticVisibility from './components/statisticVisibility.vue';
-import { SeenParameters, SeenGroups } from './seenClases.js'
+import { SeenParameters, SeenGroups } from './seenClases.js';
 import { ref } from 'vue';
 const props = defineProps({
   gameStatistic: Object,
@@ -13,7 +13,9 @@ const props = defineProps({
 const seenSetupVisisbility = ref(false);
 const seenAveragePointsLeg = ref(true);
 const seenParametersGame = new SeenParameters(true, props.isPercentDouble);
-const seenParametersSet = props.isSets ? new SeenParameters(true, props.isPercentDouble) : new SeenParameters(false, props.isPercentDouble);
+const seenParametersSet = props.isSets
+  ? new SeenParameters(true, props.isPercentDouble)
+  : new SeenParameters(false, props.isPercentDouble);
 const seenGroups = new SeenGroups(
   seenParametersGame,
   seenParametersSet,
@@ -22,15 +24,13 @@ const seenGroups = new SeenGroups(
 
 const selectAll = () => {
   seenParametersGame.selectAll();
-  if (props.isSets)
-    seenParametersSet.selectAll();
+  if (props.isSets) seenParametersSet.selectAll();
   seenAveragePointsLeg.value = true;
 };
 
 const removeSelection = () => {
   seenParametersGame.removeSelection();
-  if (props.isSets)
-    seenParametersSet.removeSelection();
+  if (props.isSets) seenParametersSet.removeSelection();
   seenAveragePointsLeg.value = false;
 };
 </script>
@@ -38,13 +38,17 @@ const removeSelection = () => {
 <template>
   <div class="points-information__statistic statistic">
     <div class="statistic__player-statistic" v-show="!seenSetupVisisbility">
-      <img
+      <button
         class="statistic__setup-visibility"
-        src="/src/assets/images/menu.svg"
         @click="seenSetupVisisbility = true"
         title="Настроить видимость параметров"
-        alt="меню"
-      />
+      >
+        <img
+          class="statistic__icon"
+          src="/src/assets/images/menu.svg"
+          alt="меню"
+        />
+      </button>
       <div
         class="statistic__average statistic-average"
         v-if="seenGroups.averagePoints.value"
@@ -59,16 +63,19 @@ const removeSelection = () => {
             class="statistic__values"
             v-if="seenParametersGame.averagePoints.value"
           >
-            матч<br />{{ props.gameStatistic.averagePoints.value.toFixed(2) }}
+            <h6 class="statistic__value-header">матч</h6>
+            {{ props.gameStatistic.averagePoints.value.toFixed(2) }}
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.averagePoints.value"
           >
-            сет<br />{{ props.setStatistic.averagePoints.value.toFixed(2) }}
+            <h6 class="statistic__value-header">сет</h6>
+            {{ props.setStatistic.averagePoints.value.toFixed(2) }}
           </div>
           <div class="statistic__values" v-if="seenAveragePointsLeg">
-            лег<br />{{ props.averagePointsLeg.toFixed(2) }}
+            <h6 class="statistic__value-header">лег</h6>
+            {{ props.averagePointsLeg.toFixed(2) }}
           </div>
         </div>
         <div
@@ -80,14 +87,14 @@ const removeSelection = () => {
             class="statistic__values"
             v-if="seenParametersGame.averageFirstNineDarts.value"
           >
-            матч<br />
+            <h6 class="statistic__value-header" v-if="props.isSets">матч</h6>
             {{ props.gameStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.averageFirstNineDarts.value"
           >
-            сет<br />
+          <h6 class="statistic__value-header">сет</h6>
             {{ props.setStatistic.averageFirstNineDarts.value.toFixed(2) }}
           </div>
         </div>
@@ -100,14 +107,14 @@ const removeSelection = () => {
             class="statistic__values"
             v-if="seenParametersGame.averagePointsWinLegs.value"
           >
-            матч<br />
+          <h6 class="statistic__value-header" v-if="props.isSets">матч</h6>
             {{ props.gameStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.averagePointsWinLegs.value"
           >
-            сет<br />
+          <h6 class="statistic__value-header">сет</h6>
             {{ props.setStatistic.averagePointsWinLegs.value.toFixed(2) }}
           </div>
         </div>
@@ -120,14 +127,14 @@ const removeSelection = () => {
             class="statistic__values"
             v-if="seenParametersGame.averagePointsLoseLegs.value"
           >
-            матч<br />
+          <h6 class="statistic__value-header" v-if="props.isSets">матч</h6>
             {{ props.gameStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.averagePointsLoseLegs.value"
           >
-            сет<br />
+          <h6 class="statistic__value-header">сет</h6>
             {{ props.setStatistic.averagePointsLoseLegs.value.toFixed(2) }}
           </div>
         </div>
@@ -141,18 +148,18 @@ const removeSelection = () => {
           class="statistic-points__game-points"
           v-if="seenParametersGame.points.value"
         >
-          <h5 class="statistic__parameter-header">матч</h5>
+          <h5 class="statistic__parameter-header" v-if="props.isSets">матч</h5>
           <div class="statistic__values" v-if="seenParametersGame.p180.value">
-            180<br />{{ props.gameStatistic.p180.value }}
+            <h6 class="statistic__value-header">180</h6>{{ props.gameStatistic.p180.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersGame.p171.value">
-            171+<br />{{ props.gameStatistic.p171.value }}
+            <h6 class="statistic__value-header">171+</h6>{{ props.gameStatistic.p171.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersGame.p131.value">
-            131+<br />{{ props.gameStatistic.p131.value }}
+            <h6 class="statistic__value-header">131+</h6>{{ props.gameStatistic.p131.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersGame.p96.value">
-            96+<br />{{ props.gameStatistic.p96.value }}
+            <h6 class="statistic__value-header">96+</h6>{{ props.gameStatistic.p96.value }}
           </div>
         </div>
         <div
@@ -161,16 +168,16 @@ const removeSelection = () => {
         >
           <h5 class="statistic__parameter-header">сет</h5>
           <div class="statistic__values" v-if="seenParametersSet.p180.value">
-            180<br />{{ props.setStatistic.p180.value }}
+            <h6 class="statistic__value-header">180</h6>{{ props.setStatistic.p180.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersSet.p171.value">
-            171+<br />{{ props.setStatistic.p171.value }}
+            <h6 class="statistic__value-header">171+</h6>{{ props.setStatistic.p171.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersSet.p131.value">
-            131+<br />{{ props.setStatistic.p131.value }}
+            <h6 class="statistic__value-header">131+</h6>{{ props.setStatistic.p131.value }}
           </div>
           <div class="statistic__values" v-if="seenParametersSet.p96.value">
-            96+<br />{{ props.setStatistic.p96.value }}
+            <h6 class="statistic__value-header">96+</h6>{{ props.setStatistic.p96.value }}
           </div>
         </div>
       </div>
@@ -179,20 +186,23 @@ const removeSelection = () => {
         v-if="seenGroups.closing.value"
       >
         <h4 class="statistic__group-header">Закрытия</h4>
-        <div class="statistic-closing__double" v-if="seenGroups.double.value && props.isPercentDouble">
+        <div
+          class="statistic-closing__double"
+          v-if="seenGroups.double.value && props.isPercentDouble"
+        >
           <h5 class="statistic__parameter-header">% удвоений</h5>
           <div
             class="statistic__values"
             v-if="seenParametersGame.percentDouble.value"
           >
-            матч<br />
+          <h6 class="statistic__value-header" v-if="props.isSets">матч</h6>
             {{ props.gameStatistic.percentDouble.value.toFixed(2) }} %
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.percentDouble.value"
           >
-            сет<br />
+          <h6 class="statistic__value-header">сет</h6>
             {{ props.setStatistic.percentDouble.value.toFixed(2) }} %
           </div>
         </div>
@@ -202,14 +212,14 @@ const removeSelection = () => {
             class="statistic__values"
             v-if="seenParametersGame.highestCheckout.value"
           >
-            матч<br />
+          <h6 class="statistic__value-header" v-if="props.isSets">матч</h6>
             {{ props.gameStatistic.highestCheckout.value }}
           </div>
           <div
             class="statistic__values"
             v-if="seenParametersSet.highestCheckout.value"
           >
-            сет<br />
+          <h6 class="statistic__value-header">сет</h6>
             {{ props.setStatistic.highestCheckout.value }}
           </div>
         </div>
@@ -307,13 +317,21 @@ const removeSelection = () => {
     align-self: flex-end;
     top: 4px;
     margin-right: -12px;
-    width: 24px;
-    height: 24px;
     cursor: pointer;
+    outline: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: transparent;
+
+    &:focus {
+      border: 1px solid black;
+    }
   }
 
-  &__visibility {
-    min-height: 80vh;
+  &__icon {
+    display: block;
+    width: 24px;
+    height: 24px;
   }
 
   &__average,
@@ -346,6 +364,10 @@ const removeSelection = () => {
   &__values {
     font-size: 24px;
     text-align: center;
+  }
+
+  &__value-header {
+    font: inherit;
   }
 }
 
