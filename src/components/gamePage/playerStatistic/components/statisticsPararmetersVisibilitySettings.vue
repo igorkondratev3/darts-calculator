@@ -5,62 +5,24 @@ const props = defineProps({
   seenSetupVisisbility: Boolean,
   areSetsInGame: Boolean,
   isPercentDouble: Boolean,
-
   seenAveragePointsLeg: Boolean,
-
-  seenAveragePointsGame: Boolean,
-  seenAverageFirstNineDartsGame: Boolean,
-  seenAveragePointsWinLegsGame: Boolean,
-  seenAveragePointsLoseLegsGame: Boolean,
-  seenP180Game: Boolean,
-  seenP171Game: Boolean,
-  seenP131Game: Boolean,
-  seenP96Game: Boolean,
-  seenPercentDoubleGame: Boolean,
-  seenHighestCheckoutGame: Boolean,
-  
-  seenAveragePointsSet: Boolean,
-  seenAverageFirstNineDartsSet: Boolean,
-  seenAveragePointsWinLegsSet: Boolean,
-  seenAveragePointsLoseLegsSet: Boolean,
-  seenP180Set: Boolean,
-  seenP171Set: Boolean,
-  seenP131Set: Boolean,
-  seenP96Set: Boolean,
-  seenPercentDoubleSet: Boolean,
-  seenHighestCheckoutSet: Boolean
+  seenParametersGame: Object,
+  seenParametersSet: Object
 });
 const emits = defineEmits([
-  'closeStatisticVisibility',
-  'update:seenAveragePointsGame',
-  'update:seenAveragePointsSet',
-  'update:seenAveragePointsLeg',
-  'update:seenAverageFirstNineDartsGame',
-  'update:seenAverageFirstNineDartsSet',
-  'update:seenAveragePointsWinLegsGame',
-  'update:seenAveragePointsWinLegsSet',
-  'update:seenAveragePointsLoseLegsGame',
-  'update:seenAveragePointsLoseLegsSet',
-  'update:seenP180Game',
-  'update:seenP171Game',
-  'update:seenP131Game',
-  'update:seenP96Game',
-  'update:seenP180Set',
-  'update:seenP171Set',
-  'update:seenP131Set',
-  'update:seenP96Set',
-  'update:seenPercentDoubleGame',
-  'update:seenPercentDoubleSet',
-  'update:seenHighestCheckoutGame',
-  'update:seenHighestCheckoutSet',
+  'closeStatisticsPararmetersVisibilitySettings',
   'selectAll',
-  'removeSelection'
+  'removeSelection',
+  'update:seenAveragePointsLeg',
+  'update:parameterVisibility'
 ]);
 
 const handleKeyup = (event) => {
   if (event.target.type === 'checkbox')
     emits(
-      `update:${event.target.dataset.parameterName}`,
+      'update:parameterVisibility',
+      event.target.dataset.groupName,
+      event.target.dataset.parameterName,
       !event.target.checked
     );
 };
@@ -71,7 +33,7 @@ const handleKeyup = (event) => {
     class="statistic__player-statistic statistic__visibility"
     v-show="seenSetupVisisbility"
     @keyup.enter="handleKeyup"
-    @keyup.esc="$emit('closeStatisticVisibility')"
+    @keyup.esc="$emit('closeStatisticsPararmetersVisibilitySettings')"
   >
     <div class="control-seen-elements">
       <button
@@ -99,7 +61,7 @@ const handleKeyup = (event) => {
     </div>
     <button
       class="statistic__setup-visibility"
-      @click="$emit('closeStatisticVisibility')"
+      @click="$emit('closeStatisticsPararmetersVisibilitySettings')"
       title="Закрыть настройку видимости параметров"
     >
       <img
@@ -115,52 +77,85 @@ const handleKeyup = (event) => {
       </h4>
       <div class="statistic-average__points">
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenAveragePointsGame"
+          parameterGroup="матч"
+          :parameterVisibility="props.seenParametersGame.averagePoints.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsGame', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'averagePoints',
+                checked
+              )
           "
-          data-parameter-name="seenAveragePointsGame"
+          data-group-name="game"
+          data-parameter-name="averagePoints"
           :areSetsInGame="true"
         /><!--плохой вариант с true-->
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenAveragePointsSet"
+          parameterGroup="сет"
+          :parameterVisibility="props.seenParametersSet.averagePoints.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsSet', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'averagePoints',
+                checked
+              )
           "
-          data-parameter-name="seenAveragePointsSet"
+          data-group-name="set"
+          data-parameter-name="averagePoints"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="лег"
+          parameterGroup="лег"
           :parameterVisibility="seenAveragePointsLeg"
           @update:parameterVisibility="
             (checked) => $emit('update:seenAveragePointsLeg', checked)
           "
-          data-parameter-name="seenAveragePointsLeg"
+          data-group-name="leg"
+          data-parameter-name="averagePoints"
           :areSetsInGame="props.areSetsInGame"
         />
       </div>
       <div class="statistic-average__nine-darts">
         <h5 class="statistic__parameter-header">9 дротиков</h5>
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenAverageFirstNineDartsGame"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAverageFirstNineDartsGame', checked)
+          parameterGroup="матч"
+          :parameterVisibility="
+            props.seenParametersGame.averageFirstNineDarts.value
           "
-          data-parameter-name="seenAverageFirstNineDartsGame"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'averageFirstNineDarts',
+                checked
+              )
+          "
+          data-group-name="game"
+          data-parameter-name="averageFirstNineDarts"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenAverageFirstNineDartsSet"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAverageFirstNineDartsSet', checked)
+          parameterGroup="сет"
+          :parameterVisibility="
+            props.seenParametersSet.averageFirstNineDarts.value
           "
-          data-parameter-name="seenAverageFirstNineDartsSet"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'averageFirstNineDarts',
+                checked
+              )
+          "
+          data-group-name="set"
+          data-parameter-name="averageFirstNineDarts"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />
@@ -168,21 +163,39 @@ const handleKeyup = (event) => {
       <div class="statistic-average__win-legs">
         <h5 class="statistic__parameter-header">выигранные леги</h5>
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenAveragePointsWinLegsGame"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsWinLegsGame', checked)
+          parameterGroup="матч"
+          :parameterVisibility="
+            props.seenParametersGame.averagePointsWinLegs.value
           "
-          data-parameter-name="seenAveragePointsWinLegsGame"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'averagePointsWinLegs',
+                checked
+              )
+          "
+          data-group-name="game"
+          data-parameter-name="averagePointsWinLegs"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenAveragePointsWinLegsSet"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsWinLegsSet', checked)
+          parameterGroup="сет"
+          :parameterVisibility="
+            props.seenParametersSet.averagePointsWinLegs.value
           "
-          data-parameter-name="seenAveragePointsWinLegsSet"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'averagePointsWinLegs',
+                checked
+              )
+          "
+          data-group-name="set"
+          data-parameter-name="averagePointsWinLegs"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />
@@ -190,21 +203,39 @@ const handleKeyup = (event) => {
       <div class="statistic-average__lose-legs">
         <h5 class="statistic__parameter-header">проигранные леги</h5>
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenAveragePointsLoseLegsGame"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsLoseLegsGame', checked)
+          parameterGroup="матч"
+          :parameterVisibility="
+            props.seenParametersGame.averagePointsLoseLegs.value
           "
-          data-parameter-name="seenAveragePointsLoseLegsGame"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'averagePointsLoseLegs',
+                checked
+              )
+          "
+          data-group-name="game"
+          data-parameter-name="averagePointsLoseLegs"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenAveragePointsLoseLegsSet"
-          @update:parameterVisibility="
-            (checked) => $emit('update:seenAveragePointsLoseLegsSet', checked)
+          parameterGroup="сет"
+          :parameterVisibility="
+            props.seenParametersSet.averagePointsLoseLegs.value
           "
-          data-parameter-name="seenAveragePointsLoseLegsSet"
+          @update:parameterVisibility="
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'averagePointsLoseLegs',
+                checked
+              )
+          "
+          data-group-name="set"
+          data-parameter-name="averagePointsLoseLegs"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />
@@ -213,80 +244,98 @@ const handleKeyup = (event) => {
     <div class="statistic__points statistic-points">
       <h4 class="statistic__group-header">Очки</h4>
       <div class="statistic-points__game-points">
-        <h5 class="statistic__parameter-header" v-if="props.areSetsInGame">матч</h5>
+        <h5 class="statistic__parameter-header" v-if="props.areSetsInGame">
+          матч
+        </h5>
         <ParameterVisibilitySetting
-          parameterName="180"
-          :parameterVisibility="seenP180Game"
+          parameterGroup="180"
+          :parameterVisibility="props.seenParametersGame.p180.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP180Game', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'game', 'p180', checked)
           "
-          data-parameter-name="seenP180Game"
+          data-group-name="game"
+          data-parameter-name="p180"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="171+"
-          :parameterVisibility="seenP171Game"
+          parameterGroup="171+"
+          :parameterVisibility="props.seenParametersGame.p171.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP171Game', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'game', 'p171', checked)
           "
-          data-parameter-name="seenP171Game"
+          data-group-name="game"
+          data-parameter-name="p171"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="131+"
-          :parameterVisibility="seenP131Game"
+          parameterGroup="131+"
+          :parameterVisibility="props.seenParametersGame.p131.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP131Game', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'game', 'p131', checked)
           "
-          data-parameter-name="seenP131Game"
+          data-group-name="game"
+          data-parameter-name="p131"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="96+"
-          :parameterVisibility="seenP96Game"
+          parameterGroup="96+"
+          :parameterVisibility="props.seenParametersGame.p96.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP96Game', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'game', 'p96', checked)
           "
-          data-parameter-name="seenP96Game"
+          data-group-name="game"
+          data-parameter-name="p96"
           :areSetsInGame="props.areSetsInGame"
         />
       </div>
       <div class="statistic-points__set-points" v-if="props.areSetsInGame">
         <h5 class="statistic__parameter-header">сет</h5>
         <ParameterVisibilitySetting
-          parameterName="180"
-          :parameterVisibility="seenP180Set"
+          parameterGroup="180"
+          :parameterVisibility="props.seenParametersSet.p180.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP180Set', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'set', 'p180', checked)
           "
-          data-parameter-name="seenP180Set"
+          data-group-name="set"
+          data-parameter-name="p180"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="171+"
-          :parameterVisibility="seenP171Set"
+          parameterGroup="171+"
+          :parameterVisibility="props.seenParametersSet.p171.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP171Set', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'set', 'p171', checked)
           "
-          data-parameter-name="seenP171Set"
+          data-group-name="set"
+          data-parameter-name="p171"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="131+"
-          :parameterVisibility="seenP131Set"
+          parameterGroup="131+"
+          :parameterVisibility="props.seenParametersSet.p131.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP131Set', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'set', 'p131', checked)
           "
-          data-parameter-name="seenP131Set"
+          data-group-name="set"
+          data-parameter-name="p131"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="96+"
-          :parameterVisibility="seenP96Set"
+          parameterGroup="96+"
+          :parameterVisibility="props.seenParametersSet.p96.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenP96Set', checked)
+            (checked) =>
+              $emit('update:parameterVisibility', 'set', 'p96', checked)
           "
-          data-parameter-name="seenP96Set"
+          data-group-name="set"
+          data-parameter-name="p96"
           :areSetsInGame="props.areSetsInGame"
         />
       </div>
@@ -296,21 +345,35 @@ const handleKeyup = (event) => {
       <div class="statistic-closing__double" v-if="props.isPercentDouble">
         <h5 class="statistic__parameter-header">% удвоений</h5>
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenPercentDoubleGame"
+          parameterGroup="матч"
+          :parameterVisibility="props.seenParametersGame.percentDouble.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenPercentDoubleGame', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'percentDouble',
+                checked
+              )
           "
-          data-parameter-name="seenPercentDoubleGame"
+          data-group-name="game"
+          data-parameter-name="percentDouble"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenPercentDoubleSet"
+          parameterGroup="сет"
+          :parameterVisibility="props.seenParametersSet.percentDouble.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenPercentDoubleSet', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'percentDouble',
+                checked
+              )
           "
-          data-parameter-name="seenPercentDoubleSet"
+          data-group-name="set"
+          data-parameter-name="percentDouble"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />
@@ -318,21 +381,35 @@ const handleKeyup = (event) => {
       <div class="statistic-closing__highest">
         <h5 class="statistic__parameter-header">наибольшее</h5>
         <ParameterVisibilitySetting
-          parameterName="матч"
-          :parameterVisibility="seenHighestCheckoutGame"
+          parameterGroup="матч"
+          :parameterVisibility="props.seenParametersGame.highestCheckout.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenHighestCheckoutGame', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'game',
+                'highestCheckout',
+                checked
+              )
           "
-          data-parameter-name="seenHighestCheckoutGame"
+          data-group-name="game"
+          data-parameter-name="highestCheckout"
           :areSetsInGame="props.areSetsInGame"
         />
         <ParameterVisibilitySetting
-          parameterName="сет"
-          :parameterVisibility="seenHighestCheckoutSet"
+          parameterGroup="сет"
+          :parameterVisibility="props.seenParametersSet.highestCheckout.value"
           @update:parameterVisibility="
-            (checked) => $emit('update:seenHighestCheckoutSet', checked)
+            (checked) =>
+              $emit(
+                'update:parameterVisibility',
+                'set',
+                'highestCheckout',
+                checked
+              )
           "
-          data-parameter-name="seenHighestCheckoutSet"
+          data-group-name="set"
+          data-parameter-name="highestCheckout"
           v-if="props.areSetsInGame"
           :areSetsInGame="props.areSetsInGame"
         />

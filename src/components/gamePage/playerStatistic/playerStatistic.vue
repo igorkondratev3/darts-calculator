@@ -33,6 +33,16 @@ const removeSelection = () => {
   if (props.areSetsInGame) seenParametersSet.removeSelection();
   seenAveragePointsLeg.value = false;
 };
+
+const changeParameterSeen = (groupName, parameterName, value) => {
+  if (groupName === 'game')
+    seenParametersGame[parameterName].value = value;
+  if (groupName === 'set')
+    seenParametersSet[parameterName].value = value;
+  if (groupName === 'leg')
+    seenAveragePointsLeg.value = value;
+
+}
 </script>
 
 <template>
@@ -254,39 +264,12 @@ const removeSelection = () => {
       "
       @selectAll="selectAll"
       @removeSelection="removeSelection"
+
+      :seenParametersGame="seenParametersGame"
+      :seenParametersSet="seenParametersSet"
+      @update:parameterVisibility="changeParameterSeen"
+      
       v-model:seenAveragePointsLeg="seenAveragePointsLeg"
-      v-model:seenAveragePointsGame="seenParametersGame.averagePoints.value"
-      v-model:seenAverageFirstNineDartsGame="
-        seenParametersGame.averageFirstNineDarts.value
-      "
-      v-model:seenAveragePointsWinLegsGame="
-        seenParametersGame.averagePointsWinLegs.value
-      "
-      v-model:seenAveragePointsLoseLegsGame="
-        seenParametersGame.averagePointsLoseLegs.value
-      "
-      v-model:seenP180Game="seenParametersGame.p180.value"
-      v-model:seenP171Game="seenParametersGame.p171.value"
-      v-model:seenP131Game="seenParametersGame.p131.value"
-      v-model:seenP96Game="seenParametersGame.p96.value"
-      v-model:seenPercentDoubleGame="seenParametersGame.percentDouble.value"
-      v-model:seenHighestCheckoutGame="seenParametersGame.highestCheckout.value"
-      v-model:seenAveragePointsSet="seenParametersSet.averagePoints.value"
-      v-model:seenAverageFirstNineDartsSet="
-        seenParametersSet.averageFirstNineDarts.value
-      "
-      v-model:seenAveragePointsWinLegsSet="
-        seenParametersSet.averagePointsWinLegs.value
-      "
-      v-model:seenAveragePointsLoseLegsSet="
-        seenParametersSet.averagePointsLoseLegs.value
-      "
-      v-model:seenP180Set="seenParametersSet.p180.value"
-      v-model:seenP171Set="seenParametersSet.p171.value"
-      v-model:seenP131Set="seenParametersSet.p131.value"
-      v-model:seenP96Set="seenParametersSet.p96.value"
-      v-model:seenPercentDoubleSet="seenParametersSet.percentDouble.value"
-      v-model:seenHighestCheckoutSet="seenParametersSet.highestCheckout.value"
     />
   </div>
 </template>

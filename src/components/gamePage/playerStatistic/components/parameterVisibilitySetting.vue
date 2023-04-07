@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   parameterVisibility: Boolean,
-  parameterName: String,
+  parameterGroup: String,
   areSetsInGame: Boolean
 });
 defineEmits(['update:parameterVisibility']);
@@ -13,7 +13,7 @@ defineEmits(['update:parameterVisibility']);
       class="statistic__value-header"
       v-if="areSetsInGame || parameterName !== 'матч'"
     >
-      {{ parameterName }}
+      {{ parameterGroup }}
     </h6>
     <input
       type="checkbox"
