@@ -3,8 +3,10 @@ import { ref, watch } from 'vue';
 
 const props = defineProps({
   remainder: Number,
-  points: Number
+  points: Number,
+  seenRoundPoints: Boolean
 });
+
 const emit = defineEmits(['setPoints']);
 
 const roundPoints = ref();
@@ -44,6 +46,7 @@ const setPoints = () => {
     type="number"
     min="0"
     max="180"
+    v-show="props.seenRoundPoints"
     v-model="roundPoints"
     @input="checkNumber"
     @keyup.enter="setPoints"
@@ -51,13 +54,15 @@ const setPoints = () => {
 </template>
 
 <style lang="scss">
+@use '@/assets/css/mixins/fonts.scss';
+
 .round-information__points {
   width: 140px;
   padding: 8px;
   outline: none;
   border: 1px solid black;
   border-radius: 8px;
-  font: inherit;
+  @include fonts.Advent;
   font-size: 48px;
   text-align: center;
   background: transparent;

@@ -194,7 +194,7 @@ const startNewGame = () => {
 
 <template>
   <dialog open class="dialog" ref="gameSetupModal" @cancel.prevent="">
-    <GameSetup v-show="!isStartedGame" @startGame="startGame" />
+    <GameSetup :isSeenSetup="!isStartedGame" @startGame="startGame" />
   </dialog>
   <main class="game-page game">
     <button class="game__new-game-button" @click="startNewGame">
@@ -203,14 +203,14 @@ const startNewGame = () => {
     <div class="game__players-information players-information">
       <div class="players-information__name">{{ playerOne?.name }}</div>
       <PalyerScore
-        :isSets="gameParameters?.isSets"
+        :areSetsInGame="gameParameters?.areSetsInGame"
         :seenPlayerScore="Boolean(playerOne)"
         :setsWon="playerOne?.setsWon.value"
         :legsWonInSet="playerOne?.legsWonInSet.value"
       />
       <img class="darts-icon" src="/src/assets/images/darts.svg" alt="darts" />
       <PalyerScore
-        :isSets="gameParameters?.isSets"
+        :areSetsInGame="gameParameters?.areSetsInGame"
         :seenPlayerScore="Boolean(playerTwo)"
         :setsWon="playerTwo?.setsWon.value"
         :legsWonInSet="playerTwo?.legsWonInSet.value"
@@ -219,11 +219,11 @@ const startNewGame = () => {
     </div>
     <div class="game__points-information points-information">
       <PlayerStatistic
-        v-if="playerOne"
+        v-if="Boolean(playerOne)"
         :gameStatistic="playerOne.gameStatistic"
         :setStatistic="playerOne.setStatistic"
         :averagePointsLeg="playerOne.averagePointsLeg.value"
-        :isSets="gameParameters?.isSets"
+        :areSetsInGame="gameParameters?.areSetsInGame"
         :isPercentDouble="gameParameters?.isPercentDoubleP1"
       />
       <form class="points-information__points points">
@@ -272,11 +272,11 @@ const startNewGame = () => {
         </template>
       </form>
       <PlayerStatistic
-        v-if="playerTwo"
+        v-if="Boolean(playerTwo)"
         :gameStatistic="playerTwo.gameStatistic"
         :setStatistic="playerTwo.setStatistic"
         :averagePointsLeg="playerTwo.averagePointsLeg.value"
-        :isSets="gameParameters?.isSets"
+        :areSetsInGame="gameParameters?.areSetsInGame"
         :isPercentDouble="gameParameters?.isPercentDoubleP2"
       />
     </div>
@@ -296,12 +296,12 @@ const startNewGame = () => {
       :nameP1="playerOne.name"
       :nameP2="playerTwo.name"
       :wonP1="
-        gameParameters.isSets
+        gameParameters.areSetsInGame
           ? playerOne.setsWon.value
           : playerOne.legsWonInGame.value
       "
       :wonP2="
-        gameParameters.isSets
+        gameParameters.areSetsInGame
           ? playerTwo.setsWon.value
           : playerTwo.legsWonInGame.value
       "
@@ -314,7 +314,7 @@ const startNewGame = () => {
 </template>
 
 <style lang="scss">
-@use '@/assets/fonts';
+@use '@/assets/css/mixins/fonts.scss';
 
 .dialog {
   border: none;
@@ -369,12 +369,10 @@ const startNewGame = () => {
     top: 4px;
     z-index: 2;
     padding: 8px;
-    outline: none;
     border: 1px solid black;
     border-radius: 8px;
-    font: inherit;
+    @include fonts.Advent;
     font-size: 16px;
-    background-color: transparent;
     transition: background-color 0.5s linear, color 0.5s linear;
 
     &:focus,

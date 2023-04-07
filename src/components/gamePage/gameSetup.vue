@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+const props = defineProps({
+  isSeenSetup: Boolean
+});
 const emit = defineEmits(['startGame']);
 const nameOne = ref('Игрок 1');
 const nameTwo = ref('Игрок 2');
@@ -7,7 +10,7 @@ const startRemainder = ref(501);
 const whoStarted = ref('nameOne');
 const legs = ref(1);
 const sets = ref(1);
-const isSets = ref(false);
+const areSetsInGame = ref(false);
 const isPercentDoubleP1 = ref(false);
 const isPercentDoubleP2 = ref(false);
 const handleInput = (what, event) => {
@@ -41,7 +44,7 @@ const handleClick = () => {
     whoStarted: whoStarted.value,
     legs: legs.value,
     sets: sets.value,
-    isSets: isSets.value,
+    areSetsInGame: areSetsInGame.value,
     isPercentDoubleP1: isPercentDoubleP1.value,
     isPercentDoubleP2: isPercentDoubleP2.value
   };
@@ -49,8 +52,8 @@ const handleClick = () => {
 };
 
 const handleChange = (event) => {
-  if (!isSets.value) sets.value = 1;
-  if (isSets.value) event.currentTarget.previousElementSibling.focus();
+  if (!areSetsInGame.value) sets.value = 1;
+  if (areSetsInGame.value) event.currentTarget.previousElementSibling.focus();
 };
 
 const isOpenRem = ref(false);
@@ -61,7 +64,11 @@ const setStRem = (value) => {
 </script>
 
 <template>
-  <div class="dialog-content-wrapper" @click="isOpenRem = false">
+  <div
+    class="dialog-content-wrapper"
+    v-show="props.isSeenSetup"
+    @click="isOpenRem = false"
+  >
     <div class="game-setup">
       <h1 class="game-setup__header">Настройка параметров матча</h1>
       <h3 class="game-setup__parameter-header">Формат матча</h3>
@@ -75,13 +82,11 @@ const setStRem = (value) => {
           {{ startRemainder }}
           <img
             class="arrow-down-icon"
-            src="/src/assets/images/arr_down.svg"
+            src="/src/assets/images/arrow_down.svg"
             alt="open"
           />
         </div>
-        <div class="start-remainder__values" v-show="isOpenRem"
-        @click.stop=""
-        >
+        <div class="start-remainder__values" v-show="isOpenRem" @click.stop="">
           <div
             class="start-remainder__value"
             tabindex="0"
@@ -170,14 +175,14 @@ const setStRem = (value) => {
             v-model="sets"
             @input="handleInput('Sets', $event)"
             @blur="handleBlur('Sets')"
-            :disabled="!isSets"
+            :disabled="!areSetsInGame"
           />
           <input
             class="sets-legs__is-disabled"
             type="checkbox"
-            v-model="isSets"
+            v-model="areSetsInGame"
             @change="handleChange"
-            @keyup.enter="isSets=!isSets"
+            @keyup.enter="areSetsInGame = !areSetsInGame"
           />
         </label>
         <label class="sets-legs__parameter">
@@ -204,6 +209,8 @@ const setStRem = (value) => {
 
 <style lang="scss">
 //dialog-content-wrapper на главной странице
+@use '@/assets/css/mixins/fonts.scss';
+
 .game-setup {
   display: flex;
   flex-direction: column;
@@ -278,10 +285,8 @@ const setStRem = (value) => {
     width: 450px;
     margin-top: 64px;
     padding: 8px;
-    outline: none;
-    border: none;
     border-radius: 8px;
-    font: inherit;
+    @include fonts.Advent;
     background-color: rgb(221, 231, 231);
     transition: background-color 0.5s linear, color 0.5s linear;
   }
@@ -358,7 +363,7 @@ const setStRem = (value) => {
   outline: none;
   border: 1px solid transparent;
   border-radius: 4px;
-  font: inherit;
+  @include fonts.Advent;
   background-color: rgb(221, 231, 231);
 
   &:focus {

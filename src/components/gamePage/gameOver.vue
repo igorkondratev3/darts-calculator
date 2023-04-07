@@ -242,8 +242,6 @@ const props = defineProps({
 .game-over__new-game-button {
   margin-top: 16px;
   padding: 24px;
-  outline: none;
-  border: none;
   border-radius: 8px;
   font: inherit;
   background-color: rgb(221, 231, 231);

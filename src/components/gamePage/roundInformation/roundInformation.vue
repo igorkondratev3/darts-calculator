@@ -45,22 +45,23 @@ const calculateRemainder = (roundPoints, player) => {
   }
 };
 
-const seenRoundPointsP1 = computed(
-  () =>
+const seenRoundPointsP1 = computed(() =>
+  Boolean(
     (props.legNumber % 2 && props.setNumber % 2 && props.remainderPlayerTwo) ||
-    (props.legNumber % 2 === 0 &&
-      props.setNumber % 2 &&
-      props.newRemainderPlayerTwo) ||
-    (props.legNumber % 2 === 0 &&
-      props.setNumber % 2 === 0 &&
-      props.remainderPlayerTwo) ||
-    (props.legNumber % 2 &&
-      props.setNumber % 2 === 0 &&
-      props.newRemainderPlayerTwo)
+      (props.legNumber % 2 === 0 &&
+        props.setNumber % 2 &&
+        props.newRemainderPlayerTwo) ||
+      (props.legNumber % 2 === 0 &&
+        props.setNumber % 2 === 0 &&
+        props.remainderPlayerTwo) ||
+      (props.legNumber % 2 &&
+        props.setNumber % 2 === 0 &&
+        props.newRemainderPlayerTwo)
+  )
 );
 
 const seenRoundPointsP2 = computed(
-  () =>
+  () => Boolean(
     (props.legNumber % 2 === 0 &&
       props.setNumber % 2 &&
       props.remainderPlayerOne) ||
@@ -73,7 +74,7 @@ const seenRoundPointsP2 = computed(
     (props.legNumber % 2 === 0 &&
       props.setNumber % 2 === 0 &&
       props.newRemainderPlayerOne)
-);
+));
 </script>
 
 <template>
@@ -82,9 +83,9 @@ const seenRoundPointsP2 = computed(
       class="round-information__points-area round-information__points-area_margin-right"
     >
       <RoundPoints
-        v-show="seenRoundPointsP1"
         :remainder="props.remainderPlayerOne"
         :points="props.roundPointsPlayerOne"
+        :seenRoundPoints="seenRoundPointsP1"
         @setPoints="
           (roundPoints) => calculateRemainder(roundPoints, 'playerOne')
         "
@@ -103,9 +104,9 @@ const seenRoundPointsP2 = computed(
       class="round-information__points-area round-information__points-area_margin-left"
     >
       <RoundPoints
-        v-show="seenRoundPointsP2"
         :remainder="props.remainderPlayerTwo"
         :points="props.roundPointsPlayerTwo"
+        :seenRoundPoints="seenRoundPointsP2"
         @setPoints="
           (roundPoints) => calculateRemainder(roundPoints, 'playerTwo')
         "

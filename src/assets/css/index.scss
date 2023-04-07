@@ -1,0 +1,9 @@
+@use './styles/reset.scss';
+@use './styles/scrollbar.scss';
+@use './styles/inputNumber.scss';
+@use './styles/checkbox.scss';
+@use './styles/fonts.scss';
+
+body {
+  min-height: 100vh;
+}

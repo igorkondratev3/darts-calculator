@@ -2,7 +2,7 @@
 defineProps({
   parameterVisibility: Boolean,
   parameterName: String,
-  isSets: Boolean
+  areSetsInGame: Boolean
 });
 defineEmits(['update:parameterVisibility']);
 </script>
@@ -11,7 +11,7 @@ defineEmits(['update:parameterVisibility']);
   <label class="statistic__values statistic-values">
     <h6
       class="statistic__value-header"
-      v-if="isSets || parameterName !== 'матч'"
+      v-if="areSetsInGame || parameterName !== 'матч'"
     >
       {{ parameterName }}
     </h6>
