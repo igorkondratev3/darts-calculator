@@ -1,5 +1,5 @@
 <script setup>
-import StatisticsPararmetersVisibilitySettings from './components/statisticsPararmetersVisibilitySettings.vue';
+import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import { ref } from 'vue';
 const props = defineProps({
@@ -7,15 +7,18 @@ const props = defineProps({
   setStatistic: Object,
   averagePointsLeg: Number,
   areSetsInGame: Boolean,
-  isPercentDouble: Boolean
+  isPercentDoubleInStat: Boolean
 });
 
-const seenSetupVisisbility = ref(false);
+const seenStatisticsVisisbilitySetting = ref(false);
 const seenAveragePointsLeg = ref(true);
-const seenParametersGame = new SeenParameters(true, props.isPercentDouble);
+const seenParametersGame = new SeenParameters(
+  true,
+  props.isPercentDoubleInStat
+);
 const seenParametersSet = props.areSetsInGame
-  ? new SeenParameters(true, props.isPercentDouble)
-  : new SeenParameters(false, props.isPercentDouble);
+  ? new SeenParameters(true, props.isPercentDoubleInStat)
+  : new SeenParameters(false, props.isPercentDoubleInStat);
 const seenGroups = new SeenGroups(
   seenParametersGame,
   seenParametersSet,
@@ -35,22 +38,21 @@ const removeSelection = () => {
 };
 
 const changeParameterSeen = (groupName, parameterName, value) => {
-  if (groupName === 'game')
-    seenParametersGame[parameterName].value = value;
-  if (groupName === 'set')
-    seenParametersSet[parameterName].value = value;
-  if (groupName === 'leg')
-    seenAveragePointsLeg.value = value;
-
-}
+  if (groupName === 'game') seenParametersGame[parameterName].value = value;
+  if (groupName === 'set') seenParametersSet[parameterName].value = value;
+  if (groupName === 'leg') seenAveragePointsLeg.value = value;
+};
 </script>
 
 <template>
   <div class="points-information__statistic statistic">
-    <div class="statistic__player-statistic" v-show="!seenSetupVisisbility">
+    <div
+      class="statistic__player-statistic"
+      v-show="!seenStatisticsVisisbilitySetting"
+    >
       <button
         class="statistic__setup-visibility"
-        @click="seenSetupVisisbility = true"
+        @click="seenStatisticsVisisbilitySetting = true"
         title="Настроить видимость параметров"
       >
         <img
@@ -167,44 +169,34 @@ const changeParameterSeen = (groupName, parameterName, value) => {
           <h5 class="statistic__parameter-header" v-if="props.areSetsInGame">
             матч
           </h5>
-          <div class="statistic__values" v-if="seenParametersGame.p180.value">
-            <h6 class="statistic__value-header">180</h6>
-            {{ props.gameStatistic.p180.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersGame.p171.value">
-            <h6 class="statistic__value-header">171+</h6>
-            {{ props.gameStatistic.p171.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersGame.p131.value">
-            <h6 class="statistic__value-header">131+</h6>
-            {{ props.gameStatistic.p131.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersGame.p96.value">
-            <h6 class="statistic__value-header">96+</h6>
-            {{ props.gameStatistic.p96.value }}
-          </div>
+          <template
+            v-for="(point, key) in seenParametersGame.pointsGroup"
+            :key="key + 'game'"
+          >
+            <div class="statistic__values" v-if="point.value">
+              <h6 class="statistic__value-header">
+                {{ key.slice(1) }}{{ key !== 'p180' ? '+' : undefined }}
+              </h6>
+              {{ props.gameStatistic[key].value }}
+            </div>
+          </template>
         </div>
         <div
           class="statistic-points__set-points"
           v-if="seenParametersSet.points.value"
         >
           <h5 class="statistic__parameter-header">сет</h5>
-          <div class="statistic__values" v-if="seenParametersSet.p180.value">
-            <h6 class="statistic__value-header">180</h6>
-            {{ props.setStatistic.p180.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersSet.p171.value">
-            <h6 class="statistic__value-header">171+</h6>
-            {{ props.setStatistic.p171.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersSet.p131.value">
-            <h6 class="statistic__value-header">131+</h6>
-            {{ props.setStatistic.p131.value }}
-          </div>
-          <div class="statistic__values" v-if="seenParametersSet.p96.value">
-            <h6 class="statistic__value-header">96+</h6>
-            {{ props.setStatistic.p96.value }}
-          </div>
+          <template
+            v-for="(point, key) in seenParametersSet.pointsGroup"
+            :key="key + 'set'"
+          >
+            <div class="statistic__values" v-if="point.value">
+              <h6 class="statistic__value-header">
+                {{ key.slice(1) }}{{ key !== 'p180' ? '+' : undefined }}
+              </h6>
+              {{ props.setStatistic[key].value }}
+            </div>
+          </template>
         </div>
       </div>
       <div
@@ -214,7 +206,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         <h4 class="statistic__group-header">Закрытия</h4>
         <div
           class="statistic-closing__double"
-          v-if="seenGroups.double.value && props.isPercentDouble"
+          v-if="seenGroups.double.value && props.isPercentDoubleInStat"
         >
           <h5 class="statistic__parameter-header">% удвоений</h5>
           <div
@@ -255,20 +247,18 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         </div>
       </div>
     </div>
-    <StatisticsPararmetersVisibilitySettings
-      :seenSetupVisisbility="seenSetupVisisbility"
+    <StatisticsVisibilitySettings
+      :seenStatisticsVisisbilitySetting="seenStatisticsVisisbilitySetting"
       :areSetsInGame="props.areSetsInGame"
-      :isPercentDouble="props.isPercentDouble"
-      @closeStatisticsPararmetersVisibilitySettings="
-        seenSetupVisisbility = false
+      :isPercentDoubleInStat="props.isPercentDoubleInStat"
+      @closeStatisticsVisibilitySettings="
+        seenStatisticsVisisbilitySetting = false
       "
       @selectAll="selectAll"
       @removeSelection="removeSelection"
-
       :seenParametersGame="seenParametersGame"
       :seenParametersSet="seenParametersSet"
       @update:parameterVisibility="changeParameterSeen"
-      
       v-model:seenAveragePointsLeg="seenAveragePointsLeg"
     />
   </div>

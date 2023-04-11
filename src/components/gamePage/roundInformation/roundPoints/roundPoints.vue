@@ -46,7 +46,7 @@ const setPoints = () => {
     type="number"
     min="0"
     max="180"
-    v-show="props.seenRoundPoints"
+    v-show="seenRoundPoints"
     v-model="roundPoints"
     @input="checkNumber"
     @keyup.enter="setPoints"

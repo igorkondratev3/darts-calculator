@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 
 export class SeenParameters {
-  constructor(isSeen, isPercentDouble) {
+  constructor(isSeen, isPercentDoubleInStat) {
     this.averagePoints = ref(isSeen);
     this.averageFirstNineDarts = ref(isSeen);
     this.averagePointsWinLegs = ref(isSeen);
@@ -10,21 +10,39 @@ export class SeenParameters {
     this.p171 = ref(isSeen);
     this.p131 = ref(isSeen);
     this.p96 = ref(isSeen);
-    this.percentDouble = ref(isSeen && isPercentDouble);
+    this.percentDouble = ref(isSeen && isPercentDoubleInStat);
     this.highestCheckout = ref(isSeen);
+    Object.defineProperty(this, 'points', {
+      value: computed(
+        () =>
+          this.p180.value ||
+          this.p171.value ||
+          this.p131.value ||
+          this.p96.value
+      ),
+      writable: true,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(this, 'pointsGroup', {
+      value: {
+        p180: this.p180,
+        p171: this.p171,
+        p131: this.p131,
+        p96: this.p96
+      },
+      writable: true,
+      enumerable: false,
+      configurable: false
+    });
   }
 
-  points = computed(
-    () =>
-      this.p180.value || this.p171.value || this.p131.value || this.p96.value
-  );
-
   selectAll() {
-    for (const key in this) if (key !== 'points') this[key].value = true;
+    for (const key in this) this[key].value = true;
   }
 
   removeSelection() {
-    for (const key in this) if (key !== 'points') this[key].value = false;
+    for (const key in this) this[key].value = false;
   }
 }
 

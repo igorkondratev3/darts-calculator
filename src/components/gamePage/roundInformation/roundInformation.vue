@@ -2,79 +2,67 @@
 import { computed } from 'vue';
 import RoundPoints from './roundPoints/roundPoints.vue';
 const props = defineProps({
-  remainderPlayerOne: Number,
-  remainderPlayerTwo: Number,
+  remainderBeforeGetPointsP1: Number,
+  remainderBeforeGetPointsP2: Number,
+  remainderAfterGetPointsP1: Number,
+  remainderAfterGetPointsP2: Number,
+  roundPointsP1: Number,
+  roundPointsP2: Number,
   roundNumber: Number,
-  newRemainderPlayerOne: Number,
-  newRemainderPlayerTwo: Number,
-  roundPointsPlayerOne: Number,
-  roundPointsPlayerTwo: Number,
   legNumber: Number,
   setNumber: Number
 });
 
 const emit = defineEmits(['setPointsAndRemainder', 'legCompleted']);
-let newRemainderPlayerOne;
-let newRemainderPlayerTwo;
 
 const calculateRemainder = (roundPoints, player) => {
-  //попробовать сделать динамически(передавать ссылку в функцию)
-  if (player === 'playerOne') {
-    newRemainderPlayerOne = props.remainderPlayerOne - roundPoints;
-    if (newRemainderPlayerOne > 1)
-      emit(
-        'setPointsAndRemainder',
-        roundPoints,
-        newRemainderPlayerOne,
-        'playerOne',
-        props.roundNumber
-      );
-    if (newRemainderPlayerOne === 0) emit('legCompleted', 'playerOne');
-  }
-  if (player === 'playerTwo') {
-    newRemainderPlayerTwo = props.remainderPlayerTwo - roundPoints;
-    if (newRemainderPlayerTwo > 1)
-      emit(
-        'setPointsAndRemainder',
-        roundPoints,
-        newRemainderPlayerTwo,
-        'playerTwo',
-        props.roundNumber
-      );
-    if (newRemainderPlayerTwo === 0) emit('legCompleted', 'playerTwo');
-  }
+  const shortPlayer = player === 'playerOne' ? 'P1' : 'P2';
+  let remainderAfterGetPoints =
+    props[`remainderBeforeGetPoints${shortPlayer}`] - roundPoints;
+  if (remainderAfterGetPoints > 1)
+    emit(
+      'setPointsAndRemainder',
+      roundPoints,
+      remainderAfterGetPoints,
+      player,
+      props.roundNumber
+    );
+  if (remainderAfterGetPoints === 0) emit('legCompleted', player);
 };
 
 const seenRoundPointsP1 = computed(() =>
   Boolean(
-    (props.legNumber % 2 && props.setNumber % 2 && props.remainderPlayerTwo) ||
+    (props.legNumber % 2 &&
+      props.setNumber % 2 &&
+      props.remainderBeforeGetPointsP2) ||
       (props.legNumber % 2 === 0 &&
         props.setNumber % 2 &&
-        props.newRemainderPlayerTwo) ||
+        props.remainderAfterGetPointsP2) ||
       (props.legNumber % 2 === 0 &&
         props.setNumber % 2 === 0 &&
-        props.remainderPlayerTwo) ||
+        props.remainderBeforeGetPointsP2) ||
       (props.legNumber % 2 &&
         props.setNumber % 2 === 0 &&
-        props.newRemainderPlayerTwo)
+        props.remainderAfterGetPointsP2)
   )
 );
 
-const seenRoundPointsP2 = computed(
-  () => Boolean(
+const seenRoundPointsP2 = computed(() =>
+  Boolean(
     (props.legNumber % 2 === 0 &&
       props.setNumber % 2 &&
-      props.remainderPlayerOne) ||
-    (props.legNumber % 2 &&
-      props.setNumber % 2 &&
-      props.newRemainderPlayerOne) ||
-    (props.legNumber % 2 &&
-      props.setNumber % 2 === 0 &&
-      props.remainderPlayerOne) ||
-    (props.legNumber % 2 === 0 &&
-      props.setNumber % 2 === 0 &&
-      props.newRemainderPlayerOne)
-));
+      props.remainderBeforeGetPointsP1) ||
+      (props.legNumber % 2 &&
+        props.setNumber % 2 &&
+        props.remainderAfterGetPointsP1) ||
+      (props.legNumber % 2 &&
+        props.setNumber % 2 === 0 &&
+        props.remainderBeforeGetPointsP1) ||
+      (props.legNumber % 2 === 0 &&
+        props.setNumber % 2 === 0 &&
+        props.remainderAfterGetPointsP1)
+  )
+);
 </script>
 
 <template>
@@ -83,8 +71,8 @@ const seenRoundPointsP2 = computed(
       class="round-information__points-area round-information__points-area_margin-right"
     >
       <RoundPoints
-        :remainder="props.remainderPlayerOne"
-        :points="props.roundPointsPlayerOne"
+        :remainder="props.remainderBeforeGetPointsP1"
+        :points="props.roundPointsP1"
         :seenRoundPoints="seenRoundPointsP1"
         @setPoints="
           (roundPoints) => calculateRemainder(roundPoints, 'playerOne')
@@ -92,20 +80,20 @@ const seenRoundPointsP2 = computed(
       />
     </div>
     <div class="round-information__remainder">
-      {{ props.newRemainderPlayerOne }}
+      {{ props.remainderAfterGetPointsP1 }}
     </div>
     <div class="round-information__number-darts">
       {{ props.roundNumber * 3 }}
     </div>
     <div class="round-information__remainder">
-      {{ props.newRemainderPlayerTwo }}
+      {{ props.remainderAfterGetPointsP2 }}
     </div>
     <div
       class="round-information__points-area round-information__points-area_margin-left"
     >
       <RoundPoints
-        :remainder="props.remainderPlayerTwo"
-        :points="props.roundPointsPlayerTwo"
+        :remainder="props.remainderBeforeGetPointsP2"
+        :points="props.roundPointsP2"
         :seenRoundPoints="seenRoundPointsP2"
         @setPoints="
           (roundPoints) => calculateRemainder(roundPoints, 'playerTwo')

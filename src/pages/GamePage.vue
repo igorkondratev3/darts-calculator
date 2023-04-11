@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import GameSetup from '@/components/gamePage/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
 import GameOver from '@/components/gamePage/gameOver.vue';
@@ -12,6 +12,10 @@ import {
 } from '@/helpers/defineFocus.js';
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
+
+onMounted(() => {
+  gameSetupModal.value.showModal();
+});
 
 const numberDartsModal = ref(null);
 const seenZeroInNumberDartsModal = ref(false);
@@ -34,11 +38,11 @@ let playerTwo;
 const startGame = (parameters) => {
   gameParameters = parameters;
   startRemainder.value = gameParameters.startRemainder;
-  playerOne = new Player(gameParameters[gameParameters.whoStarted]);
+  playerOne = new Player(gameParameters[gameParameters.whoStarts]);
   playerTwo = new Player(
-    gameParameters.whoStarted === 'nameOne'
-      ? gameParameters.nameTwo
-      : gameParameters.nameOne
+    gameParameters.whoStarts === 'nameP1'
+      ? gameParameters.nameP2
+      : gameParameters.nameP1
   );
   isStartedGame.value = true;
   gameSetupModal.value.close();
@@ -68,8 +72,8 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
 
   if (
     remainder <= 50 &&
-    ((player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
-      (player === 'playerTwo' && gameParameters.isPercentDoubleP2))
+    ((player === 'playerOne' && gameParameters.isPercentDoubleInStatP1) ||
+      (player === 'playerTwo' && gameParameters.isPercentDoubleInStatP2))
   ) {
     seenZeroInNumberDartsModal.value = true;
     messageNumberDartsModal.value = 'Количество дротиков на удвоение';
@@ -114,8 +118,8 @@ const legCompleted = async (player) => {
 
   let doubleNumberDarts;
   if (
-    (player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
-    (player === 'playerTwo' && gameParameters.isPercentDoubleP2)
+    (player === 'playerOne' && gameParameters.isPercentDoubleInStatP1) ||
+    (player === 'playerTwo' && gameParameters.isPercentDoubleInStatP2)
   ) {
     if (
       currentPlayer.legRemainders.value.at(-1) > 100 &&
@@ -144,8 +148,8 @@ const legCompleted = async (player) => {
       otherPlayer.setAveragePointsForFirstNineDarts();
   }
   if (
-    (player === 'playerOne' && gameParameters.isPercentDoubleP1) ||
-    (player === 'playerTwo' && gameParameters.isPercentDoubleP2)
+    (player === 'playerOne' && gameParameters.isPercentDoubleInStatP1) ||
+    (player === 'playerTwo' && gameParameters.isPercentDoubleInStatP2)
   ) {
     //объеденить если ничего не сломается с логическим блоком сверху
     currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] ??= 0;
@@ -155,7 +159,7 @@ const legCompleted = async (player) => {
   currentPlayer.checkAndSetHighestCheckout();
   currentPlayer.checkAndSetHighPoints(currentPlayer.legRemainders.value.at(-1));
 
-  if (currentPlayer.legsWonInSet.value === gameParameters.legs) {
+  if (currentPlayer.legsWonInSet.value === gameParameters.legsToWin) {
     legNumberInSets.value.push(
       playerOne.legsWonInSet.value + playerTwo.legsWonInSet.value
     );
@@ -166,7 +170,7 @@ const legCompleted = async (player) => {
   playerOne.clearPointsAndRemaindersLeg();
   playerTwo.clearPointsAndRemaindersLeg();
 
-  if (currentPlayer.setsWon.value === gameParameters.sets) {
+  if (currentPlayer.setsWon.value === gameParameters.setsToWin) {
     isGameOver.value = true;
     gameOverModal.value.showModal();
     legNumber.value++; //для корректного расчет среднего значения в проигранных легах при завершении игры
@@ -193,8 +197,8 @@ const startNewGame = () => {
 </script>
 
 <template>
-  <dialog open class="dialog" ref="gameSetupModal" @cancel.prevent="">
-    <GameSetup :isSeenSetup="!isStartedGame" @startGame="startGame" />
+  <dialog class="dialog" ref="gameSetupModal" @cancel.prevent="">
+    <GameSetup :seenSetup="!isStartedGame" @startGame="startGame" />
   </dialog>
   <main class="game-page game">
     <button class="game__new-game-button" @click="startNewGame">
@@ -224,7 +228,7 @@ const startNewGame = () => {
         :setStatistic="playerOne.setStatistic"
         :averagePointsLeg="playerOne.averagePointsLeg.value"
         :areSetsInGame="gameParameters?.areSetsInGame"
-        :isPercentDouble="gameParameters?.isPercentDoubleP1"
+        :isPercentDoubleInStat="gameParameters?.isPercentDoubleInStatP1"
       />
       <form class="points-information__points points">
         <div class="points__round-information round-information">
@@ -252,17 +256,17 @@ const startNewGame = () => {
                 isStartedGame &&
                 !isGameOver
               "
-              :roundNumber="n"
-              :remainderPlayerOne="
+              :remainderBeforeGetPointsP1="
                 n - 1 ? playerOne.legRemainders.value[n - 2] : startRemainder
               "
-              :remainderPlayerTwo="
+              :remainderBeforeGetPointsP2="
                 n - 1 ? playerTwo.legRemainders.value[n - 2] : startRemainder
               "
-              :newRemainderPlayerOne="playerOne.legRemainders.value[n - 1]"
-              :newRemainderPlayerTwo="playerTwo.legRemainders.value[n - 1]"
-              :roundPointsPlayerOne="playerOne.legPoints.value[n - 1]"
-              :roundPointsPlayerTwo="playerTwo.legPoints.value[n - 1]"
+              :remainderAfterGetPointsP1="playerOne.legRemainders.value[n - 1]"
+              :remainderAfterGetPointsP2="playerTwo.legRemainders.value[n - 1]"
+              :roundPointsP1="playerOne.legPoints.value[n - 1]"
+              :roundPointsP2="playerTwo.legPoints.value[n - 1]"
+              :roundNumber="n"
               :legNumber="legNumber"
               :setNumber="setNumber"
               @setPointsAndRemainder="setPointsAndRemainder"
@@ -277,7 +281,7 @@ const startNewGame = () => {
         :setStatistic="playerTwo.setStatistic"
         :averagePointsLeg="playerTwo.averagePointsLeg.value"
         :areSetsInGame="gameParameters?.areSetsInGame"
-        :isPercentDouble="gameParameters?.isPercentDoubleP2"
+        :isPercentDoubleInStat="gameParameters?.isPercentDoubleInStatP2"
       />
     </div>
   </main>
@@ -307,8 +311,8 @@ const startNewGame = () => {
       "
       :gameStatisticP1="playerOne.gameStatistic"
       :gameStatisticP2="playerTwo.gameStatistic"
-      :isPercentDoubleP1="gameParameters.isPercentDoubleP1"
-      :isPercentDoubleP2="gameParameters.isPercentDoubleP2"
+      :isPercentDoubleInStatP1="gameParameters.isPercentDoubleInStatP1"
+      :isPercentDoubleInStatP2="gameParameters.isPercentDoubleInStatP2"
     />
   </dialog>
 </template>

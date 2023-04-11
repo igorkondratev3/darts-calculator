@@ -1,73 +1,64 @@
 <script setup>
 import { ref } from 'vue';
+
 const props = defineProps({
-  isSeenSetup: Boolean
+  seenSetup: Boolean
 });
 const emit = defineEmits(['startGame']);
-const nameOne = ref('Игрок 1');
-const nameTwo = ref('Игрок 2');
-const startRemainder = ref(501);
-const whoStarted = ref('nameOne');
-const legs = ref(1);
-const sets = ref(1);
-const areSetsInGame = ref(false);
-const isPercentDoubleP1 = ref(false);
-const isPercentDoubleP2 = ref(false);
-const handleInput = (what, event) => {
-  if (event.data < '0' || event.data > '9') {
-    if (what === 'Legs') legs.value = 0;
-    if (what === 'Sets') sets.value = 0;
-  }
+
+const gamePararmeters = {
+  nameP1: ref('Игрок 1'),
+  nameP2: ref('Игрок 2'),
+  startRemainder: ref(501),
+  whoStarts: ref('nameP1'),
+  legsToWin: ref(1),
+  setsToWin: ref(1),
+  areSetsInGame: ref(false),
+  isPercentDoubleInStatP1: ref(false),
+  isPercentDoubleInStatP2: ref(false)
 };
 
-const handleBlur = (what) => {
-  switch (what) {
-    case 'Игрок 1':
-      if (!nameOne.value) nameOne.value = what;
-      break;
-    case 'Игрок 2':
-      if (!nameTwo.value) nameTwo.value = what;
-      break;
-    case 'Legs':
-      if (!legs.value) legs.value = 1;
-      break;
-    case 'Sets':
-      if (!sets.value) sets.value = 1;
-      break;
-  }
-};
-const handleClick = () => {
-  const gameParameters = {
-    nameOne: nameOne.value,
-    nameTwo: nameTwo.value,
-    startRemainder: startRemainder.value,
-    whoStarted: whoStarted.value,
-    legs: legs.value,
-    sets: sets.value,
-    areSetsInGame: areSetsInGame.value,
-    isPercentDoubleP1: isPercentDoubleP1.value,
-    isPercentDoubleP2: isPercentDoubleP2.value
-  };
-  emit('startGame', gameParameters);
+const checkValuesToWin = (valuesName, event) => {
+  if (event.data < '0' || event.data > '9')
+    gamePararmeters[valuesName].value = 0;
 };
 
-const handleChange = (event) => {
-  if (!areSetsInGame.value) sets.value = 1;
-  if (areSetsInGame.value) event.currentTarget.previousElementSibling.focus();
+const checkParameterForEmpty = (parameterName, altParameterValue) => {
+  if (!gamePararmeters[parameterName].value)
+    gamePararmeters[parameterName].value = altParameterValue;
 };
 
-const isOpenRem = ref(false);
-const setStRem = (value) => {
-  startRemainder.value = value;
-  isOpenRem.value = false;
+const startGame = (gameParameters) => {
+  const gamePararmetersForNewGame = {};
+  for (const parameterName in gameParameters)
+    gamePararmetersForNewGame[parameterName] =
+      gameParameters[parameterName].value;
+  emit('startGame', gamePararmetersForNewGame);
+};
+
+const changeAreSetsInGame = (event) => {
+  gamePararmeters.areSetsInGame.value = !gamePararmeters.areSetsInGame.value;
+  checkAreSetsInGame(event.currentTarget.previousElementSibling);
+};
+
+const checkAreSetsInGame = (setInput) => {
+  if (!gamePararmeters.areSetsInGame.value) gamePararmeters.setsToWin.value = 1;
+  if (gamePararmeters.areSetsInGame.value)
+    setTimeout(() => setInput.focus(), 0);
+};
+
+const seenSelectRemainders = ref(false);
+const setStartRemainder = (remainder) => {
+  gamePararmeters.startRemainder.value = remainder;
+  seenSelectRemainders.value = false;
 };
 </script>
 
 <template>
   <div
     class="dialog-content-wrapper"
-    v-show="props.isSeenSetup"
-    @click="isOpenRem = false"
+    v-show="props.seenSetup"
+    @click="seenSelectRemainders = false"
   >
     <div class="game-setup">
       <h1 class="game-setup__header">Настройка параметров матча</h1>
@@ -76,30 +67,34 @@ const setStRem = (value) => {
         <div
           class="start-remainder__header"
           tabindex="0"
-          @click.stop="isOpenRem = true"
-          @keyup.enter="isOpenRem = true"
+          @click.stop="seenSelectRemainders = true"
+          @keyup.enter="seenSelectRemainders = true"
         >
-          {{ startRemainder }}
+          {{ gamePararmeters.startRemainder.value }}
           <img
             class="arrow-down-icon"
             src="/src/assets/images/arrow_down.svg"
             alt="open"
           />
         </div>
-        <div class="start-remainder__values" v-show="isOpenRem" @click.stop="">
+        <div
+          class="start-remainder__values"
+          v-show="seenSelectRemainders"
+          @click.stop=""
+        >
           <div
             class="start-remainder__value"
             tabindex="0"
-            @click="setStRem(501)"
-            @keyup.enter="setStRem(501)"
+            @click="setStartRemainder(501)"
+            @keyup.enter="setStartRemainder(501)"
           >
             501
           </div>
           <div
             class="start-remainder__value"
             tabindex="0"
-            @click="setStRem(1001)"
-            @keyup.enter="setStRem(1001)"
+            @click="setStartRemainder(1001)"
+            @keyup.enter="setStartRemainder(1001)"
           >
             1001
           </div>
@@ -110,18 +105,18 @@ const setStRem = (value) => {
         <input
           class="player-names__name player-names__name_margin-right"
           type="text"
-          v-model="nameOne"
+          v-model="gamePararmeters.nameP1.value"
           maxlength="30"
           required
-          @blur="handleBlur('Игрок 1')"
+          @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
         />
         <input
           class="player-names__name"
           type="text"
-          v-model="nameTwo"
+          v-model="gamePararmeters.nameP2.value"
           maxlength="30"
           required
-          @blur="handleBlur('Игрок 2')"
+          @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
         />
       </div>
       <div class="game-setup__who-starts who-starts">
@@ -129,8 +124,8 @@ const setStRem = (value) => {
           class="who-starts__radio-button"
           type="radio"
           name="whoStarts"
-          value="nameOne"
-          v-model="whoStarted"
+          value="nameP1"
+          v-model="gamePararmeters.whoStarts.value"
         />
         <h3
           class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
@@ -141,16 +136,19 @@ const setStRem = (value) => {
           class="who-starts__radio-button"
           type="radio"
           name="whoStarts"
-          value="nameTwo"
-          v-model="whoStarted"
+          value="nameP2"
+          v-model="gamePararmeters.whoStarts.value"
         />
       </div>
       <div class="game-setup__is-percent-double is-percent-double">
         <input
           class="is-percent-double__value"
           type="checkbox"
-          v-model="isPercentDoubleP1"
-          @keyup.enter="isPercentDoubleP1 = !isPercentDoubleP1"
+          v-model="gamePararmeters.isPercentDoubleInStatP1.value"
+          @keyup.enter="
+            gamePararmeters.isPercentDoubleInStatP1.value =
+              !gamePararmeters.isPercentDoubleInStatP1.value
+          "
         />
         <h3
           class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
@@ -160,8 +158,11 @@ const setStRem = (value) => {
         <input
           class="is-percent-double__value"
           type="checkbox"
-          v-model="isPercentDoubleP2"
-          @keyup.enter="isPercentDoubleP2 = !isPercentDoubleP2"
+          v-model="gamePararmeters.isPercentDoubleInStatP2.value"
+          @keyup.enter="
+            gamePararmeters.isPercentDoubleInStatP2.value =
+              !gamePararmeters.isPercentDoubleInStatP2.value
+          "
         />
       </div>
       <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
@@ -172,17 +173,19 @@ const setStRem = (value) => {
             class="sets-legs__value"
             type="number"
             min="1"
-            v-model="sets"
-            @input="handleInput('Sets', $event)"
-            @blur="handleBlur('Sets')"
-            :disabled="!areSetsInGame"
+            v-model="gamePararmeters.setsToWin.value"
+            @input="checkValuesToWin('setsToWin', $event)"
+            @blur="checkParameterForEmpty('setsToWin', 1)"
+            :disabled="!gamePararmeters.areSetsInGame.value"
           />
           <input
             class="sets-legs__is-disabled"
             type="checkbox"
-            v-model="areSetsInGame"
-            @change="handleChange"
-            @keyup.enter="areSetsInGame = !areSetsInGame"
+            v-model="gamePararmeters.areSetsInGame.value"
+            @change="
+              checkAreSetsInGame($event.currentTarget.previousElementSibling)
+            "
+            @keyup.enter="changeAreSetsInGame"
           />
         </label>
         <label class="sets-legs__parameter">
@@ -191,15 +194,15 @@ const setStRem = (value) => {
             class="sets-legs__value"
             type="number"
             min="1"
-            v-model="legs"
-            @input="handleInput('Legs', $event)"
-            @blur="handleBlur('Legs')"
+            v-model="gamePararmeters.legsToWin.value"
+            @input="checkValuesToWin('legsToWin', $event)"
+            @blur="checkParameterForEmpty('legsToWin', 1)"
           />
         </label>
       </div>
       <button
         class="game-setup__start-game-button"
-        @click.prevent="handleClick"
+        @click.prevent="startGame(gamePararmeters)"
       >
         Начать матч
       </button>
