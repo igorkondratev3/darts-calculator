@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import GameSetup from '@/components/gamePage/gameSetup.vue';
+import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
 import GameOver from '@/components/gamePage/gameOver.vue';
 import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
@@ -13,10 +13,6 @@ import {
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
 
-onMounted(() => {
-  gameSetupModal.value.showModal();
-});
-
 const numberDartsModal = ref(null);
 const seenZeroInNumberDartsModal = ref(false);
 const seenOneInNumberDartsModal = ref(true);
@@ -27,11 +23,19 @@ const gameSetupModal = ref(null);
 const isGameOver = ref(false);
 const isStartedGame = ref(false);
 
-let gameParameters;
+onMounted(() => {
+  setTimeout(() => gameSetupModal.value.showModal(), 0);
+  /*settimeout чтобы корректно работало,
+  но всё равно ошибка при внесении изменении в код текущей страницы
+  при обычной работе приложения всё работает нормально
+  проблема отсутствует если задать атрибу open элементу,
+  но тогда не блокируется задний фон  
+  */
+});
 
 const { Player, startRemainder, legNumber, setNumber, legNumberInSets } =
   useNewGame();
-
+let gameParameters;
 let playerOne;
 let playerTwo;
 
@@ -46,13 +50,11 @@ const startGame = (parameters) => {
   );
   isStartedGame.value = true;
   gameSetupModal.value.close();
-  setTimeout(() => document.forms[0][document.forms[0].length - 2].focus(), 0);
+  defineFocusForNewLeg(legNumber.value, setNumber.value, document.forms[0]);
 };
 
 const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
-  let currentPlayer;
-  if (player === 'playerOne') currentPlayer = playerOne;
-  if (player === 'playerTwo') currentPlayer = playerTwo;
+  const currentPlayer = player === 'playerOne' ? playerOne : playerTwo;
 
   if (roundNumber <= currentPlayer.legRemainders.value.length) {
     //блок для проверки внесения изменений - вынести в функцию
@@ -66,7 +68,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
       currentPlayer.legRemainders.value[i] += difference;
     currentPlayer.pointsAndDartsLegs.value[legNumber.value - 1][0] -=
       difference;
-    defineFocusForNextPlayer(player);
+    defineFocusForNextPlayer(player, document.forms[0]);
     return;
   }
 
@@ -90,12 +92,12 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   currentPlayer.setInPointsAndDartsLegs(point, 3, legNumber.value);
   if (currentPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 9)
     currentPlayer.setAveragePointsForFirstNineDarts();
-  defineFocusForNextPlayer(player);
+  defineFocusForNextPlayer(player, document.forms[0]);
 };
 
 const legCompleted = async (player) => {
   const currentPlayer = player === 'playerOne' ? playerOne : playerTwo;
-  const otherPlayer = player === 'playerOne' ? playerTwo : playerOne;
+  const anotherPlayer = player === 'playerOne' ? playerTwo : playerOne;
 
   let endNumberDarts;
 
@@ -143,9 +145,10 @@ const legCompleted = async (player) => {
     legNumber.value
   );
   if (currentPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 9) {
+    //если закроется за 9, а у другого 6 чтобы не потерять статистику для 9 жротиков
     currentPlayer.setAveragePointsForFirstNineDarts();
-    if (otherPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 6)
-      otherPlayer.setAveragePointsForFirstNineDarts();
+    if (anotherPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 6)
+      anotherPlayer.setAveragePointsForFirstNineDarts();
   }
   if (
     (player === 'playerOne' && gameParameters.isPercentDoubleInStatP1) ||
@@ -178,7 +181,7 @@ const legCompleted = async (player) => {
   }
 
   legNumber.value++;
-  defineFocusForNewLeg(legNumber.value, setNumber.value);
+  defineFocusForNewLeg(legNumber.value, setNumber.value, document.forms[0]);
 };
 
 const startNewGame = () => {
@@ -207,15 +210,15 @@ const startNewGame = () => {
     <div class="game__players-information players-information">
       <div class="players-information__name">{{ playerOne?.name }}</div>
       <PalyerScore
+        v-if="Boolean(playerOne)"
         :areSetsInGame="gameParameters?.areSetsInGame"
-        :seenPlayerScore="Boolean(playerOne)"
         :setsWon="playerOne?.setsWon.value"
         :legsWonInSet="playerOne?.legsWonInSet.value"
       />
       <img class="darts-icon" src="/src/assets/images/darts.svg" alt="darts" />
       <PalyerScore
+        v-if="Boolean(playerTwo)"
         :areSetsInGame="gameParameters?.areSetsInGame"
-        :seenPlayerScore="Boolean(playerTwo)"
         :setsWon="playerTwo?.setsWon.value"
         :legsWonInSet="playerTwo?.legsWonInSet.value"
       />
@@ -224,6 +227,7 @@ const startNewGame = () => {
     <div class="game__points-information points-information">
       <PlayerStatistic
         v-if="Boolean(playerOne)"
+        player="P1"
         :gameStatistic="playerOne.gameStatistic"
         :setStatistic="playerOne.setStatistic"
         :averagePointsLeg="playerOne.averagePointsLeg.value"
@@ -277,6 +281,7 @@ const startNewGame = () => {
       </form>
       <PlayerStatistic
         v-if="Boolean(playerTwo)"
+        player="P2"
         :gameStatistic="playerTwo.gameStatistic"
         :setStatistic="playerTwo.setStatistic"
         :averagePointsLeg="playerTwo.averagePointsLeg.value"

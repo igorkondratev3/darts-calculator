@@ -1,6 +1,5 @@
 <script setup>
 defineProps({
-  seenPlayerScore: Boolean,
   setsWon: Number,
   legsWonInSet: Number,
   areSetsInGame: Boolean
@@ -8,10 +7,7 @@ defineProps({
 </script>
 
 <template>
-  <div
-    class="palyers-information__player-score player-score"
-    v-if="seenPlayerScore"
-  >
+  <div class="palyers-information__player-score player-score" >
     <div class="player-score__legs-won">Леги: {{ legsWonInSet }}</div>
     <div class="player-score__sets-won" v-if="areSetsInGame">
       Сеты: {{ setsWon }}

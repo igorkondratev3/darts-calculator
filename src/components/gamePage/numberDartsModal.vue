@@ -10,7 +10,7 @@ const props = defineProps({
 const buttons = ref([]);
 const buttonsBox = ref(null);
 
-const handleKeyup = (event) => {
+const focusOnButton = (event) => {
   if (
     buttons.value[event.key] &&
     buttons.value[event.key]?.style.display !== 'none'
@@ -18,32 +18,33 @@ const handleKeyup = (event) => {
     buttons.value[event.key].focus();
 };
 
-const handleClick = () => {
+const focusOnButtonBox = () => {
   buttonsBox.value.focus();
 };
+//необходимо для корректной работы tab
 </script>
 
 <template>
   <div
     class="dialog-content-wrapper number-darts-dialog"
-    @click="handleClick"
-    @keyup="handleKeyup"
+    @click="focusOnButtonBox"
+    @keyup="focusOnButton"
   >
     <div class="number-darts-dialog__message">{{ props.message }}</div>
     <div class="number-darts-dialog__values" ref="buttonsBox" tabindex="1">
       <button
         class="number-darts-dialog__value"
-        v-for="n in 4"
-        :key="n + 'darts'"
+        v-for="numberDarts in 4"
+        :key="numberDarts + 'darts'"
         ref="buttons"
         v-show="
-          (n === 1 && props.seenZero) ||
-          (n === 2 && props.seenOne) ||
-          n === 3 ||
-          (n === 4 && props.seenThree)
+          (numberDarts === 1 && props.seenZero) ||
+          (numberDarts === 2 && props.seenOne) ||
+          numberDarts === 3 ||
+          (numberDarts === 4 && props.seenThree)
         "
       >
-        {{ n - 1 }}
+        {{ numberDarts - 1 }}
       </button>
     </div>
   </div>

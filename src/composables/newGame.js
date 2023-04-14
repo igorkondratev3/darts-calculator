@@ -5,7 +5,7 @@ export const useNewGame = () => {
   const legNumber = ref(1);
   const setNumber = ref(1);
   const legNumberInSets = ref([]);
-
+ 
   const legNumberBeforeCurrentSet = computed(() =>
     legNumberInSets.value.reduce((acc, legNumber) => acc + legNumber, 0)
   );

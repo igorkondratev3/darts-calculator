@@ -180,6 +180,7 @@ const props = defineProps({
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
 
   &__name {
     max-width: 400px;

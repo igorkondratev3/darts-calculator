@@ -1,17 +1,21 @@
 import { ref, computed } from 'vue';
 
 export class SeenParameters {
-  constructor(isSeen, isPercentDoubleInStat) {
-    this.averagePoints = ref(isSeen);
-    this.averageFirstNineDarts = ref(isSeen);
-    this.averagePointsWinLegs = ref(isSeen);
-    this.averagePointsLoseLegs = ref(isSeen);
-    this.p180 = ref(isSeen);
-    this.p171 = ref(isSeen);
-    this.p131 = ref(isSeen);
-    this.p96 = ref(isSeen);
-    this.percentDouble = ref(isSeen && isPercentDoubleInStat);
-    this.highestCheckout = ref(isSeen);
+  constructor(isSeen, isPercentDoubleInStat, seenParameters) {
+    for (const parameterName in seenParameters)
+      this[parameterName] = ref(isSeen && seenParameters[parameterName]);
+    if (!seenParameters) {
+      this.averagePoints = ref(isSeen);
+      this.averageFirstNineDarts = ref(isSeen);
+      this.averagePointsWinLegs = ref(isSeen);
+      this.averagePointsLoseLegs = ref(isSeen);
+      this.p180 = ref(isSeen);
+      this.p171 = ref(isSeen);
+      this.p131 = ref(isSeen);
+      this.p96 = ref(isSeen);
+      this.percentDouble = ref(isSeen && isPercentDoubleInStat);
+      this.highestCheckout = ref(isSeen);
+    }
     Object.defineProperty(this, 'points', {
       value: computed(
         () =>
@@ -36,6 +40,12 @@ export class SeenParameters {
       configurable: false
     });
   }
+
+  unRef = () => {
+    const result = {};
+    for (const key in this) result[key] = this[key].value;
+    return result;
+  };
 
   selectAll() {
     for (const key in this) this[key].value = true;

@@ -2,6 +2,7 @@
 import ParameterVisibilitySetting from './parameterVisibilitySetting.vue';
 
 const props = defineProps({
+  player: String,
   seenStatisticsVisisbilitySetting: Boolean,
   areSetsInGame: Boolean,
   isPercentDoubleInStatInStat: Boolean,
@@ -39,6 +40,22 @@ const updateParameterVisibility = (elem) => {
     elem.checked
   );
 };
+
+const closeStatisticsVisibilitySettings = () => {
+  localStorage.setItem(
+    `seenParametersGame${props.player}`,
+    JSON.stringify(props.seenParametersGame.unRef())
+  );
+  localStorage.setItem(
+    `seenParametersSet${props.player}`,
+    JSON.stringify(props.seenParametersSet.unRef())
+  );
+  localStorage.setItem(
+    `seenAveragePointsLeg${props.player}`,
+    JSON.stringify(props.seenAveragePointsLeg)
+  );
+  emits('closeStatisticsVisibilitySettings');
+};
 </script>
 
 <template>
@@ -46,7 +63,7 @@ const updateParameterVisibility = (elem) => {
     class="statistic__player-statistic statistic__visibility"
     v-show="seenStatisticsVisisbilitySetting"
     @keyup.enter="changeParameterVisibility"
-    @keyup.esc="$emit('closeStatisticsVisibilitySettings')"
+    @keyup.esc="closeStatisticsVisibilitySettings"
   >
     <div class="control-seen-elements">
       <button
@@ -74,7 +91,7 @@ const updateParameterVisibility = (elem) => {
     </div>
     <button
       class="statistic__setup-visibility"
-      @click="$emit('closeStatisticsVisibilitySettings')"
+      @click="closeStatisticsVisibilitySettings"
       title="Закрыть настройку видимости параметров"
     >
       <img
@@ -282,7 +299,7 @@ const updateParameterVisibility = (elem) => {
     cursor: pointer;
 
     &:focus {
-      border: 1px solid black;
+      outline: 1px solid black;
     }
   }
 

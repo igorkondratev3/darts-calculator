@@ -4,7 +4,8 @@ input[type='checkbox'] {
   appearance: none;
   width: 20px;
   height: 20px;
-  outline: none;
+  outline: 1px solid transparent;
+  outline-offset: 2px;
   border: 1px solid white;
   border-radius: 4px;
   background: rgb(232, 238, 233);
@@ -16,10 +17,10 @@ input[type='checkbox'] {
   }
 
   &:focus {
-    border: 1px solid rgb(66, 63, 63);
+    outline: 2px solid rgb(66, 63, 63);
   }
 
   &:checked:focus {
-    border: 1px solid white;
+    outline: 2px solid white;
   }
 }

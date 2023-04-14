@@ -3,6 +3,7 @@ import StatisticsVisibilitySettings from './components/statisticsVisibilitySetti
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import { ref } from 'vue';
 const props = defineProps({
+  player: String,
   gameStatistic: Object,
   setStatistic: Object,
   averagePointsLeg: Number,
@@ -11,14 +12,29 @@ const props = defineProps({
 });
 
 const seenStatisticsVisisbilitySetting = ref(false);
-const seenAveragePointsLeg = ref(true);
+const seenAveragePointsLeg = ref(
+  Boolean(
+    JSON.parse(localStorage.getItem(`seenAveragePointsLeg${props.player}`)) ??
+      true
+  )
+);
 const seenParametersGame = new SeenParameters(
   true,
-  props.isPercentDoubleInStat
+  props.isPercentDoubleInStat,
+  JSON.parse(localStorage.getItem(`seenParametersGame${props.player}`))
 );
 const seenParametersSet = props.areSetsInGame
-  ? new SeenParameters(true, props.isPercentDoubleInStat)
-  : new SeenParameters(false, props.isPercentDoubleInStat);
+  ? new SeenParameters(
+      true,
+      props.isPercentDoubleInStat,
+      JSON.parse(localStorage.getItem(`seenParametersSet${props.player}`))
+    )
+  : new SeenParameters(
+      false,
+      props.isPercentDoubleInStat,
+      JSON.parse(localStorage.getItem(`seenParametersSet${props.player}`))
+    );
+
 const seenGroups = new SeenGroups(
   seenParametersGame,
   seenParametersSet,
@@ -248,6 +264,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
       </div>
     </div>
     <StatisticsVisibilitySettings
+      :player="props.player"
       :seenStatisticsVisisbilitySetting="seenStatisticsVisisbilitySetting"
       :areSetsInGame="props.areSetsInGame"
       :isPercentDoubleInStat="props.isPercentDoubleInStat"
@@ -317,7 +334,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
     border-radius: 4px;
 
     &:focus {
-      border: 1px solid black;
+      outline: 1px solid black;
     }
   }
 
