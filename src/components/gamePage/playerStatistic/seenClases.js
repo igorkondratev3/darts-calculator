@@ -41,7 +41,7 @@ export class SeenParameters {
     });
   }
 
-  unRef = () => {
+  unRef() {
     const result = {};
     for (const key in this) result[key] = this[key].value;
     return result;

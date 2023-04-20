@@ -1,7 +1,9 @@
 <script setup>
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
-import { ref } from 'vue';
+import AuthLink from '@/components/auth/authLink.vue';
+import LoadingComponent from '@/components/loadingComponent.vue';
+import { ref, defineAsyncComponent } from 'vue';
 const props = defineProps({
   player: String,
   gameStatistic: Object,
@@ -10,6 +12,14 @@ const props = defineProps({
   areSetsInGame: Boolean,
   isPercentDoubleInStat: Boolean
 });
+
+const AuthComp = defineAsyncComponent({
+  loader: () => import('@/components/auth/authComp.vue'),
+  loadingComponent: LoadingComponent,
+  delay: 0
+});
+
+const seenAuthComp = ref(false);
 
 const seenStatisticsVisisbilitySetting = ref(false);
 const seenAveragePointsLeg = ref(
@@ -64,8 +74,9 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   <div class="points-information__statistic statistic">
     <div
       class="statistic__player-statistic"
-      v-show="!seenStatisticsVisisbilitySetting"
+      v-show="!seenStatisticsVisisbilitySetting && !seenAuthComp"
     >
+      <AuthLink @openAuthComp="seenAuthComp = true" />
       <button
         class="statistic__setup-visibility"
         @click="seenStatisticsVisisbilitySetting = true"
@@ -278,6 +289,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
       @update:parameterVisibility="changeParameterSeen"
       v-model:seenAveragePointsLeg="seenAveragePointsLeg"
     />
+
+    <AuthComp v-if="seenAuthComp" @closeAuthComp="seenAuthComp = false" />
   </div>
 </template>
 
