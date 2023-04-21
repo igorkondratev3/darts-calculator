@@ -9,6 +9,9 @@ import ParameterNavigation from './parameterNavigation.vue';
 import ErrorMessage from '@/components/errorMessage.vue';
 import { ref, computed } from 'vue';
 defineEmits(['closeAuthComp']);
+const props = defineProps({
+  player: String
+})
 
 const header = ref('Вход');
 const errorMessage = ref('');
@@ -145,13 +148,17 @@ const clueMessage = computed(() => {
         v-if="header === 'Вход'"
         :isEnabled="signinButtonEnabled"
         :authInformation="authInformation"
+        :player="props.player"
         @changeErrorMessage="changeErrorMessage"
+        @closeAuthComp="$emit('closeAuthComp')"
       />
       <SignupButton
         v-if="header === 'Регистрация'"
         :isEnabled="signupButtonEnabled"
         :authInformation="authInformation"
+        :player="props.player"
         @changeErrorMessage="changeErrorMessage"
+        @closeAuthComp="$emit('closeAuthComp')"
       />
     </div>
     <ErrorMessage v-if="errorMessage" :message="errorMessage" />

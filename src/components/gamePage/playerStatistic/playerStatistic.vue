@@ -1,9 +1,12 @@
 <script setup>
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
+import { useUsersStore } from '@/stores/users';
 import AuthLink from '@/components/auth/authLink.vue';
+import LogoutLink from '@/components/auth/logoutLink.vue';
 import LoadingComponent from '@/components/loadingComponent.vue';
 import { ref, defineAsyncComponent } from 'vue';
+
 const props = defineProps({
   player: String,
   gameStatistic: Object,
@@ -13,6 +16,23 @@ const props = defineProps({
   isPercentDoubleInStat: Boolean
 });
 
+let positionSetupVisibility = {
+  'margin-left': '-12px',
+  'align-self': 'flex-start'
+};
+
+if (props.player === 'P2')
+  positionSetupVisibility = {
+    'margin-left': '-12px',
+    'align-self': 'flex-start'
+  };
+else
+  positionSetupVisibility = {
+    'margin-right': '-12px',
+    'align-self': 'flex-end'
+  };
+
+const usersStore = useUsersStore();
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/auth/authComp.vue'),
   loadingComponent: LoadingComponent,
@@ -72,13 +92,46 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
 <template>
   <div class="points-information__statistic statistic">
+    <button
+      v-if="usersStore.users[props.player]"
+      class="auth-person"
+      :class="{ 'auth-person_order_2': props.player === 'P2' }"
+      title="Перейти на страницу профиля"
+    >
+      <img
+        class="auth-person__icon"
+        src="/src/assets/images/yes_login.svg"
+        alt="yes_login"
+      />
+    </button>
+    <button
+      v-else
+      class="auth-person"
+      :class="{ 'auth-person_order_2': props.player === 'P2' }"
+      title="Вход не выполнен"
+    >
+      <img
+        class="auth-person__icon"
+        src="/src/assets/images/no_login.svg"
+        alt="no_login"
+      />
+    </button>
     <div
       class="statistic__player-statistic"
       v-show="!seenStatisticsVisisbilitySetting && !seenAuthComp"
     >
-      <AuthLink @openAuthComp="seenAuthComp = true" />
+      <LogoutLink
+        v-if="usersStore.users[props.player]"
+        :player="props.player"
+      />
+      <AuthLink
+        v-if="!usersStore.users[props.player]"
+        @openAuthComp="seenAuthComp = true"
+        :player="props.player"
+      />
       <button
         class="statistic__setup-visibility"
+        :style="positionSetupVisibility"
         @click="seenStatisticsVisisbilitySetting = true"
         title="Настроить видимость параметров"
       >
@@ -290,7 +343,11 @@ const changeParameterSeen = (groupName, parameterName, value) => {
       v-model:seenAveragePointsLeg="seenAveragePointsLeg"
     />
 
-    <AuthComp v-if="seenAuthComp" @closeAuthComp="seenAuthComp = false" />
+    <AuthComp
+      v-if="seenAuthComp"
+      @closeAuthComp="seenAuthComp = false"
+      :player="props.player"
+    />
   </div>
 </template>
 
@@ -302,6 +359,25 @@ const changeParameterSeen = (groupName, parameterName, value) => {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+  }
+}
+
+.auth-person {
+  position: sticky;
+  top: 11px;
+  margin-top: 11px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid black;
+  border-radius: 50%;
+
+  &_order_2 {
+    order: 2;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
   }
 }
 .statistic {
@@ -339,9 +415,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
   &__setup-visibility {
     position: sticky;
-    align-self: flex-end;
     top: 4px;
-    margin-right: -12px;
     cursor: pointer;
     border: 1px solid transparent;
     border-radius: 4px;

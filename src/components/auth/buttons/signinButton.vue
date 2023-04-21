@@ -1,14 +1,17 @@
 <script setup>
 import { ref } from 'vue';
+import { useUsersStore } from '@/stores/users';
 const props = defineProps({
   isEnabled: Boolean,
-  authInformation: Object
+  authInformation: Object,
+  player: String
 });
-const emit = defineEmits(['changeErrorMessage'])
-const startnSignin = ref(false);
+const usersStore = useUsersStore();
+const emits = defineEmits(['changeErrorMessage', 'closeAuthComp'])
+const startSignin = ref(false);
 const signin = async () => {
-  startnSignin.value = true;
-  emit('changeErrorMessage', '')
+  startSignin.value = true;
+  emits('changeErrorMessage', '')
   let response;
   let json;
   try {
@@ -28,23 +31,20 @@ const signin = async () => {
     json = await response.json();
   } catch (error) {
     console.log(error);
-    emit("changeErrorMessage", "Ошибка доступа к серверу");
-    startnSignin.value = false;
+    emits("changeErrorMessage", "Ошибка доступа к серверу");
+    startSignin.value = false;
     return;
   }
   if (response.ok) {
-    console.log(json)
-    /*AutorizatonStore.user.userName = json.firstName;
-    AutorizatonStore.user.lastName = json.lastName;
-    AutorizatonStore.user.city = json.city;
-    AutorizatonStore.user.email = json.email;
-    AutorizatonStore.autorization = true;
-    router.push("/");*/
+    usersStore.login(props.player, json);
+    localStorage.setItem(`user${props.player}`, JSON.stringify(json));
+    startSignin.value = false;
+    emits('closeAuthComp');
   }
 
   if (!response.ok) {
-    emit("changeErrorMessage", json.error);
-    startnSignin.value = true;
+    emits("changeErrorMessage", json.error);
+    startSignin.value = false;
   }
 };
 </script>
@@ -53,9 +53,9 @@ const signin = async () => {
   <button
     class="auth__button"
     :class="{
-      'auth__button_disabled': !isEnabled || startnSignin
+      'auth__button_disabled': !isEnabled || startSignin
     }"
-    :disabled="!isEnabled || startnSignin"
+    :disabled="!isEnabled || startSignin"
     @click="signin"
   >
     Вход
