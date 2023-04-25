@@ -25,4 +25,6 @@ onActivated(() => {
   />
 </template>
 
-<style lang="scss"></style>
+<style>
+/*стили в рожительском компоненте*/
+</style>

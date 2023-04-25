@@ -9,7 +9,7 @@ const passwordValidation = () => {
   isCorrectPassword.value = false;
   if (regexPassword.test(password.value)) isCorrectPassword.value = true;
 };
-const handleInput = () => {
+const updatePassword = () => {
   passwordValidation();
   emits(
     'updateParameter',
@@ -19,7 +19,6 @@ const handleInput = () => {
 };
 
 const passwordInput = ref(null);
-
 onActivated(() => {
   passwordInput.value.focus();
 });
@@ -38,9 +37,11 @@ onActivated(() => {
     ref="passwordInput"
     data-type="password"
     v-model="password"
-    @input="handleInput"
+    @input="updatePassword"
     autocomplete="off"
   />
 </template>
 
-<style></style>
+<style>
+/*стили в рожительском компоненте*/
+</style>

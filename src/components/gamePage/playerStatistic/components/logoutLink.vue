@@ -9,6 +9,12 @@ if (props.player === 'P1') position.left = '4px';
 else position.right = '4px';
 
 const usersStore = useUsersStore();
+const logout = () => {
+  deleteRefreshTokenFromDB(usersStore.users[props.player].refreshToken);
+  usersStore.logout(props.player);
+  localStorage.removeItem(`user${props.player}`);
+};
+
 const deleteRefreshTokenFromDB = async (refreshToken) => {
   try {
     await fetch(`${import.meta.env.VITE_BACKEND_URI}/refreshToken`, {
@@ -20,11 +26,6 @@ const deleteRefreshTokenFromDB = async (refreshToken) => {
   } catch (error) {
     console.log(error);
   }
-};
-const logout = () => {
-  deleteRefreshTokenFromDB(usersStore.users[props.player].refreshToken);
-  usersStore.logout(props.player);
-  localStorage.removeItem(`user${props.player}`);
 };
 </script>
 
@@ -39,27 +40,6 @@ const logout = () => {
   </button>
 </template>
 
-<style lang="scss">
-@use '@/assets/css/mixins/fonts.scss';
-
-.auth-link {
-  position: absolute;
-  top: 4px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 4px;
-
-  &:focus {
-    outline: 1px solid black;
-  }
-
-  &__icon {
-    width: 24px;
-    height: 24px;
-
-    &_rotate_180deg {
-      transform: rotate(180deg);
-    }
-  }
-}
+<style>
+/*стили в рожительском компоненте*/
 </style>

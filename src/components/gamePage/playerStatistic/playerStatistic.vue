@@ -2,8 +2,8 @@
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import { useUsersStore } from '@/stores/users';
-import AuthLink from '@/components/auth/authLink.vue';
-import LogoutLink from '@/components/auth/logoutLink.vue';
+import AuthLink from './components/authLink.vue';
+import LogoutLink from './components/logoutLink.vue';
 import LoadingComponent from '@/components/loadingComponent.vue';
 import { ref, defineAsyncComponent } from 'vue';
 
@@ -479,5 +479,27 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+.auth-link {
+  position: absolute;
+  width: 26px;
+  top: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  &:focus {
+    outline: 1px solid black;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+
+    &_rotate_180deg {
+      transform: rotate(180deg);
+    }
+  }
 }
 </style>

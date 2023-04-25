@@ -1,11 +1,25 @@
 <script setup>
+import { useUsersStore } from '@/stores/users.js';
 const props = defineProps({
   player: String
 });
-defineEmits(['openAuthComp']);
+const emit = defineEmits(['openAuthComp']);
+
 const position = {};
 if (props.player === 'P1') position.left = '4px';
 else position.right = '4px';
+
+const usersStore = useUsersStore();
+const login = () => {
+  if (localStorage.getItem(`user${props.player}`)) {
+    usersStore.login(
+      props.player,
+      JSON.parse(localStorage.getItem(`user${props.player}`))
+    );
+    return;
+  }
+  emit('openAuthComp');
+};
 </script>
 
 <template>
@@ -13,7 +27,7 @@ else position.right = '4px';
     class="auth-link"
     :style="position"
     title="вход/регистрация"
-    @click="$emit('openAuthComp')"
+    @click="login"
   >
     <img
       class="auth-link__icon"
@@ -24,28 +38,6 @@ else position.right = '4px';
   </button>
 </template>
 
-<style lang="scss">
-@use '@/assets/css/mixins/fonts.scss';
-
-.auth-link {
-  position: absolute;
-  width: 26px;
-  top: 4px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 4px;
-
-  &:focus {
-    outline: 1px solid black;
-  }
-
-  &__icon {
-    width: 24px;
-    height: 24px;
-
-    &_rotate_180deg {
-      transform: rotate(180deg);
-    }
-  }
-}
+<style>
+/*стили в рожительском компоненте*/
 </style>

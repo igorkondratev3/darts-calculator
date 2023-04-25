@@ -8,7 +8,7 @@ const emailValidation = () => {
   isCorrectEmail.value = false;
   if (regexEmail.test(email.value)) isCorrectEmail.value = true;
 };
-const handleInput = () => {
+const updateEmail = () => {
   emailValidation();
   emit('updateParameter', 'email', isCorrectEmail.value ? email.value : '');
 };
@@ -32,8 +32,10 @@ onActivated(() => {
     data-type="email"
     ref="emailInput"
     v-model="email"
-    @input="handleInput"
+    @input="updateEmail"
   />
 </template>
 
-<style lang="scss"></style>
+<style>
+/*стили в рожительском компоненте*/
+</style>

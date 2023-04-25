@@ -1,28 +1,35 @@
 <script setup>
-import EmailInput from './inputs/emailInput.vue';
-import PasswordInput from './inputs/passwordInput.vue';
-import RepeatPasswordInput from './inputs/repeatPasswordInput.vue';
-import NameInput from './inputs/nameInput.vue';
-import SigninButton from './buttons/signinButton.vue';
-import SignupButton from './buttons/signupButton.vue';
-import ParameterNavigation from './parameterNavigation.vue';
-import ErrorMessage from '@/components/errorMessage.vue';
-import { ref, computed } from 'vue';
-defineEmits(['closeAuthComp']);
+import EmailInput from './components/inputs/emailInput.vue';
+import PasswordInput from './components/inputs/passwordInput.vue';
+import AuthButton from './components/authButton.vue';
+import ParameterNavigation from './components/parameterNavigation.vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
+const NameInput = defineAsyncComponent({
+  loader: () => import('./components/inputs/nameInput.vue')
+});
+const RepeatPasswordInput = defineAsyncComponent({
+  loader: () => import('./components/inputs/repeatPasswordInput.vue')
+});
+const ErrorMessage = defineAsyncComponent({
+  loader: () => import('@/components/errorMessage.vue')
+});
+
 const props = defineProps({
   player: String
-})
+});
+defineEmits(['closeAuthComp']);
 
-const header = ref('Вход');
 const errorMessage = ref('');
 const changeErrorMessage = (message) => (errorMessage.value = message);
+const parameterNumber = ref(1);
+const changeParameterNumber = (newValue) => (parameterNumber.value = newValue);
+const header = ref('Вход');
 const changeHeader = () => {
   if (header.value === 'Вход') header.value = 'Регистрация';
   else header.value = 'Вход';
   parameterNumber.value = 1;
   errorMessage.value = '';
 };
-const parameterNumber = ref(1);
 const authInformation = {
   name: ref(''),
   email: ref(''),
@@ -36,7 +43,7 @@ const updateParameter = (parameterName, newValue) => {
   authInformation.updateParameter(parameterName, newValue);
   if (authInformation[parameterName].value) clueSeen.value = false;
 };
-const changeParameterNumber = (newValue) => (parameterNumber.value = newValue);
+
 const currentParameter = computed(() => {
   if (header.value === 'Вход') {
     if (parameterNumber.value === 1) return EmailInput;
@@ -51,34 +58,6 @@ const currentParameter = computed(() => {
   return EmailInput;
 });
 
-const handleInputEnter = (event) => {
-  if (!authInformation[event.currentTarget.dataset.type].value) {
-    clueSeen.value = true;
-    return;
-  }
-  if (header.value === 'Вход') {
-    if (parameterNumber.value === 1) parameterNumber.value++;
-    if (parameterNumber.value === 2)
-      auth.value.children[auth.value.children.length - 1].focus();
-  }
-  if (header.value === 'Регистрация') {
-    if (parameterNumber.value < 4) parameterNumber.value++;
-    if (parameterNumber.value === 4)
-      auth.value.children[auth.value.children.length - 1].focus();
-  }
-};
-const signinButtonEnabled = computed(() =>
-  Boolean(authInformation.email.value && authInformation.password.value)
-);
-const signupButtonEnabled = computed(() =>
-  Boolean(
-    authInformation.name.value &&
-      authInformation.email.value &&
-      authInformation.password.value &&
-      authInformation.repeatPassword.value
-  )
-);
-const auth = ref(null);
 const clueSeen = ref(false);
 const showClue = (event) => {
   clueSeen.value = true;
@@ -102,12 +81,30 @@ const clueMessage = computed(() => {
   }
   return 'Поле должно быть заполнено';
 });
+
+const auth = ref(null);
+const handleInputEnter = (event) => {
+  if (!authInformation[event.currentTarget.dataset.type].value) {
+    clueSeen.value = true;
+    return;
+  }
+  if (header.value === 'Вход') {
+    if (parameterNumber.value === 1) parameterNumber.value++;
+    if (parameterNumber.value === 2)
+      auth.value.children[auth.value.children.length - 1].focus();
+  }
+  if (header.value === 'Регистрация') {
+    if (parameterNumber.value < 4) parameterNumber.value++;
+    if (parameterNumber.value === 4)
+      auth.value.children[auth.value.children.length - 1].focus();
+  }
+};
 </script>
 
 <template>
   <div class="auth-and-error">
     <div class="auth" ref="auth">
-      <button class="auth__change" @click="changeHeader">
+      <button class="auth__change-button" @click="changeHeader">
         {{ header === 'Вход' ? 'Регистрация' : 'Вход' }}
       </button>
       <button
@@ -125,11 +122,11 @@ const clueMessage = computed(() => {
       <!--keydown так как keyup отработает после переключения и захватит инпут-->
       <KeepAlive>
         <component
+          :is="currentParameter"
           @keydown.enter.prevent="handleInputEnter"
           @updateParameter="updateParameter"
           @blur="clueSeen = false"
           :password="authInformation.password.value"
-          :is="currentParameter"
         />
       </KeepAlive>
       <button class="auth__clue-button" @click="showClue" :disabled="clueSeen">
@@ -144,19 +141,10 @@ const clueMessage = computed(() => {
         :authInformation="authInformation"
         @changeParameterNumber="changeParameterNumber"
       />
-      <SigninButton
-        v-if="header === 'Вход'"
-        :isEnabled="signinButtonEnabled"
-        :authInformation="authInformation"
+      <AuthButton
+        :type="header"
         :player="props.player"
-        @changeErrorMessage="changeErrorMessage"
-        @closeAuthComp="$emit('closeAuthComp')"
-      />
-      <SignupButton
-        v-if="header === 'Регистрация'"
-        :isEnabled="signupButtonEnabled"
         :authInformation="authInformation"
-        :player="props.player"
         @changeErrorMessage="changeErrorMessage"
         @closeAuthComp="$emit('closeAuthComp')"
       />
@@ -191,7 +179,7 @@ const clueMessage = computed(() => {
   overflow: auto;
   background-color: rgb(182, 195, 197);
 
-  &__change {
+  &__change-button {
     position: absolute;
     top: 4px;
     left: 4px;
@@ -283,25 +271,6 @@ const clueMessage = computed(() => {
     left: calc(50% - 160px);
     top: calc(64px + 1px + 124px + 8px);
     z-index: 2;
-  }
-}
-
-.auth__button {
-  width: 160px;
-  height: 56px;
-  margin-top: 32px;
-  border: none;
-  border-radius: 6px;
-  @include fonts.Advent;
-  cursor: pointer;
-  background-color: #55b2f0;
-
-  &_disabled {
-    opacity: 40%;
-  }
-  &:focus {
-    outline: 1px solid black;
-    outline-offset: 2px;
   }
 }
 </style>

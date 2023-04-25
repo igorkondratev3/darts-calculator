@@ -11,7 +11,7 @@ const repeatPasswordValidation = () => {
   if (repeatPassword.value && repeatPassword.value === props.password)
     isCorrectRepeatPassword.value = true;
 };
-const handleInput = () => {
+const updateRepeatPassword = () => {
   repeatPasswordValidation();
   emits(
     'updateParameter',
@@ -21,7 +21,6 @@ const handleInput = () => {
 };
 
 const repeatPasswordInput = ref(null);
-
 onActivated(() => {
   repeatPasswordInput.value.focus();
 });
@@ -40,9 +39,11 @@ onActivated(() => {
     ref="repeatPasswordInput"
     data-type="repeatPassword"
     v-model="repeatPassword"
-    @input="handleInput"
+    @input="updateRepeatPassword"
     autocomplete="off"
   />
 </template>
 
-<style></style>
+<style>
+/*стили в рожительском компоненте*/
+</style>
