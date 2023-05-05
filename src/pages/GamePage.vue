@@ -10,7 +10,7 @@ import {
   defineFocusForNewLeg,
   defineFocusForNextPlayer
 } from '@/helpers/defineFocus.js';
-import { useUsersStore } from '@/stores/users.js'
+import { useUsersStore } from '@/stores/users.js';
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
 
@@ -210,7 +210,9 @@ const startNewGame = () => {
       Новый матч
     </button>
     <div class="game__players-information players-information">
-      <div class="players-information__name"> {{ usersStore.users.P1?.name || playerOne?.name }}</div>
+      <div class="players-information__name">
+        {{ usersStore.users.P1?.name || playerOne?.name }}
+      </div>
       <PalyerScore
         v-if="Boolean(playerOne)"
         :areSetsInGame="gameParameters?.areSetsInGame"
@@ -224,7 +226,9 @@ const startNewGame = () => {
         :setsWon="playerTwo?.setsWon.value"
         :legsWonInSet="playerTwo?.legsWonInSet.value"
       />
-      <div class="players-information__name"> {{ usersStore.users.P2?.name || playerTwo?.name }}</div>
+      <div class="players-information__name">
+        {{ usersStore.users.P2?.name || playerTwo?.name }}
+      </div>
     </div>
     <div class="game__points-information points-information">
       <PlayerStatistic
@@ -316,10 +320,13 @@ const startNewGame = () => {
           ? playerTwo.setsWon.value
           : playerTwo.legsWonInGame.value
       "
+      :legsWonInGameP1="playerOne.legsWonInGame.value"
+      :legsWonInGameP2="playerTwo.legsWonInGame.value"
       :gameStatisticP1="playerOne.gameStatistic"
       :gameStatisticP2="playerTwo.gameStatistic"
       :isPercentDoubleInStatP1="gameParameters.isPercentDoubleInStatP1"
       :isPercentDoubleInStatP2="gameParameters.isPercentDoubleInStatP2"
+      :legNumber="legNumber - 1"
     />
   </dialog>
 </template>
