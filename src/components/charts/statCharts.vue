@@ -1,18 +1,79 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
 const props = defineProps({
   parameterName: String,
   chartData: Array
 });
-const chartWidth = 1000;
-const chartHeight = 300;
-let lineWidth = calculateLineWidth(chartWidth, props.chartData.length);
-const maxValue = Math.max(
-  ...props.chartData.map((parameterValue) => parameterValue.value)
+
+const formattedDate = (ddmmyyyy) => {
+  const yyyymmdd = ddmmyyyy.split('-').reverse().join('-');
+  return yyyymmdd;
+};
+const minDate = formattedDate(props.chartData[0].date);
+const maxDate = formattedDate(props.chartData.at(-1).date);
+
+const startDate = ref(minDate);
+const endDate = ref(maxDate);
+const startDateForChart = ref(minDate);
+const endDateForChart = ref(maxDate);
+
+//использоваь функцию для проверки дат
+const isDateInInterval = (date, startDate, endDate) => {
+  const dateArr = date.split('-').map((value) => Number(value));
+  const startDateArr = startDate.split('-').map((value) => Number(value));
+  const endDateArr = endDate.split('-').map((value) => Number(value));
+
+  if (dateArr[0] < startDateArr[0] || dateArr[0] > endDateArr[0]) return false;
+
+  if (dateArr[0] === startDateArr[0] && dateArr[1] < startDateArr[1])
+    return false;
+
+  if (dateArr[0] === endDateArr[0] && dateArr[1] > endDateArr[1]) return false;
+
+  if (
+    dateArr[0] === startDateArr[0] &&
+    dateArr[1] === startDateArr[1] &&
+    dateArr[2] < startDateArr[2]
+  )
+    return false;
+
+  if (
+    dateArr[0] === endDateArr[0] &&
+    dateArr[1] === endDateArr[1] &&
+    dateArr[2] > endDateArr[2]
+  )
+    return false;
+
+  return true;
+};
+
+const currentChartData = computed(() =>
+  props.chartData.filter((val) =>
+    isDateInInterval(
+      formattedDate(val.date),
+      startDateForChart.value,
+      endDateForChart.value
+    )
+  )
 );
 
+const chartWidth = computed(() =>
+  currentChartData.value.length * 7 + currentChartData.value.length - 1 > 260
+    ? currentChartData.value.length * 7 + currentChartData.value.length - 1
+    : 260
+);
+
+const chartHeight = 300;
+
+const lineWidth = computed(() => calculateLineWidth(chartWidth.value, currentChartData.value.length)) 
+const maxValue = computed(() => Math.max(
+  ...currentChartData.value.map((parameterValue) => parameterValue.value)
+)) 
+
 const calculateLineHeight = (chartHeight, maxValue, currentValue) =>
-  (chartHeight / maxValue) * currentValue;
+  (chartHeight / maxValue) * currentValue || 7;
+//чтобы нулевые показатели были видны
 
 const calculateX = (indexLine, lineWidth) => indexLine * lineWidth + indexLine;
 const calculateY = (chartHeight, maxValue, currentValue) =>
@@ -39,52 +100,137 @@ const hideValue = () => {
   seenValue.value = false;
 };
 
-const formattedDate = (ddmmyyyy) => {
-  const yyyymmdd = ddmmyyyy.split('-').reverse().join('-');
-  return yyyymmdd;
-};
-
-const startDate = ref(formattedDate(props.chartData[0].date));
-//const endDate = ref(formattedDate(props.chartData[0].date));
-
-//будет одинаковая проверка для стартовой и конечной на интервал + нужна проверка на
-//пересечение, разным будет еще присваевоемое значение в случае неудачной валидации
-//выводить служеюные сообщения для пользователей
 const startDateValidate = () => {
-  const arrDate = startDate.value.split('-').map(value => Number(value));
-  const arrMinDate = minDate.split('-').map(value => Number(value));
-  const arrMaxDate = maxDate.split('-').map(value => Number(value));
-  console.log(arrMaxDate)
-if (
-    Number(arrDate[0]) < Number(arrMinDate[0]) ||
-    Number(arrDate[0]) > Number(arrMaxDate[0])
+  console.log('Начали валидацию');
+  const arrDate = startDate.value.split('-').map((value) => Number(value));
+  const arrMinDate = minDate.split('-').map((value) => Number(value));
+  const arrMaxDate = maxDate.split('-').map((value) => Number(value));
+  if (arrDate[0] < arrMinDate[0] || arrDate[0] > arrMaxDate[0]) {
+    startDate.value = minDate;
+    return;
+  }
+
+  if (arrDate[0] === arrMinDate[0] && arrDate[1] < arrMinDate[1]) {
+    startDate.value = minDate;
+    return;
+  }
+
+  if (arrDate[0] === arrMaxDate[0] && arrDate[1] > arrMaxDate[1]) {
+    startDate.value = minDate;
+    return;
+  }
+
+  if (
+    arrDate[0] === arrMinDate[0] &&
+    arrDate[1] === arrMinDate[1] &&
+    arrDate[2] < arrMinDate[2]
   ) {
     startDate.value = minDate;
     return;
   }
-//продолжаем проверку даты
-/*  if (Number(arrDate[1]) < Number(arrMinDate[1])) {
-    if ()
+
+  if (
+    arrDate[0] === arrMaxDate[0] &&
+    arrDate[1] === arrMaxDate[1] &&
+    arrDate[2] > arrMaxDate[2]
+  ) {
     startDate.value = minDate;
     return;
-  }*/
+  }
 };
 
-const minDate = formattedDate(props.chartData[0].date);
-const maxDate = formattedDate(props.chartData.at(-1).date);
+const endDateValidate = () => {
+  console.log('Начали валидацию');
+  const arrDate = endDate.value.split('-').map((value) => Number(value));
+  const arrMinDate = minDate.split('-').map((value) => Number(value));
+  const arrMaxDate = maxDate.split('-').map((value) => Number(value));
+
+  if (arrDate[0] < arrMinDate[0] || arrDate[0] > arrMaxDate[0]) {
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (arrDate[0] === arrMinDate[0] && arrDate[1] < arrMinDate[1]) {
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (arrDate[0] === arrMaxDate[0] && arrDate[1] > arrMaxDate[1]) {
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (
+    arrDate[0] === arrMinDate[0] &&
+    arrDate[1] === arrMinDate[1] &&
+    arrDate[2] < arrMinDate[2]
+  ) {
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (
+    arrDate[0] === arrMaxDate[0] &&
+    arrDate[1] === arrMaxDate[1] &&
+    arrDate[2] > arrMaxDate[2]
+  ) {
+    endDate.value = maxDate;
+    return;
+  }
+};
+
+const dateIntervalValidate = () => {
+  const arrStartDate = startDate.value.split('-').map((value) => Number(value));
+  const arrEndDate = endDate.value.split('-').map((value) => Number(value));
+
+  //потом обнулять в заивисмости от проверяемого значения
+  if (arrStartDate[0] > arrEndDate[0]) {
+    startDate.value = minDate;
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (arrStartDate[0] === arrEndDate[0] && arrStartDate[1] > arrEndDate[1]) {
+    startDate.value = minDate;
+    endDate.value = maxDate;
+    return;
+  }
+
+  if (
+    arrStartDate[0] === arrEndDate[0] &&
+    arrStartDate[1] === arrEndDate[1] &&
+    arrStartDate[2] > arrEndDate[2]
+  ) {
+    startDate.value = minDate;
+    endDate.value = maxDate;
+    return;
+  }
+};
+
+const dateValidate = () => {
+  startDateValidate();
+  endDateValidate();
+  dateIntervalValidate();
+};
+
+const changeChart = () => {
+  dateValidate();
+  startDateForChart.value = startDate.value;
+  endDateForChart.value = endDate.value;
+};
 </script>
 
 <template>
   <div class="chart-box">
-    {{ startDate }}
     <h3 class="chart-box__head">{{ props.parameterName }}</h3>
-    <div class="chart-wrap" :data-max="maxValue">
+    <div class="chart-wrap" :data-max="maxValue || ''">
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
       <div class="chart-box__chart chart">
         <svg class="chart__svg" :width="chartWidth" :height="chartHeight">
           <rect
-            v-for="(valueObj, index) of props.chartData"
-            :key="valueObj.date + props.parameterName"
+            v-for="(valueObj, index) of currentChartData"
+            :data-valy="calculateY(chartHeight, maxValue, valueObj.value)"
+            :key="valueObj.date + props.parameterName + index"
             :width="lineWidth"
             :height="calculateLineHeight(chartHeight, maxValue, valueObj.value)"
             :x="calculateX(index, lineWidth)"
@@ -101,16 +247,27 @@ const maxDate = formattedDate(props.chartData.at(-1).date);
     </div>
     <div class="date">
       <label>
-        <h6>С</h6>
+        <h6>с</h6>
         <input
           type="date"
-          v-model.lazy="startDate"
+          v-model="startDate"
           :min="minDate"
           :max="maxDate"
-          @blur="startDateValidate"
+          @blur="changeChart"
+          @keypress.enter="$event.currentTarget.blur()"
         />
-        <!--по блюру и ентеру будем запускать изменения предварительно проверив
-        корректность даты-->
+      </label>
+      <span> - </span>
+      <label>
+        <h6>по</h6>
+        <input
+          type="date"
+          v-model="endDate"
+          :min="minDate"
+          :max="maxDate"
+          @blur="changeChart"
+          @keypress.enter="$event.currentTarget.blur()"
+        />
       </label>
     </div>
   </div>
@@ -121,8 +278,8 @@ const maxDate = formattedDate(props.chartData.at(-1).date);
 
 .chart-box {
   display: inline-flex;
-  margin-left: 150px;
-  margin-top: 50px;
+  margin-left: 112px;
+  margin-top: 64px;
   flex-direction: column;
   align-items: center;
 
@@ -160,6 +317,17 @@ const maxDate = formattedDate(props.chartData.at(-1).date);
 
   &__line {
     fill: #f0b375;
+    animation-duration: 2s;
+    animation-name: line;
+
+    @keyframes line {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
 
     &:hover {
       fill: rgb(99, 161, 177);
@@ -188,7 +356,7 @@ const maxDate = formattedDate(props.chartData.at(-1).date);
 }
 
 .date {
+  display: flex;
   margin-top: 32px;
-  background-color: red;
 }
 </style>

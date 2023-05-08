@@ -32,7 +32,7 @@ const setstatisticInDB = async (player) => {
     delete gameStatistic.percentDouble;
   }
 
-  const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic`;
+  const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic/set`;
   const fetchParams = {
     method: 'POST',
     body: JSON.stringify({

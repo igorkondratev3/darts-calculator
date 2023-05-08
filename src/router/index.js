@@ -10,9 +10,12 @@ const router = createRouter({
       component: GamePage
     },
     {
-      path: '/playerCharts',
-      name: 'PlayerCharts',
-      component: () => import('@/pages/PlayerCharts.vue')
+      path: '/userProfile',
+      name: 'UserProfile',
+      component: () => import('@/pages/UserProfile.vue'),
+      props: (route) => ({
+        player: route.query.player
+      })
     }
   ]
 });

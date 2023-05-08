@@ -2,6 +2,7 @@
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import { useUsersStore } from '@/stores/users';
+import { useRouter } from 'vue-router';
 import AuthLink from './components/authLink.vue';
 import LogoutLink from './components/logoutLink.vue';
 import LoadingComponent from '@/components/loadingComponent.vue';
@@ -15,6 +16,8 @@ const props = defineProps({
   areSetsInGame: Boolean,
   isPercentDoubleInStat: Boolean
 });
+
+const router = useRouter();
 
 let positionSetupVisibility = {
   'margin-left': '-12px',
@@ -88,15 +91,26 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   if (groupName === 'set') seenParametersSet[parameterName].value = value;
   if (groupName === 'leg') seenAveragePointsLeg.value = value;
 };
+
+const goToProfile = (player) => {
+  router.push({
+    name: 'UserProfile',
+    query: {
+      player: player
+    }
+  });
+};
 </script>
 
 <template>
   <div class="points-information__statistic statistic">
+    <!--сделать сслкой-->
     <button
       v-if="usersStore.users[props.player]"
       class="auth-person"
       :class="{ 'auth-person_order_2': props.player === 'P2' }"
       title="Перейти на страницу профиля"
+      @click="goToProfile(props.player)"
     >
       <img
         class="auth-person__icon"
