@@ -6,6 +6,35 @@ const props = defineProps({
   chartData: Array
 });
 
+const translateName = (name) => {
+  switch (name) {
+    case 'averagePoints':
+      return 'Средний набор';
+    case 'averagePointsWinLegs':
+      return 'Выигранные леги';
+    case 'averagePointsLoseLegs':
+      return 'Проигранные леги';
+    case 'averageFirstNineDarts':
+      return '9 дротиков';
+    case 'p180':
+      return '180 очков';
+    case 'p171':
+      return '171+ очков';
+    case 'p131':
+      return '131+ очков';
+    case 'p96':
+      return '96+ очков';
+    case 'percentDouble':
+      return 'Процент удвоений';
+    case 'highestCheckout':
+      return 'Набольшие закрытия';
+    default:
+      return name;
+  }
+};
+
+const name = translateName(props.parameterName);
+
 const formattedDate = (ddmmyyyy) => {
   const yyyymmdd = ddmmyyyy.split('-').reverse().join('-');
   return yyyymmdd;
@@ -48,6 +77,8 @@ const isDateInInterval = (date, startDate, endDate) => {
   return true;
 };
 
+const hideZero = ref(false);
+
 const currentChartData = computed(() =>
   props.chartData.filter((val) =>
     isDateInInterval(
@@ -58,6 +89,10 @@ const currentChartData = computed(() =>
   )
 );
 
+const currentChartDataWithoutZero = computed(() =>
+  currentChartData.value.filter((val) => val.value > 0)
+);
+
 const chartWidth = computed(() =>
   currentChartData.value.length * 7 + currentChartData.value.length - 1 > 260
     ? currentChartData.value.length * 7 + currentChartData.value.length - 1
@@ -66,10 +101,14 @@ const chartWidth = computed(() =>
 
 const chartHeight = 300;
 
-const lineWidth = computed(() => calculateLineWidth(chartWidth.value, currentChartData.value.length)) 
-const maxValue = computed(() => Math.max(
-  ...currentChartData.value.map((parameterValue) => parameterValue.value)
-)) 
+const lineWidth = computed(() =>
+  calculateLineWidth(chartWidth.value, currentChartData.value.length)
+);
+const maxValue = computed(() =>
+  Math.max(
+    ...currentChartData.value.map((parameterValue) => parameterValue.value)
+  )
+);
 
 const calculateLineHeight = (chartHeight, maxValue, currentValue) =>
   (chartHeight / maxValue) * currentValue || 7;
@@ -222,13 +261,15 @@ const changeChart = () => {
 
 <template>
   <div class="chart-box">
-    <h3 class="chart-box__head">{{ props.parameterName }}</h3>
+    <h3 class="chart-box__head">{{ name }}</h3>
     <div class="chart-wrap" :data-max="maxValue || ''">
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
       <div class="chart-box__chart chart">
         <svg class="chart__svg" :width="chartWidth" :height="chartHeight">
           <rect
-            v-for="(valueObj, index) of currentChartData"
+            v-for="(valueObj, index) of hideZero
+              ? currentChartDataWithoutZero
+              : currentChartData"
             :data-valy="calculateY(chartHeight, maxValue, valueObj.value)"
             :key="valueObj.date + props.parameterName + index"
             :width="lineWidth"
@@ -242,13 +283,14 @@ const changeChart = () => {
         </svg>
       </div>
       <div class="chart-box__info" v-show="seenValue">
-        {{ dateValue }} {{ scoreValue }}
+        {{ dateValue }} {{ scoreValue.toFixed(2) }}
       </div>
     </div>
     <div class="date">
-      <label>
-        <h6>с</h6>
+      <label class="date__from">
+        <h6 class="date__header">с</h6>
         <input
+          class="date__value"
           type="date"
           v-model="startDate"
           :min="minDate"
@@ -257,10 +299,10 @@ const changeChart = () => {
           @keypress.enter="$event.currentTarget.blur()"
         />
       </label>
-      <span> - </span>
-      <label>
-        <h6>по</h6>
+      <label class="date__to">
+        <h6 class="date__header">по</h6>
         <input
+          class="date__value"
           type="date"
           v-model="endDate"
           :min="minDate"
@@ -270,6 +312,10 @@ const changeChart = () => {
         />
       </label>
     </div>
+    <label>
+      <input type="checkbox" v-model="hideZero" />
+      скрывать нули
+    </label>
   </div>
 </template>
 
@@ -284,10 +330,11 @@ const changeChart = () => {
   align-items: center;
 
   &__info {
-    align-self: center;
+    width: 100%;
     position: absolute;
     bottom: 0;
     left: 50%;
+    text-align: center;
     transform: translate(-50%, 100%);
   }
 }
@@ -298,7 +345,7 @@ const changeChart = () => {
   line-height: 0;
   padding-right: 32px;
   padding-top: 32px;
-  background-color: #eef7f4;
+  background-color: #dadada;
   width: 300px;
   overflow-x: scroll;
   scrollbar-width: none;
@@ -358,5 +405,16 @@ const changeChart = () => {
 .date {
   display: flex;
   margin-top: 32px;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__from,
+  &__to {
+    margin-right: 16px;
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>

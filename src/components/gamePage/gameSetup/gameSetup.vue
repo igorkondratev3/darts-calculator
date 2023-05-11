@@ -1,6 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters';
+import { useUsersStore } from '@/stores/users';
+import { useRouter } from 'vue-router';
+import AuthLink from '@/components/gamePage/playerStatistic/components/authLink.vue';
+import LogoutLink from '@/components/gamePage/playerStatistic/components/logoutLink.vue';
+import LoadingComponent from '@/components/loadingComponent.vue';
+const usersStore = useUsersStore();
+const router = useRouter();
 
 const props = defineProps({
   seenSetup: Boolean
@@ -48,6 +55,23 @@ const setStartRemainder = (remainder) => {
   gameParameters.startRemainder.value = remainder;
   seenSelectRemainders.value = false;
 };
+
+const goToProfile = (player) => {
+  router.push({
+    name: 'UserProfile',
+    query: {
+      player: player
+    }
+  });
+};
+
+const seenAuthCompP1 = ref(false);
+const seenAuthCompP2 = ref(false);
+const AuthComp = defineAsyncComponent({
+  loader: () => import('@/components/auth/authComp.vue'),
+  loadingComponent: LoadingComponent,
+  delay: 0
+});
 </script>
 
 <template>
@@ -56,151 +80,214 @@ const setStartRemainder = (remainder) => {
     v-show="props.seenSetup"
     @click="seenSelectRemainders = false"
   >
-    <div class="game-setup">
-      <h1 class="game-setup__header">Настройка параметров матча</h1>
-      <h3 class="game-setup__parameter-header">Формат матча</h3>
-      <div class="game-setup__start-remainder">
-        <div
-          class="start-remainder__header"
-          tabindex="0"
-          @click.stop="seenSelectRemainders = true"
-          @keyup.enter="seenSelectRemainders = true"
-        >
-          {{ gameParameters.startRemainder.value }}
-          <img
-            class="arrow-down-icon"
-            src="/src/assets/images/arrow_down.svg"
-            alt="open"
-          />
-        </div>
-        <div
-          class="start-remainder__values"
-          v-show="seenSelectRemainders"
-          @click.stop=""
-        >
+    <AuthComp
+      v-if="seenAuthCompP1"
+      @closeAuthComp="seenAuthCompP1 = false"
+      player="P1"
+    />
+    <AuthComp
+      v-if="seenAuthCompP2"
+      @closeAuthComp="seenAuthCompP2 = false"
+      player="P2"
+    />
+    <div class="wrap" v-show="!seenAuthCompP1 && !seenAuthCompP2">
+      <!--сделать сслкой-->
+      <button
+        v-if="usersStore.users.P1"
+        class="auth-person-gs"
+        title="Перейти на страницу профиля"
+        @click="goToProfile('P1')"
+      >
+        <img
+          class="auth-person-gs__icon"
+          src="/src/assets/images/yes_login.svg"
+          alt="yes_login"
+        />
+      </button>
+      <button v-else class="auth-person-gs" title="Вход не выполнен">
+        <img
+          class="auth-person-gs__icon"
+          src="/src/assets/images/no_login.svg"
+          alt="no_login"
+        />
+      </button>
+      <div class="game-setup">
+        <LogoutLink v-if="usersStore.users.P1" player="P1" />
+        <AuthLink
+          v-if="!usersStore.users.P1"
+          @openAuthComp="seenAuthCompP1 = true"
+          player="P1"
+        />
+        <LogoutLink v-if="usersStore.users.P2" player="P2" />
+        <AuthLink
+          v-if="!usersStore.users.P2"
+          @openAuthComp="seenAuthCompP2 = true"
+          player="P2"
+        />
+        <h1 class="game-setup__header">Настройка параметров матча</h1>
+        <h3 class="game-setup__parameter-header">Формат матча</h3>
+        <div class="game-setup__start-remainder">
           <div
-            class="start-remainder__value"
+            class="start-remainder__header"
             tabindex="0"
-            @click="setStartRemainder(501)"
-            @keyup.enter="setStartRemainder(501)"
+            @click.stop="seenSelectRemainders = true"
+            @keyup.enter="seenSelectRemainders = true"
           >
-            501
+            {{ gameParameters.startRemainder.value }}
+            <img
+              class="arrow-down-icon"
+              src="/src/assets/images/arrow_down.svg"
+              alt="open"
+            />
           </div>
           <div
-            class="start-remainder__value"
-            tabindex="0"
-            @click="setStartRemainder(1001)"
-            @keyup.enter="setStartRemainder(1001)"
+            class="start-remainder__values"
+            v-show="seenSelectRemainders"
+            @click.stop=""
           >
-            1001
+            <div
+              class="start-remainder__value"
+              tabindex="0"
+              @click="setStartRemainder(501)"
+              @keyup.enter="setStartRemainder(501)"
+            >
+              501
+            </div>
+            <div
+              class="start-remainder__value"
+              tabindex="0"
+              @click="setStartRemainder(1001)"
+              @keyup.enter="setStartRemainder(1001)"
+            >
+              1001
+            </div>
           </div>
         </div>
-      </div>
-      <h3 class="game-setup__parameter-header">Имена игроков</h3>
-      <div class="game-setup__player-names player-names">
-        <input
-          class="player-names__name player-names__name_margin-right"
-          type="text"
-          v-model="gameParameters.nameP1.value"
-          maxlength="30"
-          required
-          @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
-        />
-        <input
-          class="player-names__name"
-          type="text"
-          v-model="gameParameters.nameP2.value"
-          maxlength="30"
-          required
-          @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
-        />
-      </div>
-      <div class="game-setup__who-starts who-starts">
-        <input
-          class="who-starts__radio-button"
-          type="radio"
-          name="whoStarts"
-          value="nameP1"
-          v-model="gameParameters.whoStarts.value"
-        />
-        <h3
-          class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
-        >
-          Кто начинает
-        </h3>
-        <input
-          class="who-starts__radio-button"
-          type="radio"
-          name="whoStarts"
-          value="nameP2"
-          v-model="gameParameters.whoStarts.value"
-        />
-      </div>
-      <div class="game-setup__is-percent-double is-percent-double">
-        <input
-          class="is-percent-double__value"
-          type="checkbox"
-          v-model="gameParameters.isPercentDoubleInStatP1.value"
-          @keyup.enter="
-            gameParameters.isPercentDoubleInStatP1.value =
-              !gameParameters.isPercentDoubleInStatP1.value
-          "
-        />
-        <h3
-          class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
-        >
-          Подсчитывать процент удвоений
-        </h3>
-        <input
-          class="is-percent-double__value"
-          type="checkbox"
-          v-model="gameParameters.isPercentDoubleInStatP2.value"
-          @keyup.enter="
-            gameParameters.isPercentDoubleInStatP2.value =
-              !gameParameters.isPercentDoubleInStatP2.value
-          "
-        />
-      </div>
-      <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
-      <div class="game-setup__sets-legs sets-legs">
-        <label class="sets-legs__parameter sets-legs__value_margin_right">
-          Сетов
+        <h3 class="game-setup__parameter-header">Имена игроков</h3>
+        <div class="game-setup__player-names player-names">
           <input
-            class="sets-legs__value"
-            type="number"
-            min="1"
-            v-model="gameParameters.setsToWin.value"
-            @input="checkValuesToWin('setsToWin', $event)"
-            @blur="checkParameterForEmpty('setsToWin', 1)"
-            :disabled="!gameParameters.areSetsInGame.value"
+            class="player-names__name player-names__name_margin-right"
+            type="text"
+            v-model="gameParameters.nameP1.value"
+            maxlength="30"
+            required
+            @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
           />
           <input
-            class="sets-legs__is-disabled"
+            class="player-names__name"
+            type="text"
+            v-model="gameParameters.nameP2.value"
+            maxlength="30"
+            required
+            @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
+          />
+        </div>
+        <div class="game-setup__who-starts who-starts">
+          <input
+            class="who-starts__radio-button"
+            type="radio"
+            name="whoStarts"
+            value="nameP1"
+            v-model="gameParameters.whoStarts.value"
+          />
+          <h3
+            class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
+          >
+            Кто начинает
+          </h3>
+          <input
+            class="who-starts__radio-button"
+            type="radio"
+            name="whoStarts"
+            value="nameP2"
+            v-model="gameParameters.whoStarts.value"
+          />
+        </div>
+        <div class="game-setup__is-percent-double is-percent-double">
+          <input
+            class="is-percent-double__value"
             type="checkbox"
-            v-model="gameParameters.areSetsInGame.value"
-            @change="
-              checkAreSetsInGame($event.currentTarget.previousElementSibling)
+            v-model="gameParameters.isPercentDoubleInStatP1.value"
+            @keyup.enter="
+              gameParameters.isPercentDoubleInStatP1.value =
+                !gameParameters.isPercentDoubleInStatP1.value
             "
-            @keyup.enter="changeAreSetsInGame"
           />
-        </label>
-        <label class="sets-legs__parameter">
-          Легов
+          <h3
+            class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
+          >
+            Подсчитывать процент удвоений
+          </h3>
           <input
-            class="sets-legs__value"
-            type="number"
-            min="1"
-            v-model="gameParameters.legsToWin.value"
-            @input="checkValuesToWin('legsToWin', $event)"
-            @blur="checkParameterForEmpty('legsToWin', 1)"
+            class="is-percent-double__value"
+            type="checkbox"
+            v-model="gameParameters.isPercentDoubleInStatP2.value"
+            @keyup.enter="
+              gameParameters.isPercentDoubleInStatP2.value =
+                !gameParameters.isPercentDoubleInStatP2.value
+            "
           />
-        </label>
+        </div>
+        <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
+        <div class="game-setup__sets-legs sets-legs">
+          <label class="sets-legs__parameter sets-legs__value_margin_right">
+            Сетов
+            <input
+              class="sets-legs__value"
+              type="number"
+              min="1"
+              v-model="gameParameters.setsToWin.value"
+              @input="checkValuesToWin('setsToWin', $event)"
+              @blur="checkParameterForEmpty('setsToWin', 1)"
+              :disabled="!gameParameters.areSetsInGame.value"
+            />
+            <input
+              class="sets-legs__is-disabled"
+              type="checkbox"
+              v-model="gameParameters.areSetsInGame.value"
+              @change="
+                checkAreSetsInGame($event.currentTarget.previousElementSibling)
+              "
+              @keyup.enter="changeAreSetsInGame"
+            />
+          </label>
+          <label class="sets-legs__parameter">
+            Легов
+            <input
+              class="sets-legs__value"
+              type="number"
+              min="1"
+              v-model="gameParameters.legsToWin.value"
+              @input="checkValuesToWin('legsToWin', $event)"
+              @blur="checkParameterForEmpty('legsToWin', 1)"
+            />
+          </label>
+        </div>
+        <button
+          class="game-setup__start-game-button"
+          @click.prevent="startGame(gameParameters)"
+        >
+          Начать матч
+        </button>
       </div>
       <button
-        class="game-setup__start-game-button"
-        @click.prevent="startGame(gameParameters)"
+        v-if="usersStore.users.P2"
+        class="auth-person-gs"
+        title="Перейти на страницу профиля"
+        @click="goToProfile('P2')"
       >
-        Начать матч
+        <img
+          class="auth-person-gs__icon"
+          src="/src/assets/images/yes_login.svg"
+          alt="yes_login"
+        />
+      </button>
+      <button v-else class="auth-person-gs" title="Вход не выполнен">
+        <img
+          class="auth-person-gs__icon"
+          src="/src/assets/images/no_login.svg"
+          alt="no_login"
+        />
       </button>
     </div>
   </div>
@@ -210,6 +297,10 @@ const setStartRemainder = (remainder) => {
 //dialog-content-wrapper на главной странице
 @use '@/assets/css/mixins/fonts.scss';
 
+.wrap {
+  display: flex;
+}
+
 .game-setup {
   display: flex;
   flex-direction: column;
@@ -217,6 +308,8 @@ const setStartRemainder = (remainder) => {
   max-width: 95vw;
   padding: 16px;
   border-radius: 16px;
+  margin-left: 4px;
+  margin-right: 4px;
   overflow: scroll;
   background-color: rgb(177, 205, 223);
 
@@ -424,5 +517,25 @@ const setStartRemainder = (remainder) => {
 
 .sets-legs__is-disabled {
   margin-left: 8px;
+}
+
+.auth-person-gs {
+  position: sticky;
+  top: 3px;
+  margin-top: 3px;
+  background-color: rgb(177, 205, 223);
+  width: 28px;
+  height: 28px;
+  border: 1px solid black;
+  border-radius: 50%;
+
+  &_order_2 {
+    order: 2;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>

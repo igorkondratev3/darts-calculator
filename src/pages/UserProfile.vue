@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import StatCharts from '@/components/charts/statCharts.vue';
 import { useUsersStore } from '@/stores/users.js';
-import { RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router';
 const usersStore = useUsersStore();
 
 const props = defineProps({
@@ -61,21 +61,33 @@ getStatistic(props.player);
 </script>
 
 <template>
-    <RouterLink to="/">
-    на главную
-  </RouterLink>
-  <img src="/src/assets/images/yes_login.svg" />
-  <h3>{{ usersStore.users[props.player].name }}</h3>
-  <div v-if="statistic" class="charts">
-    <template v-for="(statisticParameter, key) in statistic" :key="key">
-      <StatCharts
-        v-if="statisticParameter[0]"
-        :parameterName="key"
-        :chartData="statisticParameter"
-      />
-    </template>
+  <div class="user-profile">
+    <RouterLink class="home-button" to="/">на главную</RouterLink>
+    <div class="user-profile__information user-information">
+      <div class="user-information__avatar avatar">
+        <img
+          class="avatar__img"
+          src="/src/assets/images/yes_login.svg"
+          alt="avatar"
+        />
+      </div>
+      <h3 class="user-information__name">
+        {{ usersStore.users[props.player].name }}
+      </h3>
+    </div>
+
+    <div v-if="statistic" class="charts">
+      <template v-for="(statisticParameter, key) in statistic" :key="key">
+        <StatCharts
+          v-if="statisticParameter[0]"
+          :parameterName="key"
+          :chartData="statisticParameter"
+        />
+      </template>
+    </div>
   </div>
 
+  <!--
   <StatCharts
     parameterName="AveragesAV"
     :chartData="[
@@ -240,12 +252,68 @@ getStatistic(props.player);
       { date: '30-09-2023', value: 42.5 }
     ]"
   />
+  -->
 </template>
 
-<style>
+<style lang="scss">
+@use '@/assets/css/mixins/fonts.scss';
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+  @include fonts.Advent;
+  background-color: rgb(232, 238, 233);
+}
+
+.home-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  @include fonts.Advent;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: default;
+  transition: background-color 0.5s linear, color 0.5s linear;
+
+  &:focus,
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+}
+
+.user-information {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 32px;
+
+  &__name {
+    font-size: 48px;
+  }
+}
+
+.avatar {
+  border: 1px solid black;
+  border-radius: 50%;
+
+  &__img {
+    display: block;
+    width: 256px;
+    height: 256px;
+  }
+}
+
 .charts {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-self: center;
 }
 </style>
