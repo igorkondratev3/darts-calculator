@@ -15,8 +15,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
-  width: 200px;
+  width: 352px;
+  height: 394px;
   margin-top: 8px;
   margin-left: 4px;
   margin-right: 4px;

@@ -58,6 +58,7 @@ const deleteRefreshTokenFromDB = async (refreshToken) => {
               name: 'UserProfile',
               query: { player: 'P1' }
             }"
+            tabindex="-1"
             class="sta__li"
           >
             <button class="sta__login" :disabled="!usersStore.users.P1">
@@ -94,6 +95,7 @@ const deleteRefreshTokenFromDB = async (refreshToken) => {
               name: 'UserProfile',
               query: { player: 'P2' }
             }"
+            tabindex="-1"
             class="sta__li"
           >
             <button class="sta__login" :disabled="!usersStore.users.P2">

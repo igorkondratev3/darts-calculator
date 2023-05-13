@@ -13,6 +13,9 @@ import {
 import { useUsersStore } from '@/stores/users.js';
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
+import { useSvgStore } from '@/stores/svg';
+
+const svgStore = useSvgStore();
 
 const usersStore = useUsersStore();
 const numberDartsModal = ref(null);
@@ -219,7 +222,15 @@ const startNewGame = () => {
         :setsWon="playerOne?.setsWon.value"
         :legsWonInSet="playerOne?.legsWonInSet.value"
       />
-      <img class="darts-icon" src="/src/assets/images/darts.svg" alt="darts" />
+      <div class="darts-icon-wrapper">
+        <img
+        v-if="svgStore.svg.darts"
+        class="darts-icon"
+        :src="svgStore.svg.darts"
+        alt="darts"
+      />
+      </div>
+
       <PalyerScore
         v-if="Boolean(playerTwo)"
         :areSetsInGame="gameParameters?.areSetsInGame"
@@ -425,11 +436,17 @@ const startNewGame = () => {
   overflow-x: hidden;
 }
 
-.darts-icon {
+.darts-icon-wrapper {
   margin-left: 16px;
   margin-right: 16px;
   width: 96px;
   height: 96px;
+}
+
+.darts-icon {
+  width: 96px;
+  height: 96px;
+  display: block;
 }
 
 .points-information__points {

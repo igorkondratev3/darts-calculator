@@ -160,7 +160,6 @@ const handleInputEnter = (event) => {
   position: sticky;
   top: 8px;
   width: 352px;
-  max-height: 80vh;
   display: flex;
   flex-direction: column;
   margin-top: 8px;
@@ -171,8 +170,8 @@ const handleInputEnter = (event) => {
 .auth {
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  min-width: 200px;
+  width: 352px;
+  height: 394px;
   padding: 16px;
   padding-top: 0px;
   border-radius: 16px;
@@ -210,6 +209,7 @@ const handleInputEnter = (event) => {
   &__icon {
     height: 24px;
     width: 24px;
+    display: block;
   }
 
   &__header {

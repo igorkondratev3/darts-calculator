@@ -392,6 +392,7 @@ const goToProfile = (player) => {
   &__icon {
     width: 24px;
     height: 24px;
+    display: block;
   }
 }
 .statistic {
@@ -510,6 +511,7 @@ const goToProfile = (player) => {
   &__icon {
     width: 24px;
     height: 24px;
+    display: block;
 
     &_rotate_180deg {
       transform: rotate(180deg);

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useUsersStore } from '@/stores/users.js';
-defineEmits(['startNewGame']);
+const emits = defineEmits(['startNewGame']);
 const props = defineProps({
   nameP1: String,
   nameP2: String,
@@ -20,7 +20,12 @@ const usersStore = useUsersStore();
 const isStatisticSave = {
   P1: ref(false),
   P2: ref(false)
-}
+};
+
+const showDone = {
+  P1: ref(false),
+  P2: ref(false)
+};
 
 const setstatisticInDB = async (player) => {
   isStatisticSave[player].value = true;
@@ -70,6 +75,7 @@ const setstatisticInDB = async (player) => {
     user.token = json.newTokens.token;
     user.refreshToken = json.newTokens.refreshToken;
     localStorage.setItem(`user${player}`, JSON.stringify(user));
+    showDone[player].value = true;
   }
 
   if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
@@ -80,6 +86,14 @@ const setstatisticInDB = async (player) => {
   }
 
   console.log(json, '2');
+};
+
+const startNewGame = () => {
+  isStatisticSave.P1.value = false;
+  isStatisticSave.P2.value = false;
+  showDone.P1.value = false;
+  showDone.P2.value = false;
+  emits('startNewGame');
 };
 </script>
 
@@ -92,20 +106,40 @@ const setstatisticInDB = async (player) => {
         class="game-statistic__save game-statistic__save_left"
         @click="setstatisticInDB('P1')"
         title="сохранить статистику матча"
-        v-if="usersStore.users.P1"
+        v-if="usersStore.users.P1 && !showDone.P1.value"
         :disabled="isStatisticSave.P1.value"
       >
-        <img class="save-icon" src="/src/assets/images/add_circle.svg" alt="add" />
+        <img
+          class="save-icon"
+          src="/src/assets/images/add_circle.svg"
+          alt="add"
+        />
       </button>
+      <img
+        v-if="usersStore.users.P1 && showDone.P1.value"
+        class="save-icon save-icon_left"
+        src="/src/assets/images/done.svg"
+        alt="done"
+      />
       <button
         class="game-statistic__save game-statistic__save_right"
         @click="setstatisticInDB('P2')"
         title="сохранить статистику матча"
-        v-if="usersStore.users.P2"
+        v-if="usersStore.users.P2 && !showDone.P2.value"
         :disabled="isStatisticSave.P2.value"
       >
-        <img class="save-icon" src="/src/assets/images/add_circle.svg" alt="add" />
+        <img
+          class="save-icon"
+          src="/src/assets/images/add_circle.svg"
+          alt="add"
+        />
       </button>
+      <img
+        v-if="usersStore.users.P2 && showDone.P2.value"
+        class="save-icon save-icon_right"
+        src="/src/assets/images/done.svg"
+        alt="done"
+      />
       <div class="game-over__statistic game-statistic">
         <div class="game-statistic__player-names game-statistic-player-names">
           <div
@@ -228,7 +262,7 @@ const setstatisticInDB = async (player) => {
       </div>
     </div>
 
-    <button class="game-over__new-game-button" @click="$emit('startNewGame')">
+    <button class="game-over__new-game-button" @click="startNewGame">
       Новый матч
     </button>
   </div>
@@ -383,7 +417,6 @@ const setstatisticInDB = async (player) => {
   &:disabled {
     background-color: rgb(107, 107, 107);
   }
-
 }
 
 .game-over__statistic-wrapper {
@@ -394,5 +427,15 @@ const setstatisticInDB = async (player) => {
   width: 32px;
   height: 32px;
   display: block;
+}
+
+.save-icon_left {
+  top: 36px;
+  left: -36px;
+}
+
+.save-icon_right {
+  top: 36px;
+  right: -36px;
 }
 </style>

@@ -12,7 +12,9 @@ defineProps({
 
 <style lang="scss">
 .error {
-  margin-top: 4px;
+  position: absolute;
+  bottom: 0;
+  transform: translateY(calc(100% + 4px));
   display: flex;
   justify-content: center;
   align-items: center;
