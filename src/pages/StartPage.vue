@@ -214,12 +214,12 @@ const deleteRefreshTokenFromDB = async (refreshToken) => {
 
 .start-player {
   display: flex;
-  align-items: flex-end;
 }
 
 .to-match {
-  transform: translateY(100%);
-  width: 300px;
+  align-self: flex-end;
+  margin-top: 394px;
+  width: 320px;
   padding: 8px;
   border: 1px solid black;
   border-radius: 8px;

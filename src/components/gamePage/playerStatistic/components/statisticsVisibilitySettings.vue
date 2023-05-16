@@ -56,6 +56,31 @@ const closeStatisticsVisibilitySettings = () => {
   );
   emits('closeStatisticsVisibilitySettings');
 };
+
+let positionSetupVisibility = {
+  'margin-left': '-12px',
+  'align-self': 'flex-start'
+};
+
+if (props.player === 'P2')
+  positionSetupVisibility = {
+    'margin-left': '-12px',
+    'align-self': 'flex-start'
+  };
+else
+  positionSetupVisibility = {
+    'margin-right': '-12px',
+    'align-self': 'flex-end'
+  };
+
+  let positionControlSeen = {
+  'left': '4px'
+};
+
+if (props.player === 'P2')
+  positionControlSeen = {
+    'right': '4px',
+  };
 </script>
 
 <template>
@@ -65,7 +90,7 @@ const closeStatisticsVisibilitySettings = () => {
     @keyup.enter="changeParameterVisibility"
     @keyup.esc="closeStatisticsVisibilitySettings"
   >
-    <div class="control-seen-elements">
+    <div class="control-seen-elements" :style="positionControlSeen">
       <button
         class="control-seen-elements__select-all"
         title="Выделить все"
@@ -92,6 +117,7 @@ const closeStatisticsVisibilitySettings = () => {
     <button
       class="statistic__setup-visibility"
       @click="closeStatisticsVisibilitySettings"
+      :style="positionSetupVisibility"
       title="Закрыть настройку видимости параметров"
     >
       <img
@@ -286,7 +312,6 @@ const closeStatisticsVisibilitySettings = () => {
 <style lang="scss">
 .control-seen-elements {
   position: absolute;
-  left: 4px;
   top: 4px;
   display: flex;
 
@@ -304,7 +329,6 @@ const closeStatisticsVisibilitySettings = () => {
   }
 
   &__icon {
-    display: block;
     width: 24px;
     height: 24px;
   }

@@ -2,15 +2,19 @@
 defineProps({
   setsWon: Number,
   legsWonInSet: Number,
-  areSetsInGame: Boolean
+  areSetsInGame: Boolean,
+  player: String
 });
 </script>
 
 <template>
-  <div class="palyers-information__player-score player-score" >
-    <div class="player-score__legs-won">Леги: {{ legsWonInSet }}</div>
+  <div class="palyers-information__player-score player-score">
+    <div class="player-score__legs-won">
+      <!--можно еще реализовать через flec order-->
+      {{ player === 'P1' ? 'Леги ' + legsWonInSet : legsWonInSet + ' Леги' }}
+    </div>
     <div class="player-score__sets-won" v-if="areSetsInGame">
-      Сеты: {{ setsWon }}
+      {{ player === 'P1' ? 'Сеты ' + setsWon : setsWon + ' Сеты' }}
     </div>
   </div>
 </template>

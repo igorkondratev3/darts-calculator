@@ -14,6 +14,7 @@ import { useUsersStore } from '@/stores/users.js';
 import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
 import { useSvgStore } from '@/stores/svg';
+import { RouterLink } from 'vue-router';
 
 const svgStore = useSvgStore();
 
@@ -212,6 +213,7 @@ const startNewGame = () => {
     <button class="game__new-game-button" @click="startNewGame">
       Новый матч
     </button>
+    <RouterLink class="home-button" to="/">на главную</RouterLink>
     <div class="game__players-information players-information">
       <div class="players-information__name">
         {{ usersStore.users.P1?.name || playerOne?.name }}
@@ -221,6 +223,7 @@ const startNewGame = () => {
         :areSetsInGame="gameParameters?.areSetsInGame"
         :setsWon="playerOne?.setsWon.value"
         :legsWonInSet="playerOne?.legsWonInSet.value"
+        player="P1"
       />
       <div class="darts-icon-wrapper">
         <img
@@ -236,6 +239,7 @@ const startNewGame = () => {
         :areSetsInGame="gameParameters?.areSetsInGame"
         :setsWon="playerTwo?.setsWon.value"
         :legsWonInSet="playerTwo?.legsWonInSet.value"
+        player="P2"
       />
       <div class="players-information__name">
         {{ usersStore.users.P2?.name || playerTwo?.name }}
@@ -389,6 +393,27 @@ const startNewGame = () => {
   padding-top: 16px;
   @include fonts.Advent;
   background-color: rgb(232, 238, 233);
+}
+
+.home-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 8px;
+  z-index: 2;
+  border: 1px solid black;
+  border-radius: 8px;
+  @include fonts.Advent;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: default;
+  transition: background-color 0.5s linear, color 0.5s linear;
+
+  &:focus,
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 }
 
 .game {

@@ -1,9 +1,17 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useUsersStore } from '@/stores/users';
 
 export class GameParameters {
+  usersStore = useUsersStore();
   constructor(gameParameters) {
-    this.nameP1 = ref(gameParameters?.nameP1 || 'Игрок 1');
-    this.nameP2 = ref(gameParameters?.nameP2 || 'Игрок 2');
+    this.nameP1 = computed(
+      () =>
+        this.usersStore.users.P1?.name || gameParameters?.nameP1 || 'Игрок 1'
+    );
+    this.nameP2 = computed(
+      () =>
+        this.usersStore.users.P2?.name || gameParameters?.nameP2 || 'Игрок 2'
+    );
     this.startRemainder = ref(gameParameters?.startRemainder || 501);
     this.whoStarts = ref(gameParameters?.whoStarts || 'nameP1');
     this.legsToWin = ref(gameParameters?.legsToWin || 1);
@@ -16,4 +24,4 @@ export class GameParameters {
       gameParameters?.isPercentDoubleInStatP2 || false
     );
   }
-};
+}

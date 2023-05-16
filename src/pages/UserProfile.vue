@@ -85,6 +85,9 @@ getStatistic(props.player);
         />
       </template>
     </div>
+    <div v-else class="loading-message">
+      Загружается статистика игрока
+    </div> 
   </div>
 
   <!--
@@ -315,5 +318,16 @@ getStatistic(props.player);
   flex-wrap: wrap;
   justify-content: center;
   align-self: center;
+}
+
+.loading-message {
+  padding: 32px 16px;
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  border: 1px solid black;
+  border-radius: 8px;
 }
 </style>

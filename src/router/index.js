@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import GamePage from '@/pages/GamePage.vue';
 import StartPage from '@/pages/StartPage.vue';
+import { useUsersStore } from '@/stores/users.js';
+
+const checkAuth = (to, from) => {
+ if (!useUsersStore().users[to.query.player])
+  return '/';
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +25,7 @@ const router = createRouter({
       path: '/userProfile',
       name: 'UserProfile',
       component: () => import('@/pages/UserProfile.vue'),
+      beforeEnter: checkAuth,
       props: (route) => ({
         player: route.query.player
       })

@@ -2,12 +2,11 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters';
 import { useUsersStore } from '@/stores/users';
-import { useRouter } from 'vue-router';
-import AuthLink from '@/components/gamePage/playerStatistic/components/authLink.vue';
-import LogoutLink from '@/components/gamePage/playerStatistic/components/logoutLink.vue';
 import LoadingComponent from '@/components/loadingComponent.vue';
+import AuthState from '@/components/auth/authState.vue';
+import AuthActions from '@/components/auth/authActions/authActions.vue';
+
 const usersStore = useUsersStore();
-const router = useRouter();
 
 const props = defineProps({
   seenSetup: Boolean
@@ -43,63 +42,119 @@ const startGame = (gameParameters) => {
     if (localStorage.getItem('userP1') && !localStorage.getItem('userP2')) {
       localStorage.setItem('userP2', localStorage.getItem('userP1'));
       localStorage.removeItem('userP1');
-    } else
-    if (!localStorage.getItem('userP1') && localStorage.getItem('userP2')) {
+    } else if (
+      !localStorage.getItem('userP1') &&
+      localStorage.getItem('userP2')
+    ) {
       localStorage.setItem('userP1', localStorage.getItem('userP2'));
       localStorage.removeItem('userP2');
     }
 
-    if (localStorage.getItem('seenAveragePointsLegP2') && localStorage.getItem('seenAveragePointsLegP1')) {
+    if (
+      localStorage.getItem('seenAveragePointsLegP2') &&
+      localStorage.getItem('seenAveragePointsLegP1')
+    ) {
       const seenP1 = localStorage.getItem('seenAveragePointsLegP1');
-      localStorage.setItem('seenAveragePointsLegP1', localStorage.getItem('seenAveragePointsLegP2'));
+      localStorage.setItem(
+        'seenAveragePointsLegP1',
+        localStorage.getItem('seenAveragePointsLegP2')
+      );
       localStorage.setItem('seenAveragePointsLegP2', seenP1);
     }
-    if (localStorage.getItem('seenAveragePointsLegP1') && !localStorage.getItem('seenAveragePointsLegP2')) {
-      localStorage.setItem('seenAveragePointsLegP2', localStorage.getItem('seenAveragePointsLegP1'));
+    if (
+      localStorage.getItem('seenAveragePointsLegP1') &&
+      !localStorage.getItem('seenAveragePointsLegP2')
+    ) {
+      localStorage.setItem(
+        'seenAveragePointsLegP2',
+        localStorage.getItem('seenAveragePointsLegP1')
+      );
       localStorage.removeItem('seenAveragePointsLegP1');
-    } else
-    if (!localStorage.getItem('seenAveragePointsLegP1') && localStorage.getItem('seenAveragePointsLegP2')) {
-      localStorage.setItem('seenAveragePointsLegP1', localStorage.getItem('seenAveragePointsLegP2'));
+    } else if (
+      !localStorage.getItem('seenAveragePointsLegP1') &&
+      localStorage.getItem('seenAveragePointsLegP2')
+    ) {
+      localStorage.setItem(
+        'seenAveragePointsLegP1',
+        localStorage.getItem('seenAveragePointsLegP2')
+      );
       localStorage.removeItem('seenAveragePointsLegP2');
     }
 
-
-    if (localStorage.getItem('seenParametersSetP2') && localStorage.getItem('seenParametersSetP1')) {
+    if (
+      localStorage.getItem('seenParametersSetP2') &&
+      localStorage.getItem('seenParametersSetP1')
+    ) {
       const seenP1 = localStorage.getItem('seenParametersSetP1');
-      localStorage.setItem('seenParametersSetP1', localStorage.getItem('seenParametersSetP2'));
+      localStorage.setItem(
+        'seenParametersSetP1',
+        localStorage.getItem('seenParametersSetP2')
+      );
       localStorage.setItem('seenParametersSetP2', seenP1);
     }
-    if (localStorage.getItem('seenParametersSetP1') && !localStorage.getItem('seenParametersSetP2')) {
-      localStorage.setItem('seenParametersSetP2', localStorage.getItem('seenParametersSetP1'));
+    if (
+      localStorage.getItem('seenParametersSetP1') &&
+      !localStorage.getItem('seenParametersSetP2')
+    ) {
+      localStorage.setItem(
+        'seenParametersSetP2',
+        localStorage.getItem('seenParametersSetP1')
+      );
       localStorage.removeItem('seenParametersSetP1');
-    } else
-    if (!localStorage.getItem('seenParametersSetP1') && localStorage.getItem('seenParametersSetP2')) {
-      localStorage.setItem('seenParametersSetP1', localStorage.getItem('seenParametersSetP2'));
+    } else if (
+      !localStorage.getItem('seenParametersSetP1') &&
+      localStorage.getItem('seenParametersSetP2')
+    ) {
+      localStorage.setItem(
+        'seenParametersSetP1',
+        localStorage.getItem('seenParametersSetP2')
+      );
       localStorage.removeItem('seenParametersSetP2');
     }
 
-    if (localStorage.getItem('seenParametersGameP2') && localStorage.getItem('seenParametersGameP1')) {
+    if (
+      localStorage.getItem('seenParametersGameP2') &&
+      localStorage.getItem('seenParametersGameP1')
+    ) {
       const seenP1 = localStorage.getItem('seenParametersGameP1');
-      localStorage.setItem('seenParametersGameP1', localStorage.getItem('seenParametersGameP2'));
+      localStorage.setItem(
+        'seenParametersGameP1',
+        localStorage.getItem('seenParametersGameP2')
+      );
       localStorage.setItem('seenParametersGameP2', seenP1);
     }
-    if (localStorage.getItem('seenParametersGameP1') && !localStorage.getItem('seenParametersGameP2')) {
-      localStorage.setItem('seenParametersGameP2', localStorage.getItem('seenParametersGameP1'));
+    if (
+      localStorage.getItem('seenParametersGameP1') &&
+      !localStorage.getItem('seenParametersGameP2')
+    ) {
+      localStorage.setItem(
+        'seenParametersGameP2',
+        localStorage.getItem('seenParametersGameP1')
+      );
       localStorage.removeItem('seenParametersGameP1');
-    } else
-    if (!localStorage.getItem('seenParametersGameP1') && localStorage.getItem('seenParametersGameP2')) {
-      localStorage.setItem('seenParametersGameP1', localStorage.getItem('seenParametersGameP2'));
+    } else if (
+      !localStorage.getItem('seenParametersGameP1') &&
+      localStorage.getItem('seenParametersGameP2')
+    ) {
+      localStorage.setItem(
+        'seenParametersGameP1',
+        localStorage.getItem('seenParametersGameP2')
+      );
       localStorage.removeItem('seenParametersGameP2');
     }
 
-    const isPercentDoubleInStatP1 = gameParametersForNewGame.isPercentDoubleInStatP1;
-    gameParametersForNewGame.isPercentDoubleInStatP1 = gameParametersForNewGame.isPercentDoubleInStatP2;
+    const isPercentDoubleInStatP1 =
+      gameParametersForNewGame.isPercentDoubleInStatP1;
+    gameParametersForNewGame.isPercentDoubleInStatP1 =
+      gameParametersForNewGame.isPercentDoubleInStatP2;
     gameParametersForNewGame.isPercentDoubleInStatP2 = isPercentDoubleInStatP1;
-    gameParameters.isPercentDoubleInStatP1.value = gameParametersForNewGame.isPercentDoubleInStatP1;
-    gameParameters.isPercentDoubleInStatP2.value = gameParametersForNewGame.isPercentDoubleInStatP2;
+    gameParameters.isPercentDoubleInStatP1.value =
+      gameParametersForNewGame.isPercentDoubleInStatP1;
+    gameParameters.isPercentDoubleInStatP2.value =
+      gameParametersForNewGame.isPercentDoubleInStatP2;
     //возможно перенести в класс
   }
-  console.log(gameParametersForNewGame)
+  console.log(gameParametersForNewGame);
   localStorage.setItem(
     'gameParameters',
     JSON.stringify(gameParametersForNewGame)
@@ -121,15 +176,6 @@ const seenSelectRemainders = ref(false);
 const setStartRemainder = (remainder) => {
   gameParameters.startRemainder.value = remainder;
   seenSelectRemainders.value = false;
-};
-
-const goToProfile = (player) => {
-  router.push({
-    name: 'UserProfile',
-    query: {
-      player: player
-    }
-  });
 };
 
 const seenAuthCompP1 = ref(false);
@@ -157,40 +203,13 @@ const AuthComp = defineAsyncComponent({
       @closeAuthComp="seenAuthCompP2 = false"
       player="P2"
     />
-    <div class="wrap" v-show="!seenAuthCompP1 && !seenAuthCompP2">
-      <!--сделать сслкой-->
-      <button
-        v-if="usersStore.users.P1"
-        class="auth-person-gs"
-        title="Перейти на страницу профиля"
-        @click="goToProfile('P1')"
-      >
-        <img
-          class="auth-person-gs__icon"
-          src="/src/assets/images/yes_login.svg"
-          alt="yes_login"
-        />
-      </button>
-      <button v-else class="auth-person-gs" title="Вход не выполнен">
-        <img
-          class="auth-person-gs__icon"
-          src="/src/assets/images/no_login.svg"
-          alt="no_login"
-        />
-      </button>
+    <div v-show="!seenAuthCompP1 && !seenAuthCompP2">
+      <!--обертка нужна так как блок имеет overflow и элементы с fixed и прочим скрываются-->
+      <AuthState player="P1" backgroundColor="rgb(177, 205, 223)"/>
+      <AuthState player="P2" backgroundColor="rgb(177, 205, 223)"/>
       <div class="game-setup">
-        <LogoutLink v-if="usersStore.users.P1" player="P1" />
-        <AuthLink
-          v-if="!usersStore.users.P1"
-          @openAuthComp="seenAuthCompP1 = true"
-          player="P1"
-        />
-        <LogoutLink v-if="usersStore.users.P2" player="P2" />
-        <AuthLink
-          v-if="!usersStore.users.P2"
-          @openAuthComp="seenAuthCompP2 = true"
-          player="P2"
-        />
+        <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
+        <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
         <h1 class="game-setup__header">Настройка параметров матча</h1>
         <h3 class="game-setup__parameter-header">Формат матча</h3>
         <div class="game-setup__start-remainder">
@@ -238,6 +257,7 @@ const AuthComp = defineAsyncComponent({
             v-model="gameParameters.nameP1.value"
             maxlength="30"
             required
+            :disabled="usersStore.users.P1"
             @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
           />
           <input
@@ -337,25 +357,6 @@ const AuthComp = defineAsyncComponent({
           Начать матч
         </button>
       </div>
-      <button
-        v-if="usersStore.users.P2"
-        class="auth-person-gs"
-        title="Перейти на страницу профиля"
-        @click="goToProfile('P2')"
-      >
-        <img
-          class="auth-person-gs__icon"
-          src="/src/assets/images/yes_login.svg"
-          alt="yes_login"
-        />
-      </button>
-      <button v-else class="auth-person-gs" title="Вход не выполнен">
-        <img
-          class="auth-person-gs__icon"
-          src="/src/assets/images/no_login.svg"
-          alt="no_login"
-        />
-      </button>
     </div>
   </div>
 </template>
@@ -528,6 +529,10 @@ const AuthComp = defineAsyncComponent({
 
   &:focus {
     outline: 1px solid black;
+  }
+
+  &:disabled {
+    opacity: 50%;
   }
 }
 

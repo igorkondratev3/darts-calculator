@@ -262,7 +262,7 @@ const changeChart = () => {
 <template>
   <div class="chart-box">
     <h3 class="chart-box__head">{{ name }}</h3>
-    <div class="chart-wrap" :data-max="maxValue || ''">
+    <div class="chart-wrap" :data-max="maxValue.toFixed(2) || ''">
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
       <div class="chart-box__chart chart">
         <svg class="chart__svg" :width="chartWidth" :height="chartHeight">
