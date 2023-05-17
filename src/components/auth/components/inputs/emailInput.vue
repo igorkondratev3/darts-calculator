@@ -1,6 +1,13 @@
 <script setup>
 import { ref, onActivated } from 'vue';
+
 const emit = defineEmits(['updateParameter']);
+
+const emailInput = ref(null);
+onActivated(() => {
+  emailInput.value.focus();
+});
+
 const email = ref('');
 const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const isCorrectEmail = ref(false);
@@ -12,10 +19,6 @@ const updateEmail = () => {
   emailValidation();
   emit('updateParameter', 'email', isCorrectEmail.value ? email.value : '');
 };
-const emailInput = ref(null);
-onActivated(() => {
-  emailInput.value.focus();
-});
 </script>
 
 <template>

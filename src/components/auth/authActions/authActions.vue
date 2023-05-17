@@ -1,10 +1,10 @@
 <script setup>
-import AuthAction from './components/authAction.vue';
+import LoginAction from './components/loginAction.vue';
 import LogoutAction from './components/logoutAction.vue';
 import { useUsersStore } from '@/stores/users.js';
 
 defineProps({
-  player: String,
+  player: String
 });
 defineEmits(['openAuthComp']);
 
@@ -12,23 +12,29 @@ const usersStore = useUsersStore();
 </script>
 
 <template>
-  <AuthAction
+  <LoginAction
     v-if="!usersStore.users[player]"
-    @openAuthComp="$emit('openAuthComp')"
     :player="player"
+    @openAuthComp="$emit('openAuthComp')"
   />
   <LogoutAction v-else :player="player" />
 </template>
 
 <style lang="scss">
-.auth-link {
+.auth-action {
   position: absolute;
-  width: 26px;
   top: 4px;
   z-index: 2;
-  cursor: pointer;
-  border: 1px solid transparent;
   border-radius: 4px;
+  cursor: pointer;
+
+  &_left {
+    left: 4px;
+  }
+
+  &_right {
+    right: 4px;
+  }
 
   &:focus {
     outline: 1px solid black;

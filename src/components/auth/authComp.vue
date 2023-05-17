@@ -157,14 +157,10 @@ const handleInputEnter = (event) => {
 @use '@/assets/css/mixins/fonts.scss';
 
 .auth-and-error {
-  position: sticky;
-  top: 8px;
-  width: 352px;
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
-  margin-left: 4px;
-  margin-right: 4px;
+  width: 352px;
+  margin: 0px 4px;
 }
 
 .auth {
@@ -184,7 +180,6 @@ const handleInputEnter = (event) => {
     left: 4px;
     cursor: pointer;
     padding: 4px;
-    border: 1px solid transparent;
     border-radius: 4px;
     @include fonts.Advent($size: 16px, $weight: 700);
 
@@ -198,7 +193,6 @@ const handleInputEnter = (event) => {
     top: 4px;
     right: 4px;
     cursor: pointer;
-    border: 1px solid transparent;
     border-radius: 4px;
 
     &:focus {
@@ -213,21 +207,20 @@ const handleInputEnter = (event) => {
   }
 
   &__header {
+    margin-top: 64px;
+    margin-bottom: 32px;
     font: inherit;
     font-weight: 700;
     font-size: 28px;
     text-align: center;
-    margin-top: 64px;
-    margin-bottom: 32px;
   }
 
   &__input {
     display: block;
-    position: relative;
+    align-self: center;
     height: 64px;
     width: 320px;
     padding: 16px 24px 24px 24px;
-    align-self: center;
     outline: none;
     border: 1px solid rgba(0, 0, 0, 0.5);
     background-color: white;
@@ -245,32 +238,33 @@ const handleInputEnter = (event) => {
   }
 
   &__clue-button {
-    @include fonts.Advent($size: 16px);
-    font-style: italic;
     align-self: flex-start;
     margin-top: 2px;
+    margin-left: 4px;
     padding: 2px;
     cursor: pointer;
-    margin-left: 4px;
+    @include fonts.Advent($size: 16px);
+    font-style: italic;
 
     &:focus {
       outline: 1px solid black;
     }
+
     &:disabled {
       visibility: hidden;
     }
   }
 
   &__clue {
-    padding: 8px;
-    background-color: rgb(232, 238, 233);
-    opacity: 90%;
-    font-size: 20px;
-    width: 320px;
     position: absolute;
     left: calc(50% - 160px);
     top: calc(64px + 1px + 124px + 8px);
     z-index: 2;
+    width: 320px;
+    padding: 8px;
+    opacity: 90%;
+    font-size: 20px;
+    background-color: rgb(232, 238, 233);
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+
 const props = defineProps({
   parameterNumber: Number,
   authType: String,
@@ -22,27 +23,25 @@ const isCompleted = computed(() => [
 <template>
   <nav class="auth__parameter-navigation parameter-navigation">
     <template v-for="n in numberOfButtons" :key="n + 'button'">
-      <template v-if="!(authType === 'Вход' && (n === 3 || n === 4))">
-        <svg v-if="!(n === 1)" height="40" :width="lineWidth">
-          <line
-            x1="10"
-            y1="20"
-            :x2="lineWidth - 10"
-            y2="20"
-            style="stroke: rgb(0, 0, 0); stroke-width: 1"
-          />
-        </svg>
-        <button
-          class="parameter-navigation__button"
-          :class="{
-            'parameter-navigation__current': parameterNumber === n,
-            'parameter-navigation__completed': isCompleted[n - 1]
-          }"
-          @click="$emit('changeParameterNumber', n)"
-        >
-          {{ n }}
-        </button>
-      </template>
+      <svg v-if="!(n === 1)" height="40" :width="lineWidth">
+        <line
+          x1="10"
+          y1="20"
+          :x2="lineWidth - 10"
+          y2="20"
+          style="stroke: rgb(0, 0, 0); stroke-width: 1"
+        />
+      </svg>
+      <button
+        class="parameter-navigation__button"
+        :class="{
+          'parameter-navigation__current': parameterNumber === n,
+          'parameter-navigation__completed': isCompleted[n - 1]
+        }"
+        @click="$emit('changeParameterNumber', n)"
+      >
+        {{ n }}
+      </button>
     </template>
   </nav>
 </template>
@@ -65,8 +64,8 @@ const isCompleted = computed(() => [
     height: 40px;
     border: 1px solid black;
     border-radius: 50%;
-    @include fonts.Advent;
     cursor: pointer;
+    @include fonts.Advent;
 
     &:focus {
       outline: 1px solid black;

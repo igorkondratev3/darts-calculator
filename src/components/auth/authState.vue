@@ -1,31 +1,19 @@
 <script setup>
 import { useUsersStore } from '@/stores/users';
-import { useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 
-const props = defineProps({
+defineProps({
   player: String,
   backgroundColor: String
 });
 
-const backgroundColor = props.backgroundColor;
-
 const usersStore = useUsersStore();
-
-const router = useRouter();
-const goToProfile = (player) => {
-  router.push({
-    name: 'UserProfile',
-    query: {
-      player: player
-    }
-  });
-};
 </script>
 
 <template>
   <div>
-    <!--сделать сслкой-->
-    <button
+    <RouterLink
+      :to="'/userProfile?player=' + player"
       v-if="usersStore.users[player]"
       class="auth-state auth-state_cursor_pointer"
       :class="{
@@ -33,15 +21,14 @@ const goToProfile = (player) => {
         'auth-state_right': player === 'P2'
       }"
       title="Перейти на страницу профиля"
-      @click="goToProfile(player)"
     >
       <img
         class="auth-state__icon"
         src="/src/assets/images/yes_login.svg"
         alt="yes login"
       />
-    </button>
-    <button
+    </RouterLink>
+    <div
       v-else
       class="auth-state"
       :class="{
@@ -55,14 +42,14 @@ const goToProfile = (player) => {
         src="/src/assets/images/no_login.svg"
         alt="no login"
       />
-    </button>
+    </div>
   </div>
 </template>
 
 <style lang="scss">
 .auth-state {
   position: absolute;
- background-color: v-bind(backgroundColor);
+  background-color: v-bind(backgroundColor);
   top: 3px;
   width: 28px;
   height: 28px;

@@ -7,9 +7,24 @@ const props = defineProps({
   authInformation: Object
 });
 const emits = defineEmits(['changeErrorMessage', 'closeAuthComp']);
+
+const isEnabled = computed(() => {
+  if (props.type === 'Вход')
+    return Boolean(
+      props.authInformation.email.value && props.authInformation.password.value
+    );
+  if (props.type === 'Регистрация')
+    return Boolean(
+      props.authInformation.name.value &&
+        props.authInformation.email.value &&
+        props.authInformation.password.value &&
+        props.authInformation.repeatPassword.value
+    );
+  return false;
+});
+
 const usersStore = useUsersStore();
 const startAuth = ref(false);
-
 const auth = async () => {
   startAuth.value = true;
   emits('changeErrorMessage', '');
@@ -24,7 +39,7 @@ const auth = async () => {
   try {
     user = await fetchAuth();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     emits('changeErrorMessage', 'Ошибка доступа к серверу');
     startAuth.value = false;
     return;
@@ -79,21 +94,6 @@ const chechAuthAsAnotherPlayer = () => {
     localStorage.removeItem(`user${anotherPlayer}`);
   return false;
 };
-
-const isEnabled = computed(() => {
-  if (props.type === 'Вход')
-    return Boolean(
-      props.authInformation.email.value && props.authInformation.password.value
-    );
-  if (props.type === 'Регистрация')
-    return Boolean(
-      props.authInformation.name.value &&
-        props.authInformation.email.value &&
-        props.authInformation.password.value &&
-        props.authInformation.repeatPassword.value
-    );
-  return false;
-});
 </script>
 
 <template>
@@ -117,15 +117,15 @@ const isEnabled = computed(() => {
   height: 56px;
   margin-top: 32px;
   border: none;
-  border-radius: 6px;
-  @include fonts.Advent;
+  border-radius: 8px;
   cursor: pointer;
+  @include fonts.Advent;
   background-color: #55b2f0;
 
   &_disabled {
     opacity: 40%;
   }
-  
+
   &:focus {
     outline: 1px solid black;
     outline-offset: 2px;

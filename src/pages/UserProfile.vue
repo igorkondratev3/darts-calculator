@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import StatCharts from '@/components/charts/statCharts.vue';
+import StatChart from '@/components/charts/statChart.vue';
 import { useUsersStore } from '@/stores/users.js';
 import { RouterLink } from 'vue-router';
 const usersStore = useUsersStore();
@@ -78,7 +78,7 @@ getStatistic(props.player);
 
     <div v-if="statistic" class="charts">
       <template v-for="(statisticParameter, key) in statistic" :key="key">
-        <StatCharts
+        <StatChart
           v-if="statisticParameter[0]"
           :parameterName="key"
           :chartData="statisticParameter"
@@ -91,7 +91,7 @@ getStatistic(props.player);
   </div>
 
   <!--
-  <StatCharts
+  <StatChart
     parameterName="AveragesAV"
     :chartData="[
       { date: '22-04-2022', value: 110.6 },

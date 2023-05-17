@@ -1,9 +1,16 @@
 <script setup>
 import { ref, onActivated } from 'vue';
+
 const props = defineProps({
   password: String
-})
+});
 const emits = defineEmits(['updateParameter']);
+
+const repeatPasswordInput = ref(null);
+onActivated(() => {
+  repeatPasswordInput.value.focus();
+});
+
 const repeatPassword = ref('');
 const isCorrectRepeatPassword = ref(false);
 const repeatPasswordValidation = () => {
@@ -19,12 +26,8 @@ const updateRepeatPassword = () => {
     isCorrectRepeatPassword.value ? repeatPassword.value : ''
   );
 };
-
-const repeatPasswordInput = ref(null);
-onActivated(() => {
-  repeatPasswordInput.value.focus();
-});
 </script>
+
 <template>
   <input
     type="password"

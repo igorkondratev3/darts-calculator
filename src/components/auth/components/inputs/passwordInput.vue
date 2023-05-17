@@ -1,6 +1,13 @@
 <script setup>
 import { ref, onActivated } from 'vue';
+
 const emits = defineEmits(['updateParameter']);
+
+const passwordInput = ref(null);
+onActivated(() => {
+  passwordInput.value.focus();
+});
+
 const password = ref('');
 const regexPassword =
   /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
@@ -17,12 +24,8 @@ const updatePassword = () => {
     isCorrectPassword.value ? password.value : ''
   );
 };
-
-const passwordInput = ref(null);
-onActivated(() => {
-  passwordInput.value.focus();
-});
 </script>
+
 <template>
   <input
     type="password"

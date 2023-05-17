@@ -1,11 +1,14 @@
 <script setup>
 import { ref, onActivated } from 'vue';
+
 defineEmits(['updateParameter']);
-const name = ref('');
+
 const nameInput = ref(null);
 onActivated(() => {
   nameInput.value.focus();
 });
+
+const name = ref('');
 </script>
 
 <template>
