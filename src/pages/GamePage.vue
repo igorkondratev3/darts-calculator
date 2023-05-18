@@ -48,12 +48,8 @@ let playerTwo;
 const startGame = (parameters) => {
   gameParameters = parameters;
   startRemainder.value = gameParameters.startRemainder;
-  playerOne = new Player(gameParameters[gameParameters.whoStarts]);
-  playerTwo = new Player(
-    gameParameters.whoStarts === 'nameP1'
-      ? gameParameters.nameP2
-      : gameParameters.nameP1
-  );
+  playerOne = new Player(gameParameters.nameP1);
+  playerTwo = new Player(gameParameters.nameP2);
   isStartedGame.value = true;
   gameSetupModal.value.close();
   defineFocusForNewLeg(legNumber.value, setNumber.value, document.forms[0]);
@@ -207,7 +203,10 @@ const startNewGame = () => {
 
 <template>
   <dialog class="dialog" ref="gameSetupModal" @cancel.prevent="">
-    <GameSetup :seenSetup="!isStartedGame" @startGame="startGame" />
+    <GameSetup v-if="!isStartedGame" @startGame="startGame" />
+    <!--v-if чтобы параметры заново считывались из локал сторедж чтобы при начале новой
+    игры всё было адекватно, может лучше менять сам объект с параметрами игры - подумать
+    -->
   </dialog>
   <main class="game-page game">
     <button class="game__new-game-button" @click="startNewGame">
@@ -227,11 +226,11 @@ const startNewGame = () => {
       />
       <div class="darts-icon-wrapper">
         <img
-        v-if="svgStore.svg.darts"
-        class="darts-icon"
-        :src="svgStore.svg.darts"
-        alt="darts"
-      />
+          v-if="svgStore.svg.darts"
+          class="darts-icon"
+          :src="svgStore.svg.darts"
+          alt="darts"
+        />
       </div>
 
       <PalyerScore

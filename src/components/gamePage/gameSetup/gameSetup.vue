@@ -1,181 +1,37 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
-import { GameParameters } from './gamePararmeters';
-import { useUsersStore } from '@/stores/users';
+import { GameParameters } from './gamePararmeters.js';
+import { useUsersStore } from '@/stores/users.js';
+import { changePlayersInLS } from '@/helpers/changePlayersInLS.js';
 import LoadingComponent from '@/components/loadingComponent.vue';
 import AuthState from '@/components/auth/authState.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
+import SetsAndLegs from './components/setsAndLegs.vue';
+import PlayerNames from './components/playerNames.vue';
+import WhoStarts from './components/whoStarts.vue';
+import IsPercentDoubleInStat from './components/isPercentDouble.vue';
+import StartRemainder from './components/startRemainder.vue';
+
+const emit = defineEmits(['startGame']);
 
 const usersStore = useUsersStore();
-
-const props = defineProps({
-  seenSetup: Boolean
-});
-const emit = defineEmits(['startGame']);
 
 const gameParameters = new GameParameters(
   JSON.parse(localStorage.getItem('gameParameters'))
 );
 
-const checkValuesToWin = (valuesName, event) => {
-  if (event.data < '0' || event.data > '9')
-    gameParameters[valuesName].value = 0;
-};
-
-const checkParameterForEmpty = (parameterName, altParameterValue) => {
-  if (!gameParameters[parameterName].value)
-    gameParameters[parameterName].value = altParameterValue;
-};
 
 const startGame = (gameParameters) => {
-  const gameParametersForNewGame = {};
-  for (const parameterName in gameParameters)
-    gameParametersForNewGame[parameterName] =
-      gameParameters[parameterName].value;
+  const gameParametersForNewGame = gameParameters.normalize();
   if (gameParametersForNewGame.whoStarts === 'nameP2') {
     usersStore.swap();
-    if (localStorage.getItem('userP1') && localStorage.getItem('userP2')) {
-      const playerOne = localStorage.getItem('userP1');
-      localStorage.setItem('userP1', localStorage.getItem('userP2'));
-      localStorage.setItem('userP2', playerOne);
-    }
-    if (localStorage.getItem('userP1') && !localStorage.getItem('userP2')) {
-      localStorage.setItem('userP2', localStorage.getItem('userP1'));
-      localStorage.removeItem('userP1');
-    } else if (
-      !localStorage.getItem('userP1') &&
-      localStorage.getItem('userP2')
-    ) {
-      localStorage.setItem('userP1', localStorage.getItem('userP2'));
-      localStorage.removeItem('userP2');
-    }
-
-    if (
-      localStorage.getItem('seenAveragePointsLegP2') &&
-      localStorage.getItem('seenAveragePointsLegP1')
-    ) {
-      const seenP1 = localStorage.getItem('seenAveragePointsLegP1');
-      localStorage.setItem(
-        'seenAveragePointsLegP1',
-        localStorage.getItem('seenAveragePointsLegP2')
-      );
-      localStorage.setItem('seenAveragePointsLegP2', seenP1);
-    }
-    if (
-      localStorage.getItem('seenAveragePointsLegP1') &&
-      !localStorage.getItem('seenAveragePointsLegP2')
-    ) {
-      localStorage.setItem(
-        'seenAveragePointsLegP2',
-        localStorage.getItem('seenAveragePointsLegP1')
-      );
-      localStorage.removeItem('seenAveragePointsLegP1');
-    } else if (
-      !localStorage.getItem('seenAveragePointsLegP1') &&
-      localStorage.getItem('seenAveragePointsLegP2')
-    ) {
-      localStorage.setItem(
-        'seenAveragePointsLegP1',
-        localStorage.getItem('seenAveragePointsLegP2')
-      );
-      localStorage.removeItem('seenAveragePointsLegP2');
-    }
-
-    if (
-      localStorage.getItem('seenParametersSetP2') &&
-      localStorage.getItem('seenParametersSetP1')
-    ) {
-      const seenP1 = localStorage.getItem('seenParametersSetP1');
-      localStorage.setItem(
-        'seenParametersSetP1',
-        localStorage.getItem('seenParametersSetP2')
-      );
-      localStorage.setItem('seenParametersSetP2', seenP1);
-    }
-    if (
-      localStorage.getItem('seenParametersSetP1') &&
-      !localStorage.getItem('seenParametersSetP2')
-    ) {
-      localStorage.setItem(
-        'seenParametersSetP2',
-        localStorage.getItem('seenParametersSetP1')
-      );
-      localStorage.removeItem('seenParametersSetP1');
-    } else if (
-      !localStorage.getItem('seenParametersSetP1') &&
-      localStorage.getItem('seenParametersSetP2')
-    ) {
-      localStorage.setItem(
-        'seenParametersSetP1',
-        localStorage.getItem('seenParametersSetP2')
-      );
-      localStorage.removeItem('seenParametersSetP2');
-    }
-
-    if (
-      localStorage.getItem('seenParametersGameP2') &&
-      localStorage.getItem('seenParametersGameP1')
-    ) {
-      const seenP1 = localStorage.getItem('seenParametersGameP1');
-      localStorage.setItem(
-        'seenParametersGameP1',
-        localStorage.getItem('seenParametersGameP2')
-      );
-      localStorage.setItem('seenParametersGameP2', seenP1);
-    }
-    if (
-      localStorage.getItem('seenParametersGameP1') &&
-      !localStorage.getItem('seenParametersGameP2')
-    ) {
-      localStorage.setItem(
-        'seenParametersGameP2',
-        localStorage.getItem('seenParametersGameP1')
-      );
-      localStorage.removeItem('seenParametersGameP1');
-    } else if (
-      !localStorage.getItem('seenParametersGameP1') &&
-      localStorage.getItem('seenParametersGameP2')
-    ) {
-      localStorage.setItem(
-        'seenParametersGameP1',
-        localStorage.getItem('seenParametersGameP2')
-      );
-      localStorage.removeItem('seenParametersGameP2');
-    }
-
-    const isPercentDoubleInStatP1 =
-      gameParametersForNewGame.isPercentDoubleInStatP1;
-    gameParametersForNewGame.isPercentDoubleInStatP1 =
-      gameParametersForNewGame.isPercentDoubleInStatP2;
-    gameParametersForNewGame.isPercentDoubleInStatP2 = isPercentDoubleInStatP1;
-    gameParameters.isPercentDoubleInStatP1.value =
-      gameParametersForNewGame.isPercentDoubleInStatP1;
-    gameParameters.isPercentDoubleInStatP2.value =
-      gameParametersForNewGame.isPercentDoubleInStatP2;
-    //возможно перенести в класс
+    changePlayersInLS();
   }
-  console.log(gameParametersForNewGame);
   localStorage.setItem(
     'gameParameters',
     JSON.stringify(gameParametersForNewGame)
   );
   emit('startGame', gameParametersForNewGame);
-};
-
-const changeAreSetsInGame = (event) => {
-  gameParameters.areSetsInGame.value = !gameParameters.areSetsInGame.value;
-  checkAreSetsInGame(event.currentTarget.previousElementSibling);
-};
-
-const checkAreSetsInGame = (setInput) => {
-  if (!gameParameters.areSetsInGame.value) gameParameters.setsToWin.value = 1;
-  if (gameParameters.areSetsInGame.value) setTimeout(() => setInput.focus(), 0);
-};
-
-const seenSelectRemainders = ref(false);
-const setStartRemainder = (remainder) => {
-  gameParameters.startRemainder.value = remainder;
-  seenSelectRemainders.value = false;
 };
 
 const seenAuthCompP1 = ref(false);
@@ -188,11 +44,7 @@ const AuthComp = defineAsyncComponent({
 </script>
 
 <template>
-  <div
-    class="dialog-content-wrapper"
-    v-show="props.seenSetup"
-    @click="seenSelectRemainders = false"
-  >
+  <div class="dialog-content-wrapper">
     <AuthComp
       v-if="seenAuthCompP1"
       @closeAuthComp="seenAuthCompP1 = false"
@@ -205,151 +57,36 @@ const AuthComp = defineAsyncComponent({
     />
     <div v-show="!seenAuthCompP1 && !seenAuthCompP2">
       <!--обертка нужна так как блок имеет overflow и элементы с fixed и прочим скрываются-->
-      <AuthState player="P1" backgroundColor="rgb(177, 205, 223)"/>
-      <AuthState player="P2" backgroundColor="rgb(177, 205, 223)"/>
+      <AuthState player="P1" backgroundColor="rgb(177, 205, 223)" />
+      <AuthState player="P2" backgroundColor="rgb(177, 205, 223)" />
       <div class="game-setup">
         <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
         <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
         <h1 class="game-setup__header">Настройка параметров матча</h1>
-        <h3 class="game-setup__parameter-header">Формат матча</h3>
-        <div class="game-setup__start-remainder">
-          <div
-            class="start-remainder__header"
-            tabindex="0"
-            @click.stop="seenSelectRemainders = true"
-            @keyup.enter="seenSelectRemainders = true"
-          >
-            {{ gameParameters.startRemainder.value }}
-            <img
-              class="arrow-down-icon"
-              src="/src/assets/images/arrow_down.svg"
-              alt="open"
-            />
-          </div>
-          <div
-            class="start-remainder__values"
-            v-show="seenSelectRemainders"
-            @click.stop=""
-          >
-            <div
-              class="start-remainder__value"
-              tabindex="0"
-              @click="setStartRemainder(501)"
-              @keyup.enter="setStartRemainder(501)"
-            >
-              501
-            </div>
-            <div
-              class="start-remainder__value"
-              tabindex="0"
-              @click="setStartRemainder(1001)"
-              @keyup.enter="setStartRemainder(1001)"
-            >
-              1001
-            </div>
-          </div>
-        </div>
-        <h3 class="game-setup__parameter-header">Имена игроков</h3>
-        <div class="game-setup__player-names player-names">
-          <input
-            class="player-names__name player-names__name_margin-right"
-            type="text"
-            v-model="gameParameters.nameP1.value"
-            maxlength="30"
-            required
-            :disabled="usersStore.users.P1"
-            @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
-          />
-          <input
-            class="player-names__name"
-            type="text"
-            v-model="gameParameters.nameP2.value"
-            maxlength="30"
-            required
-            @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
-          />
-        </div>
-        <div class="game-setup__who-starts who-starts">
-          <input
-            class="who-starts__radio-button"
-            type="radio"
-            name="whoStarts"
-            value="nameP1"
-            v-model="gameParameters.whoStarts.value"
-          />
-          <h3
-            class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
-          >
-            Кто начинает
-          </h3>
-          <input
-            class="who-starts__radio-button"
-            type="radio"
-            name="whoStarts"
-            value="nameP2"
-            v-model="gameParameters.whoStarts.value"
-          />
-        </div>
-        <div class="game-setup__is-percent-double is-percent-double">
-          <input
-            class="is-percent-double__value"
-            type="checkbox"
-            v-model="gameParameters.isPercentDoubleInStatP1.value"
-            @keyup.enter="
-              gameParameters.isPercentDoubleInStatP1.value =
-                !gameParameters.isPercentDoubleInStatP1.value
-            "
-          />
-          <h3
-            class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
-          >
-            Подсчитывать процент удвоений
-          </h3>
-          <input
-            class="is-percent-double__value"
-            type="checkbox"
-            v-model="gameParameters.isPercentDoubleInStatP2.value"
-            @keyup.enter="
-              gameParameters.isPercentDoubleInStatP2.value =
-                !gameParameters.isPercentDoubleInStatP2.value
-            "
-          />
-        </div>
-        <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
-        <div class="game-setup__sets-legs sets-legs">
-          <label class="sets-legs__parameter sets-legs__value_margin_right">
-            Сетов
-            <input
-              class="sets-legs__value"
-              type="number"
-              min="1"
-              v-model="gameParameters.setsToWin.value"
-              @input="checkValuesToWin('setsToWin', $event)"
-              @blur="checkParameterForEmpty('setsToWin', 1)"
-              :disabled="!gameParameters.areSetsInGame.value"
-            />
-            <input
-              class="sets-legs__is-disabled"
-              type="checkbox"
-              v-model="gameParameters.areSetsInGame.value"
-              @change="
-                checkAreSetsInGame($event.currentTarget.previousElementSibling)
-              "
-              @keyup.enter="changeAreSetsInGame"
-            />
-          </label>
-          <label class="sets-legs__parameter">
-            Легов
-            <input
-              class="sets-legs__value"
-              type="number"
-              min="1"
-              v-model="gameParameters.legsToWin.value"
-              @input="checkValuesToWin('legsToWin', $event)"
-              @blur="checkParameterForEmpty('legsToWin', 1)"
-            />
-          </label>
-        </div>
+        <StartRemainder
+          :startRemainder="gameParameters.startRemainder.value"
+          @updateStartRemainder="
+            (remainder) => (gameParameters.startRemainder.value = remainder)
+          "
+        />
+        <PlayerNames
+          v-model:nameP1="gameParameters.nameP1.value.value"
+          v-model:nameP2="gameParameters.nameP2.value.value"
+        />
+        <WhoStarts v-model:whoStarts="gameParameters.whoStarts.value" />
+        <IsPercentDoubleInStat
+          v-model:isPercentDoubleInStatP1="
+            gameParameters.isPercentDoubleInStatP1.value
+          "
+          v-model:isPercentDoubleInStatP2="
+            gameParameters.isPercentDoubleInStatP2.value
+          "
+        />
+        <SetsAndLegs
+          v-model:setsToWin="gameParameters.setsToWin.value"
+          v-model:areSetsInGame="gameParameters.areSetsInGame.value"
+          v-model:legsToWin="gameParameters.legsToWin.value"
+        />
         <button
           class="game-setup__start-game-button"
           @click.prevent="startGame(gameParameters)"
@@ -364,10 +101,6 @@ const AuthComp = defineAsyncComponent({
 <style lang="scss">
 //dialog-content-wrapper на главной странице
 @use '@/assets/css/mixins/fonts.scss';
-
-.wrap {
-  display: flex;
-}
 
 .game-setup {
   display: flex;
@@ -408,38 +141,6 @@ const AuthComp = defineAsyncComponent({
     text-align: center;
   }
 
-  &__start-remainder {
-    align-self: center;
-  }
-
-  &__player-names {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  &__who-starts {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-top: 16px;
-  }
-
-  &__is-percent-double {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-top: 32px;
-  }
-
-  &__sets-legs {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-
   &__start-game-button {
     align-self: center;
     width: 450px;
@@ -462,154 +163,7 @@ const AuthComp = defineAsyncComponent({
   }
 }
 
-.start-remainder {
-  &__header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 180px;
-    padding: 8px;
-    padding-right: 16px;
-    outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    font: inherit;
-    text-align: center;
-    cursor: default;
-    background-color: rgb(221, 231, 231);
-
-    &:focus {
-      outline: 1px solid black;
-    }
-  }
-
-  &__values {
-    position: absolute;
-    z-index: 2;
-    border-radius: 4px;
-    background-color: rgb(208, 216, 216);
-  }
-
-  &__value {
-    width: 180px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    padding: 8px;
-    outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    font: inherit;
-    text-align: center;
-    cursor: default;
-    background-color: rgb(221, 231, 231);
-
-    &:hover,
-    &:focus {
-      background-color: rgb(146, 188, 214);
-    }
-  }
-}
-
-.arrow-down-icon {
-  position: absolute;
-  right: 0;
-  width: 24px;
-  height: 24px;
-  display: block;
-}
-
-.player-names__name {
-  width: 250px;
-  padding: 8px;
-  outline: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  @include fonts.Advent;
-  background-color: rgb(221, 231, 231);
-
-  &:focus {
-    outline: 1px solid black;
-  }
-
-  &:disabled {
-    opacity: 50%;
-  }
-}
-
-.player-names__name_margin-right {
-  margin-right: 140px;
-}
-
 .game-setup__parameter-header_margin_zero {
   margin: 0 16px;
-}
-
-.who-starts__radio-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  outline: none;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  background-color: rgb(221, 231, 231);
-  transition: background-color 0.3s linear;
-
-  &:checked {
-    background-color: rgb(66, 63, 63);
-  }
-
-  &:focus {
-    outline: 2px solid white;
-  }
-}
-
-.sets-legs__value {
-  width: 100px;
-  padding: 8px;
-  outline: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  font: inherit;
-  text-align: center;
-  background-color: rgb(221, 231, 231);
-
-  &:focus {
-    outline: 1px solid black;
-  }
-
-  &:disabled {
-    opacity: 50%;
-  }
-}
-
-.sets-legs__value_margin_right {
-  margin-right: 128px;
-}
-
-.sets-legs__is-disabled {
-  margin-left: 8px;
-}
-
-.auth-person-gs {
-  position: sticky;
-  top: 3px;
-  margin-top: 3px;
-  background-color: rgb(177, 205, 223);
-  width: 28px;
-  height: 28px;
-  border: 1px solid black;
-  border-radius: 50%;
-
-  &_order_2 {
-    order: 2;
-  }
-
-  &__icon {
-    width: 24px;
-    height: 24px;
-    display: block;
-  }
 }
 </style>

@@ -4,6 +4,7 @@ export class SeenParameters {
   constructor(isSeen, isPercentDoubleInStat, seenParameters) {
     for (const parameterName in seenParameters)
       this[parameterName] = ref(isSeen && seenParameters[parameterName]);
+    this.percentDouble = ref(isSeen && isPercentDoubleInStat)
     if (!seenParameters) {
       this.averagePoints = ref(isSeen);
       this.averageFirstNineDarts = ref(isSeen);

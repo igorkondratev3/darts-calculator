@@ -5,7 +5,7 @@ const props = defineProps({
   player: String,
   seenStatisticsVisisbilitySetting: Boolean,
   areSetsInGame: Boolean,
-  isPercentDoubleInStatInStat: Boolean,
+  isPercentDoubleInStat: Boolean,
   seenAveragePointsLeg: Boolean,
   seenParametersGame: Object,
   seenParametersSet: Object
