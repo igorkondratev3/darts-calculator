@@ -1,10 +1,18 @@
 <script setup>
-import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
-import { SeenParameters, SeenGroups } from './seenClases.js';
-import LoadingComponent from '@/components/loadingComponent.vue';
 import { ref, defineAsyncComponent } from 'vue';
+import { SeenParameters, SeenGroups } from './seenClases.js';
+import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
+import LoadingComponent from '@/components/loadingComponent.vue';
 import AuthState from '@/components/auth/authState.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
+import StatisticAverage from './components/statisticAverage.vue';
+import StatisticPoints from './components/statisticPoints.vue';
+import StatisticClosing from './components/statisticClosing.vue';
+const AuthComp = defineAsyncComponent({
+  loader: () => import('@/components/auth/authComp.vue'),
+  loadingComponent: LoadingComponent,
+  delay: 0
+});
 
 const props = defineProps({
   player: String,
@@ -16,29 +24,16 @@ const props = defineProps({
 });
 
 let positionSetupVisibility = {
-  'margin-left': '-12px',
-  'align-self': 'flex-start'
+  'margin-right': '-12px',
+  'align-self': 'flex-end'
 };
-
 if (props.player === 'P2')
   positionSetupVisibility = {
     'margin-left': '-12px',
     'align-self': 'flex-start'
   };
-else
-  positionSetupVisibility = {
-    'margin-right': '-12px',
-    'align-self': 'flex-end'
-  };
-
-const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/auth/authComp.vue'),
-  loadingComponent: LoadingComponent,
-  delay: 0
-});
 
 const seenAuthComp = ref(false);
-
 const seenStatisticsVisisbilitySetting = ref(false);
 const seenAveragePointsLeg = ref(
   Boolean(
@@ -90,7 +85,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
 <template>
   <div class="points-information__statistic statistic">
-    <div class="wr">
+    <div class="player-statistic-wrapper">
       <AuthState backgroundColor="rgb(182, 195, 197)" :player="props.player" />
       <div
         class="statistic__player-statistic"
@@ -109,194 +104,33 @@ const changeParameterSeen = (groupName, parameterName, value) => {
             alt="меню"
           />
         </button>
-        <div
-          class="statistic__average statistic-average"
-          v-if="seenGroups.averagePoints.value"
-        >
-          <h4
-            class="statistic__group-header statistic__group-header_margin-bottom"
-          >
-            Средний набор
-          </h4>
-          <div class="statistic-average__points">
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.averagePoints.value"
-            >
-              <h6 class="statistic__value-header">матч</h6>
-              {{ props.gameStatistic.averagePoints.value.toFixed(2) }}
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.averagePoints.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.averagePoints.value.toFixed(2) }}
-            </div>
-            <div class="statistic__values" v-if="seenAveragePointsLeg">
-              <h6 class="statistic__value-header">лег</h6>
-              {{ props.averagePointsLeg.toFixed(2) }}
-            </div>
-          </div>
-          <div
-            class="statistic-average__nine-darts"
-            v-if="seenGroups.averageFirstNineDarts.value"
-          >
-            <h5 class="statistic__parameter-header">9 дротиков</h5>
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.averageFirstNineDarts.value"
-            >
-              <h6 class="statistic__value-header" v-if="props.areSetsInGame">
-                матч
-              </h6>
-              {{ props.gameStatistic.averageFirstNineDarts.value.toFixed(2) }}
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.averageFirstNineDarts.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.averageFirstNineDarts.value.toFixed(2) }}
-            </div>
-          </div>
-          <div
-            class="statistic-average__win-legs"
-            v-if="seenGroups.averagePointsWinLegs.value"
-          >
-            <h5 class="statistic__parameter-header">выигранные леги</h5>
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.averagePointsWinLegs.value"
-            >
-              <h6 class="statistic__value-header" v-if="props.areSetsInGame">
-                матч
-              </h6>
-              {{ props.gameStatistic.averagePointsWinLegs.value.toFixed(2) }}
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.averagePointsWinLegs.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.averagePointsWinLegs.value.toFixed(2) }}
-            </div>
-          </div>
-          <div
-            class="statistic-average__lose-legs"
-            v-if="seenGroups.averagePointsLoseLegs.value"
-          >
-            <h5 class="statistic__parameter-header">проигранные леги</h5>
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.averagePointsLoseLegs.value"
-            >
-              <h6 class="statistic__value-header" v-if="props.areSetsInGame">
-                матч
-              </h6>
-              {{ props.gameStatistic.averagePointsLoseLegs.value.toFixed(2) }}
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.averagePointsLoseLegs.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.averagePointsLoseLegs.value.toFixed(2) }}
-            </div>
-          </div>
-        </div>
-        <div
-          class="statistic__points statistic-points"
-          v-if="seenGroups.points.value"
-        >
-          <h4 class="statistic__group-header">Очки</h4>
-          <div
-            class="statistic-points__game-points"
-            v-if="seenParametersGame.points.value"
-          >
-            <h5 class="statistic__parameter-header" v-if="props.areSetsInGame">
-              матч
-            </h5>
-            <template
-              v-for="(point, key) in seenParametersGame.pointsGroup"
-              :key="key + 'game'"
-            >
-              <div class="statistic__values" v-if="point.value">
-                <h6 class="statistic__value-header">
-                  {{ key.slice(1) }}{{ key !== 'p180' ? '+' : undefined }}
-                </h6>
-                {{ props.gameStatistic[key].value }}
-              </div>
-            </template>
-          </div>
-          <div
-            class="statistic-points__set-points"
-            v-if="seenParametersSet.points.value"
-          >
-            <h5 class="statistic__parameter-header">сет</h5>
-            <template
-              v-for="(point, key) in seenParametersSet.pointsGroup"
-              :key="key + 'set'"
-            >
-              <div class="statistic__values" v-if="point.value">
-                <h6 class="statistic__value-header">
-                  {{ key.slice(1) }}{{ key !== 'p180' ? '+' : undefined }}
-                </h6>
-                {{ props.setStatistic[key].value }}
-              </div>
-            </template>
-          </div>
-        </div>
-        <div
-          class="statistic__closing statistic-closing"
-          v-if="seenGroups.closing.value"
-        >
-          <h4 class="statistic__group-header">Закрытия</h4>
-          <div
-            class="statistic-closing__double"
-            v-if="seenGroups.double.value && props.isPercentDoubleInStat"
-          >
-            <h5 class="statistic__parameter-header">% удвоений</h5>
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.percentDouble.value"
-            >
-              <h6 class="statistic__value-header" v-if="props.areSetsInGame">
-                матч
-              </h6>
-              {{ props.gameStatistic.percentDouble.value.toFixed(2) }} %
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.percentDouble.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.percentDouble.value.toFixed(2) }} %
-            </div>
-          </div>
-          <div
-            class="statistic-closing__highest"
-            v-if="seenGroups.highest.value"
-          >
-            <h5 class="statistic__parameter-header">наибольшее</h5>
-            <div
-              class="statistic__values"
-              v-if="seenParametersGame.highestCheckout.value"
-            >
-              <h6 class="statistic__value-header" v-if="props.areSetsInGame">
-                матч
-              </h6>
-              {{ props.gameStatistic.highestCheckout.value }}
-            </div>
-            <div
-              class="statistic__values"
-              v-if="seenParametersSet.highestCheckout.value"
-            >
-              <h6 class="statistic__value-header">сет</h6>
-              {{ props.setStatistic.highestCheckout.value }}
-            </div>
-          </div>
-        </div>
+        <StatisticAverage
+          :seenGroups="seenGroups"
+          :seenParametersGame="seenParametersGame"
+          :seenParametersSet="seenParametersSet"
+          :seenAveragePointsLeg="seenAveragePointsLeg"
+          :gameStatistic="props.gameStatistic"
+          :setStatistic="props.setStatistic"
+          :averagePointsLeg="props.averagePointsLeg"
+          :areSetsInGame="props.areSetsInGame"
+        />
+        <StatisticPoints
+          :seenGroups="seenGroups"
+          :seenParametersGame="seenParametersGame"
+          :seenParametersSet="seenParametersSet"
+          :gameStatistic="props.gameStatistic"
+          :setStatistic="props.setStatistic"
+          :areSetsInGame="props.areSetsInGame"
+        />
+        <StatisticClosing
+          :seenGroups="seenGroups"
+          :seenParametersGame="seenParametersGame"
+          :seenParametersSet="seenParametersSet"
+          :gameStatistic="props.gameStatistic"
+          :setStatistic="props.setStatistic"
+          :areSetsInGame="props.areSetsInGame"
+          :isPercentDoubleInStat="props.isPercentDoubleInStat"
+        />
       </div>
       <StatisticsVisibilitySettings
         :player="props.player"
@@ -335,7 +169,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   }
 }
 
-.wr {
+.player-statistic-wrapper {
   position: sticky;
   top: 8px;
   margin-top: 8px;

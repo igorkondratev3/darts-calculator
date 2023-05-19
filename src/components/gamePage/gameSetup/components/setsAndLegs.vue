@@ -30,6 +30,7 @@ const changeAreSetsInGame = (event) => {
 
 const checkAreSetsInGame = (setInput) => {
   //так как emit отработает после выполнения функции значения поменяны на обратные
+  //можно передавать в функцию сразу актуальный параметр - подумать
   if (props.areSetsInGame) emits('update:setsToWin', 1);
   if (!props.areSetsInGame) setTimeout(() => setInput.focus(), 0);
 };

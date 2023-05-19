@@ -19,7 +19,7 @@ document.addEventListener('click', closeSelectRemainders);
 onUnmounted(() => {
   document.removeEventListener('click', closeSelectRemainders);
 });
-//не нравится прослушиватель события на элементе, подумать, если оставлю, то проверить
+//не нравится прослушиватель события на документе, подумать, если оставлю, то проверить
 //корректное уничтожени события если буду менять v-if на компонент настройки игры
 </script>
 

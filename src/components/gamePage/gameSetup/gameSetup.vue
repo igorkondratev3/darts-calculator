@@ -2,7 +2,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters.js';
 import { useUsersStore } from '@/stores/users.js';
-import { changePlayersInLS } from '@/helpers/changePlayersInLS.js';
+import { swapPlayersInLS } from '@/helpers/swapPlayersInLS.js';
 import LoadingComponent from '@/components/loadingComponent.vue';
 import AuthState from '@/components/auth/authState.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
@@ -20,12 +20,11 @@ const gameParameters = new GameParameters(
   JSON.parse(localStorage.getItem('gameParameters'))
 );
 
-
 const startGame = (gameParameters) => {
   const gameParametersForNewGame = gameParameters.normalize();
   if (gameParametersForNewGame.whoStarts === 'nameP2') {
     usersStore.swap();
-    changePlayersInLS();
+    swapPlayersInLS();
   }
   localStorage.setItem(
     'gameParameters',

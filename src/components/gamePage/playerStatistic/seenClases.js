@@ -4,7 +4,7 @@ export class SeenParameters {
   constructor(isSeen, isPercentDoubleInStat, seenParameters) {
     for (const parameterName in seenParameters)
       this[parameterName] = ref(isSeen && seenParameters[parameterName]);
-    this.percentDouble = ref(isSeen && isPercentDoubleInStat)
+    this.percentDouble = ref(isSeen && isPercentDoubleInStat);
     if (!seenParameters) {
       this.averagePoints = ref(isSeen);
       this.averageFirstNineDarts = ref(isSeen);
@@ -14,7 +14,6 @@ export class SeenParameters {
       this.p171 = ref(isSeen);
       this.p131 = ref(isSeen);
       this.p96 = ref(isSeen);
-      this.percentDouble = ref(isSeen && isPercentDoubleInStat);
       this.highestCheckout = ref(isSeen);
     }
     Object.defineProperty(this, 'points', {
@@ -46,7 +45,7 @@ export class SeenParameters {
     const result = {};
     for (const key in this) result[key] = this[key].value;
     return result;
-  };
+  }
 
   selectAll() {
     for (const key in this) this[key].value = true;

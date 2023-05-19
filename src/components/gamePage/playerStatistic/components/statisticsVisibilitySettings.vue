@@ -58,8 +58,8 @@ const closeStatisticsVisibilitySettings = () => {
 };
 
 let positionSetupVisibility = {
-  'margin-left': '-12px',
-  'align-self': 'flex-start'
+  'margin-right': '-12px',
+  'align-self': 'flex-end'
 };
 
 if (props.player === 'P2')
@@ -67,19 +67,13 @@ if (props.player === 'P2')
     'margin-left': '-12px',
     'align-self': 'flex-start'
   };
-else
-  positionSetupVisibility = {
-    'margin-right': '-12px',
-    'align-self': 'flex-end'
-  };
 
-  let positionControlSeen = {
-  'left': '4px'
+let positionControlSeen = {
+  left: '4px'
 };
-
 if (props.player === 'P2')
   positionControlSeen = {
-    'right': '4px',
+    right: '4px'
   };
 </script>
 

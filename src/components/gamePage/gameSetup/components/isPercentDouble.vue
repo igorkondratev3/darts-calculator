@@ -42,11 +42,14 @@ defineEmits([
 </template>
 
 <style lang="scss">
+.game-setup__is-percent-double {
+  margin-top: 32px;
+}
+
 .is-percent-double {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 32px;
 }
 </style>

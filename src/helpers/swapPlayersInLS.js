@@ -1,4 +1,4 @@
-export const changePlayersInLS = () => {
+export const swapPlayersInLS = () => {
   if (localStorage.getItem('userP1') && localStorage.getItem('userP2')) {
     const playerOne = localStorage.getItem('userP1');
     localStorage.setItem('userP1', localStorage.getItem('userP2'));
