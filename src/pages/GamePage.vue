@@ -2,16 +2,17 @@
 import { ref, onMounted } from 'vue';
 import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
-import GameOver from '@/components/gamePage/gameOver.vue';
+import GameOver from '@/components/gamePage/gameOver/gameOver.vue';
 import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';
 import {
   defineFocusForNewLeg,
-  defineFocusForNextPlayer
-} from '@/helpers/defineFocus.js';
+  defineFocusForNextPlayer,
+  getNumberDarts,
+  changeOldValues
+} from '@/helpers/gamePage.js';
 import { useUsersStore } from '@/stores/users.js';
-import { getNumberDarts } from '@/helpers/getNumberDarts.js';
 import { useNewGame } from '@/composables/newGame.js';
 import { useSvgStore } from '@/stores/svg';
 import { RouterLink } from 'vue-router';
@@ -27,9 +28,10 @@ const messageNumberDartsModal = ref('');
 const gameOverModal = ref(null);
 const gameSetupModal = ref(null);
 const isGameOver = ref(false);
-const isStartedGame = ref(false);
+const isStartedGame = ref(false); 
 
 onMounted(() => {
+  //gameSetupModal.value.showModal()
   setTimeout(() => gameSetupModal.value.showModal(), 0);
   /*settimeout чтобы корректно работало,
   но всё равно ошибка при внесении изменении в код текущей страницы
@@ -59,17 +61,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   const currentPlayer = player === 'playerOne' ? playerOne : playerTwo;
 
   if (roundNumber <= currentPlayer.legRemainders.value.length) {
-    //блок для проверки внесения изменений - вынести в функцию
-    const difference = currentPlayer.legPoints.value[roundNumber - 1] - point;
-    currentPlayer.legPoints.value[roundNumber - 1] = point;
-    for (
-      let i = roundNumber - 1;
-      i < currentPlayer.legRemainders.value.length;
-      i++
-    )
-      currentPlayer.legRemainders.value[i] += difference;
-    currentPlayer.pointsAndDartsLegs.value[legNumber.value - 1][0] -=
-      difference;
+    changeOldValues(currentPlayer, point, roundNumber, legNumber.value)
     defineFocusForNextPlayer(player, document.forms[0]);
     return;
   }
@@ -232,7 +224,6 @@ const startNewGame = () => {
           alt="darts"
         />
       </div>
-
       <PalyerScore
         v-if="Boolean(playerTwo)"
         :areSetsInGame="gameParameters?.areSetsInGame"
@@ -398,8 +389,8 @@ const startNewGame = () => {
   position: absolute;
   top: 4px;
   right: 4px;
-  padding: 8px;
   z-index: 2;
+  padding: 8px;
   border: 1px solid black;
   border-radius: 8px;
   @include fonts.Advent;

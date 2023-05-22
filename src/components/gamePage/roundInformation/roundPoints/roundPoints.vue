@@ -11,13 +11,13 @@ const emit = defineEmits(['setPoints']);
 
 const roundPoints = ref();
 
-watch(
+watch( 
   () => props.points,
   () => {
     roundPoints.value = props.points;
   }
 );
-//подумать над этим
+//подумать над этим - исчезают значения при hot reload когда этого нет
 
 const checkNumber = (event) => {
   if (event.data < '0' || event.data > '9') roundPoints.value = 0;
@@ -66,9 +66,9 @@ const setPoints = () => {
   font-size: 48px;
   text-align: center;
   background: transparent;
-}
 
-.round-information__points:focus {
-  background: radial-gradient(transparent 65%, rgb(182, 195, 197));
+  &:focus {
+    background: radial-gradient(transparent 65%, rgb(182, 195, 197));
+  }
 }
 </style>

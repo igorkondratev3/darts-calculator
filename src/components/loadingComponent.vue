@@ -1,11 +1,7 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-  <div class="loading-component">
-    Загрузка
-  </div>
+  <div class="loading-component">Загрузка</div>
 </template>
 
 <style lang="scss">

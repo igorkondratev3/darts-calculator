@@ -10,7 +10,7 @@ defineProps({
 <template>
   <div class="palyers-information__player-score player-score">
     <div class="player-score__legs-won">
-      <!--можно еще реализовать через flec order-->
+      <!--можно еще реализовать через flex order-->
       {{ player === 'P1' ? 'Леги ' + legsWonInSet : legsWonInSet + ' Леги' }}
     </div>
     <div class="player-score__sets-won" v-if="areSetsInGame">

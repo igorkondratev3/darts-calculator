@@ -1,5 +1,7 @@
 <script setup>
 import { useUsersStore } from '@/stores/users.js';
+import { deleteRefreshTokenFromDB } from '@/helpers/fetch.js';
+
 defineProps({
   player: String
 });
@@ -10,19 +12,6 @@ const logout = (player) => {
   deleteRefreshTokenFromDB(usersStore.users[player].refreshToken);
   usersStore.logout(player);
   localStorage.removeItem(`user${player}`);
-};
-
-const deleteRefreshTokenFromDB = async (refreshToken) => {
-  try {
-    await fetch(`${import.meta.env.VITE_BACKEND_URI}/refreshToken`, {
-      method: 'DELETE',
-      headers: {
-        authorization: `Bearer ${refreshToken}`
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
 };
 </script>
 
