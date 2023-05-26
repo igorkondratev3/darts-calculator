@@ -48,6 +48,8 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-left: 16px;
+  margin-right: 16px;
 
   &__name {
     width: 250px;

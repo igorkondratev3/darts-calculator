@@ -34,6 +34,7 @@ const auth = async () => {
       'Вход с данным адресом электронной почты уже произведен'
     );
     startAuth.value = false;
+    return;
   }
   let user;
   try {
@@ -44,6 +45,7 @@ const auth = async () => {
     startAuth.value = false;
     return;
   }
+
   if (!Object.hasOwn(user, 'error')) {
     usersStore.login(props.player, user);
     localStorage.setItem(`user${props.player}`, JSON.stringify(user));

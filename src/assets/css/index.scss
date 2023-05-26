@@ -2,8 +2,44 @@
 @use './styles/scrollbar.scss';
 @use './styles/inputNumber.scss';
 @use './styles/checkbox.scss';
-@use './styles/fonts.scss';
+@use './styles/importFonts.scss';
+@use '@/assets/css/mixins/fonts.scss';
 
 body {
   min-height: 100vh;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+  @include fonts.Advent;
+  background-color: rgb(232, 238, 233);
+}
+
+.base-button {
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: default;
+  color: black;
+  text-align: center;
+  @include fonts.Advent;
+  transition: background-color 0.5s linear, color 0.5s linear;
+
+  &:focus,
+  &:hover {
+    color: white;
+    background-color: black;
+  }
+
+  &:disabled {
+    color: black;
+    background-color: transparent;
+    opacity: 25%;
+  }
 }

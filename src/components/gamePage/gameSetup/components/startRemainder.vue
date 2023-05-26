@@ -14,8 +14,8 @@ const setStartRemainder = (remainder) => {
 };
 
 const closeSelectRemainders = () => (seenSelectRemainders.value = false);
-document.addEventListener('click', closeSelectRemainders);
 
+document.addEventListener('click', closeSelectRemainders);
 onUnmounted(() => {
   document.removeEventListener('click', closeSelectRemainders);
 });
@@ -31,6 +31,7 @@ onUnmounted(() => {
       tabindex="0"
       @click.stop="seenSelectRemainders = true"
       @keyup.enter="seenSelectRemainders = true"
+      autofocus
     >
       {{ startRemainder }}
       <img
@@ -57,6 +58,7 @@ onUnmounted(() => {
         tabindex="0"
         @click="setStartRemainder(1001)"
         @keyup.enter="setStartRemainder(1001)"
+        @keydown.tab="closeSelectRemainders"
       >
         1001
       </div>

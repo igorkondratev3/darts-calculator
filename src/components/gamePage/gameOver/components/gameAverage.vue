@@ -6,7 +6,7 @@ defineProps({
 </script>
 
 <template>
-  <h3 class="game-statistic__header-group">Средний набор</h3>
+  <h4 class="game-statistic__header-group">Средний набор</h4>
   <div class="game-statistic__parameters statistic-parameters">
     <div class="statistic-parameters__values">
       {{ gameStatisticP1.averagePoints.value.toFixed(2) }}

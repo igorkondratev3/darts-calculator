@@ -2,16 +2,23 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
-import LoadingComponent from '@/components/loadingComponent.vue';
+import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
 import AuthState from '@/components/auth/authState.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
-import StatisticAverage from './components/statisticAverage.vue';
-import StatisticPoints from './components/statisticPoints.vue';
-import StatisticClosing from './components/statisticClosing.vue';
+
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/auth/authComp.vue'),
-  loadingComponent: LoadingComponent,
+  loadingComponent: LoadingAuth,
   delay: 0
+});
+const StatisticAverage = defineAsyncComponent({
+  loader: () => import('./components/statisticAverage.vue')
+});
+const StatisticPoints = defineAsyncComponent({
+  loader: () => import('./components/statisticPoints.vue')
+});
+const StatisticClosing = defineAsyncComponent({
+  loader: () => import('./components/statisticClosing.vue')
 });
 
 const props = defineProps({
@@ -105,6 +112,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
           />
         </button>
         <StatisticAverage
+          v-if="seenGroups.averagePoints.value"
           :seenGroups="seenGroups"
           :seenParametersGame="seenParametersGame"
           :seenParametersSet="seenParametersSet"
@@ -115,7 +123,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
           :areSetsInGame="props.areSetsInGame"
         />
         <StatisticPoints
-          :seenGroups="seenGroups"
+          v-if="seenGroups.points.value"
           :seenParametersGame="seenParametersGame"
           :seenParametersSet="seenParametersSet"
           :gameStatistic="props.gameStatistic"
@@ -123,6 +131,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
           :areSetsInGame="props.areSetsInGame"
         />
         <StatisticClosing
+          v-if="seenGroups.closing.value"
           :seenGroups="seenGroups"
           :seenParametersGame="seenParametersGame"
           :seenParametersSet="seenParametersSet"
@@ -147,7 +156,6 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         @update:parameterVisibility="changeParameterSeen"
         v-model:seenAveragePointsLeg="seenAveragePointsLeg"
       />
-
       <AuthComp
         v-if="seenAuthComp"
         @closeAuthComp="seenAuthComp = false"
@@ -208,6 +216,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   &__setup-visibility {
     position: sticky;
     top: 4px;
+    z-index: 2;
+    margin-top: -20px;
     cursor: pointer;
     border: 1px solid transparent;
     border-radius: 4px;

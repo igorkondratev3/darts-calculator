@@ -1,17 +1,19 @@
 <script setup>
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import StatChart from '@/components/charts/statChart.vue';
 import { useUsersStore } from '@/stores/users.js';
-import { RouterLink } from 'vue-router';
-const usersStore = useUsersStore();
 
 const props = defineProps({
   player: String
 });
 
+const usersStore = useUsersStore();
 const statistic = ref(null);
+getStatistic(props.player);
 
-const getStatistic = async (player) => {
+const messageError = ref('');
+async function getStatistic(player) {
   const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic/get`;
   const fetchParams = {
     method: 'POST',
@@ -30,7 +32,8 @@ const getStatistic = async (player) => {
     response = await fetch(URI, fetchParams);
     json = await response.json();
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    messageError.value = 'Ошибка сервера получении статистики';
     return;
   }
 
@@ -40,29 +43,32 @@ const getStatistic = async (player) => {
       json.newTokens.token,
       json.newTokens.refreshToken
     );
-    console.log(usersStore.users[player]);
     const user = JSON.parse(localStorage.getItem(`user${player}`));
     user.token = json.newTokens.token;
     user.refreshToken = json.newTokens.refreshToken;
     localStorage.setItem(`user${player}`, JSON.stringify(user));
   }
 
-  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
-    console.log(json, '1');
+  if (json && Object.hasOwn(json, 'error')) {
+    console.error(json.error);
+    messageError.value = json.error;
     return;
-    //    return { error: 'Неизвестная ошибка' };
+  }
+
+  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
+    messageError.value = 'Не удалось получить статистику';
+    return;
   }
 
   statistic.value = json.statistic;
-  console.log(json, '2');
-};
-
-getStatistic(props.player);
+  if (!statistic.value[0])
+    messageError.value = 'Статистика отсутствует';
+}
 </script>
 
 <template>
-  <div class="user-profile">
-    <RouterLink class="home-button" to="/">на главную</RouterLink>
+  <div class="page user-profile">
+    <RouterLink class="base-button home-button" to="/">на главную</RouterLink>
     <div class="user-profile__information user-information">
       <div class="user-information__avatar avatar">
         <img
@@ -85,9 +91,7 @@ getStatistic(props.player);
         />
       </template>
     </div>
-    <div v-else class="loading-message">
-      Загружается статистика игрока
-    </div> 
+    <div v-else class="loading-message">{{ messageError ||  'Загружается статистика игрока'}}</div>
   </div>
 
   <!--
@@ -261,35 +265,11 @@ getStatistic(props.player);
 <style lang="scss">
 @use '@/assets/css/mixins/fonts.scss';
 
-.user-profile {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  min-height: 100vh;
-  padding: 16px;
-  @include fonts.Advent;
-  background-color: rgb(232, 238, 233);
-}
-
 .home-button {
   position: absolute;
   top: 4px;
   right: 4px;
-  padding: 8px;
-  border: 1px solid black;
-  border-radius: 8px;
-  @include fonts.Advent;
   font-size: 16px;
-  text-decoration: none;
-  cursor: default;
-  transition: background-color 0.5s linear, color 0.5s linear;
-
-  &:focus,
-  &:hover {
-    background-color: black;
-    color: white;
-  }
 }
 
 .user-information {
@@ -321,13 +301,13 @@ getStatistic(props.player);
 }
 
 .loading-message {
-  padding: 32px 16px;
-  font-size: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   align-self: center;
+  padding: 32px 16px;
   border: 1px solid black;
   border-radius: 8px;
+  font-size: 48px;
 }
 </style>

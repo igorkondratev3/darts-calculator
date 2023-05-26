@@ -9,6 +9,7 @@ const props = defineProps({
   legNumber: Number,
   legsWonInGame: Number
 });
+const emits = defineEmits(['showPopUp']);
 
 const isStatisticSave = ref(false);
 
@@ -49,13 +50,9 @@ const setstatisticInDB = async (player) => {
     json = await response.json();
   } catch (error) {
     console.error(error);
+    emits('showPopUp', 'Ошибка доступа к серверу');
     isStatisticSave.value = false;
     return;
-  }
-
-  if (json?.error) {
-    console.error(json.error);
-    isStatisticSave.value = false;
   }
 
   if (json && Object.hasOwn(json, 'newTokens')) {
@@ -70,11 +67,17 @@ const setstatisticInDB = async (player) => {
     localStorage.setItem(`user${player}`, JSON.stringify(user));
   }
 
-  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
-    console.log(json, '1');
+  if (json && Object.hasOwn(json, 'error')) {
+    console.error(json.error);
+    emits('showPopUp', json.error);
     isStatisticSave.value = false;
     return;
-    //    return { error: 'Неизвестная ошибка' };
+  }
+
+  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
+    isStatisticSave.value = false;
+    emits('showPopUp', 'Не удалось сохранить статистику');
+    return;
   }
   showDone.value = true;
 };
@@ -138,6 +141,7 @@ const setstatisticInDB = async (player) => {
 .save-icon {
   width: 32px;
   height: 32px;
+  z-index: 2;
   display: block;
 }
 

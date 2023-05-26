@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
-import LoadingComponent from '@/components/loadingComponent.vue';
+import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
 import AuthState from '@/components/auth/authState.vue';
 import SaveStatistic from './components/saveStatistic.vue';
@@ -27,9 +27,21 @@ const seenAuthCompP1 = ref(false);
 const seenAuthCompP2 = ref(false);
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/auth/authComp.vue'),
-  loadingComponent: LoadingComponent,
+  loadingComponent: LoadingAuth,
   delay: 0
 });
+
+const popUpSeen = ref(false);
+const popUpMessage = ref('');
+const wherePopUp = ref('');
+const PopUp = defineAsyncComponent({
+  loader: () => import('@/components/popUp.vue')
+});
+const showPopUp = (message, where) => {
+  popUpMessage.value = message;
+  wherePopUp.value = where;
+  popUpSeen.value = true;
+};
 </script>
 
 <template>
@@ -59,6 +71,7 @@ const AuthComp = defineAsyncComponent({
           :isPercentDoubleInStat="props.isPercentDoubleInStatP1"
           :legNumber="props.legNumber"
           :legsWonInGame="legsWonInGameP1"
+          @showPopUp="(message) => showPopUp(message, 'left')"
         />
         <SaveStatistic
           player="P2"
@@ -66,10 +79,13 @@ const AuthComp = defineAsyncComponent({
           :isPercentDoubleInStat="props.isPercentDoubleInStatP2"
           :legNumber="props.legNumber"
           :legsWonInGame="legsWonInGameP2"
+          @showPopUp="(message) => showPopUp(message, 'right')"
         />
         <div class="game-over__statistic game-statistic">
-          <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
-          <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
+          <div class="auth-actions-wrapper">
+            <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
+            <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
+          </div>
           <div class="game-statistic__player-names game-statistic-player-names">
             <div
               class="game-statistic-player-names__name game-statistic-player-names__name_margin-right"
@@ -104,10 +120,21 @@ const AuthComp = defineAsyncComponent({
           />
         </div>
       </div>
-      <button class="game-over__new-game" @click="$emit('startNewGame')">
+      <button
+        class="base-button game-over__new-game"
+        @click="$emit('startNewGame')"
+      >
         Новый матч
       </button>
     </div>
+    <PopUp
+      :popUpSeen="popUpSeen"
+      :popUpMessage="popUpMessage"
+      :popUpDuration="4000"
+      :where="wherePopUp"
+      howFar="0px"
+      @closePopUp="popUpSeen = false"
+    />
   </div>
 </template>
 
@@ -133,7 +160,7 @@ const AuthComp = defineAsyncComponent({
     flex-direction: column;
     min-height: 200px;
     max-height: 80vh;
-    padding: 24px 32px 16px 32px;
+    padding: 0px 16px 16px 16px;
     border-radius: 16px;
     overflow: auto;
     overscroll-behavior: none;
@@ -160,6 +187,8 @@ const AuthComp = defineAsyncComponent({
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  margin-left: 16px;
+  margin-right: 16px;
 
   &__name {
     max-width: 400px;
@@ -227,19 +256,7 @@ const AuthComp = defineAsyncComponent({
 .game-over__new-game {
   margin-top: 16px;
   padding: 24px;
-  border-radius: 8px;
-  font: inherit;
+  border: none;
   background-color: rgb(221, 231, 231);
-  transition: background-color 0.5s linear, color 0.5s linear;
-
-  &:hover {
-    background-color: black;
-    color: white;
-  }
-
-  &:focus {
-    background-color: black;
-    color: white;
-  }
 }
 </style>

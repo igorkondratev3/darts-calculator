@@ -83,7 +83,7 @@ const changeDateInterval = () => {
 
 <template>
   <div class="chart-box">
-    <h3 class="chart-box__head">{{ name }}</h3>
+    <h4 class="chart-box__head">{{ name }}</h4>
     <div class="chart-wrapper" :data-max="maxValue.toFixed(2) || ''">
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
       <div class="chart">
@@ -149,8 +149,7 @@ const changeDateInterval = () => {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 112px;
-  margin-top: 64px;
+  margin: 32px 56px 32px 56px;
 
   &__info {
     position: absolute;

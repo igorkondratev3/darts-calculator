@@ -7,6 +7,6 @@ export const deleteRefreshTokenFromDB = async (refreshToken) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

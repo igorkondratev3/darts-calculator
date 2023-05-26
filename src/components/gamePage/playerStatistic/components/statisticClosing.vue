@@ -11,10 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <div
-    class="statistic__closing statistic-closing"
-    v-if="seenGroups.closing.value"
-  >
+  <div class="statistic__closing statistic-closing">
     <h4 class="statistic__group-header">Закрытия</h4>
     <div
       class="statistic-closing__double"

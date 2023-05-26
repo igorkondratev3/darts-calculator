@@ -1,11 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
-import GameOver from '@/components/gamePage/gameOver/gameOver.vue';
 import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';
+import LoadingDialog from '../components/gamePage/loadingDialog.vue';
 import {
   defineFocusForNewLeg,
   defineFocusForNextPlayer,
@@ -16,6 +16,11 @@ import { useUsersStore } from '@/stores/users.js';
 import { useNewGame } from '@/composables/newGame.js';
 import { useSvgStore } from '@/stores/svg';
 import { RouterLink } from 'vue-router';
+const GameOver = defineAsyncComponent({
+  loader: () => import('@/components/gamePage/gameOver/gameOver.vue'),
+  loadingComponent: LoadingDialog,
+  delay: 0
+});
 
 const svgStore = useSvgStore();
 
@@ -28,7 +33,7 @@ const messageNumberDartsModal = ref('');
 const gameOverModal = ref(null);
 const gameSetupModal = ref(null);
 const isGameOver = ref(false);
-const isStartedGame = ref(false); 
+const isStartedGame = ref(false);
 
 onMounted(() => {
   //gameSetupModal.value.showModal()
@@ -61,7 +66,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   const currentPlayer = player === 'playerOne' ? playerOne : playerTwo;
 
   if (roundNumber <= currentPlayer.legRemainders.value.length) {
-    changeOldValues(currentPlayer, point, roundNumber, legNumber.value)
+    changeOldValues(currentPlayer, point, roundNumber, legNumber.value);
     defineFocusForNextPlayer(player, document.forms[0]);
     return;
   }
@@ -200,11 +205,11 @@ const startNewGame = () => {
     игры всё было адекватно, может лучше менять сам объект с параметрами игры - подумать
     -->
   </dialog>
-  <main class="game-page game">
+  <main class="page game-page game">
     <button class="game__new-game-button" @click="startNewGame">
       Новый матч
     </button>
-    <RouterLink class="home-button" to="/">на главную</RouterLink>
+    <RouterLink class="base-button home-button" to="/">на главную</RouterLink>
     <div class="game__players-information players-information">
       <div class="players-information__name">
         {{ usersStore.users.P1?.name || playerOne?.name }}
@@ -375,35 +380,12 @@ const startNewGame = () => {
   scrollbar-width: none;
 }
 
-.game-page {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: 100vh;
-  padding-top: 16px;
-  @include fonts.Advent;
-  background-color: rgb(232, 238, 233);
-}
-
 .home-button {
   position: absolute;
   top: 4px;
   right: 4px;
   z-index: 2;
-  padding: 8px;
-  border: 1px solid black;
-  border-radius: 8px;
-  @include fonts.Advent;
   font-size: 16px;
-  text-decoration: none;
-  cursor: default;
-  transition: background-color 0.5s linear, color 0.5s linear;
-
-  &:focus,
-  &:hover {
-    background-color: black;
-    color: white;
-  }
 }
 
 .game {

@@ -9,7 +9,7 @@ defineEmits(['update:parameterVisibility']);
 
 <template>
   <label class="statistic__values statistic-values">
-    <h6 class="statistic__value-header" v-if="seenParametersHeader">
+    <h5 class="statistic__value-header" v-if="seenParametersHeader">
       {{ parameterGroup
       }}{{
         parameterGroup === '171' ||
@@ -18,7 +18,7 @@ defineEmits(['update:parameterVisibility']);
           ? '+'
           : undefined
       }}
-    </h6>
+    </h5>
     <input
       type="checkbox"
       class="statistic-values__visibility"

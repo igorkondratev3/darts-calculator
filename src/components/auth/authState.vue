@@ -49,12 +49,18 @@ const usersStore = useUsersStore();
 <style lang="scss">
 .auth-state {
   position: absolute;
-  background-color: v-bind(backgroundColor);
+  z-index: 2;
   top: 3px;
   width: 28px;
   height: 28px;
   border: 1px solid black;
   border-radius: 50%;
+  background-color: v-bind(backgroundColor);
+
+  &:focus {
+    outline: 1px solid black;
+    outline-offset: 2px;
+  }
 
   &_left {
     left: -28px;

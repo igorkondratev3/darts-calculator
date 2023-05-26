@@ -22,18 +22,20 @@ const usersStore = useUsersStore();
 
 <style lang="scss">
 .auth-action {
-  position: absolute;
+  position: sticky;
+  display: inline;
+  width: 24px;
   top: 4px;
   z-index: 2;
   border-radius: 4px;
   cursor: pointer;
 
   &_left {
-    left: 4px;
+    margin-left: -16px;
   }
 
   &_right {
-    right: 4px;
+    margin-left: calc(100% - 8px);
   }
 
   &:focus {
@@ -49,5 +51,13 @@ const usersStore = useUsersStore();
       transform: rotate(180deg);
     }
   }
+}
+
+.auth-actions-wrapper {
+  display: flex;
+  position: sticky;
+  top: 4px;
+  margin-top: 4px;
+  margin-right: 8px;
 }
 </style>

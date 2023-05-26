@@ -12,10 +12,7 @@ defineProps({
 </script>
 
 <template>
-  <div
-    class="statistic__average statistic-average"
-    v-if="seenGroups.averagePoints.value"
-  >
+  <div class="statistic__average statistic-average">
     <h4 class="statistic__group-header statistic__group-header_margin-bottom">
       Средний набор
     </h4>

@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <h3 class="game-statistic__header-group">Закрытия</h3>
+  <h4 class="game-statistic__header-group">Закрытия</h4>
   <div
     class="game-statistic__parameters statistic-parameters"
     v-if="isPercentDoubleInStatP1 || isPercentDoubleInStatP2"

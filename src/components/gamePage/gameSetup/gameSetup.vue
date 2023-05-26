@@ -3,7 +3,7 @@ import { ref, defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters.js';
 import { useUsersStore } from '@/stores/users.js';
 import { swapPlayersInLS } from '@/helpers/swapPlayersInLS.js';
-import LoadingComponent from '@/components/loadingComponent.vue';
+import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
 import AuthState from '@/components/auth/authState.vue';
 import AuthActions from '@/components/auth/authActions/authActions.vue';
 import SetsAndLegs from './components/setsAndLegs.vue';
@@ -37,7 +37,7 @@ const seenAuthCompP1 = ref(false);
 const seenAuthCompP2 = ref(false);
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/auth/authComp.vue'),
-  loadingComponent: LoadingComponent,
+  loadingComponent: LoadingAuth,
   delay: 0
 });
 </script>
@@ -59,9 +59,11 @@ const AuthComp = defineAsyncComponent({
       <AuthState player="P1" backgroundColor="rgb(177, 205, 223)" />
       <AuthState player="P2" backgroundColor="rgb(177, 205, 223)" />
       <div class="game-setup">
-        <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
-        <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
-        <h1 class="game-setup__header">Настройка параметров матча</h1>
+        <div class="auth-actions-wrapper">
+          <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
+          <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
+        </div>
+        <h2 class="game-setup__header">Настройка параметров матча</h2>
         <StartRemainder
           :startRemainder="gameParameters.startRemainder.value"
           @updateStartRemainder="
@@ -87,7 +89,7 @@ const AuthComp = defineAsyncComponent({
           v-model:legsToWin="gameParameters.legsToWin.value"
         />
         <button
-          class="game-setup__start-game-button"
+          class="base-button game-setup__start-game-button"
           @click.prevent="startGame(gameParameters)"
         >
           Начать матч
@@ -100,13 +102,13 @@ const AuthComp = defineAsyncComponent({
 <style lang="scss">
 //dialog-content-wrapper на главной странице
 @use '@/assets/css/mixins/fonts.scss';
-
 .game-setup {
   display: flex;
   flex-direction: column;
   max-height: 95vh;
   max-width: 95vw;
   padding: 16px;
+  padding-top: 0px;
   border-radius: 16px;
   margin-left: 4px;
   margin-right: 4px;
@@ -144,21 +146,8 @@ const AuthComp = defineAsyncComponent({
     align-self: center;
     width: 450px;
     margin-top: 64px;
-    padding: 8px;
-    border-radius: 8px;
-    @include fonts.Advent;
+    border: none;
     background-color: rgb(221, 231, 231);
-    transition: background-color 0.5s linear, color 0.5s linear;
-  }
-
-  &__start-game-button:hover {
-    background-color: black;
-    color: white;
-  }
-
-  &__start-game-button:focus {
-    background-color: black;
-    color: white;
   }
 }
 

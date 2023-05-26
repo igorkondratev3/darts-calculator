@@ -311,6 +311,7 @@ if (props.player === 'P2')
 
   &__select-all {
     display: block;
+    z-index: 2;
     background-color: transparent;
     border: 1px solid transparent;
     border-radius: 4px;

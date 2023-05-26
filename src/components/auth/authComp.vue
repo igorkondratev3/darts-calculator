@@ -1,17 +1,28 @@
 <script setup>
 import EmailInput from './components/inputs/emailInput.vue';
-import PasswordInput from './components/inputs/passwordInput.vue';
+import LoadingInput from './components/inputs/loadingInput.vue';
 import AuthButton from './components/authButton.vue';
 import ParameterNavigation from './components/parameterNavigation.vue';
 import { ref, computed, defineAsyncComponent } from 'vue';
 const NameInput = defineAsyncComponent({
-  loader: () => import('./components/inputs/nameInput.vue')
+  loader: () => import('./components/inputs/nameInput.vue'),
+  loadingComponent: LoadingInput,
+  delay: 0
 });
 const RepeatPasswordInput = defineAsyncComponent({
-  loader: () => import('./components/inputs/repeatPasswordInput.vue')
+  loader: () => import('./components/inputs/repeatPasswordInput.vue'),
+  loadingComponent: LoadingInput,
+  delay: 0
 });
 const ErrorMessage = defineAsyncComponent({
-  loader: () => import('@/components/errorMessage.vue')
+  loader: () => import('@/components/errorMessage.vue'),
+  loadingComponent: LoadingInput,
+  delay: 0
+});
+const PasswordInput = defineAsyncComponent({
+  loader: () => import('./components/inputs/passwordInput.vue'),
+  loadingComponent: LoadingInput,
+  delay: 0
 });
 
 const props = defineProps({
@@ -192,6 +203,7 @@ const handleInputEnter = (event) => {
     position: absolute;
     top: 4px;
     right: 4px;
+    z-index: 2;
     cursor: pointer;
     border-radius: 4px;
 

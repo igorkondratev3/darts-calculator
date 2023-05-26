@@ -1,6 +1,5 @@
 <script setup>
 defineProps({
-  seenGroups: Object,
   seenParametersGame: Object,
   seenParametersSet: Object,
   gameStatistic: Object,
@@ -10,10 +9,7 @@ defineProps({
 </script>
 
 <template>
-  <div
-    class="statistic__points statistic-points"
-    v-if="seenGroups.points.value"
-  >
+  <div class="statistic__points statistic-points">
     <h4 class="statistic__group-header">Очки</h4>
     <div
       class="statistic-points__game-points"
