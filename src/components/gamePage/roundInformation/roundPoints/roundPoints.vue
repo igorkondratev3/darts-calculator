@@ -9,7 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(['setPoints']);
 
-const roundPoints = ref();
+const roundPoints = ref(props.points);
 
 watch( 
   () => props.points,

@@ -3,6 +3,7 @@ import { ref, onMounted, defineAsyncComponent } from 'vue';
 import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
 import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
+import LeavePageModal from '@/components/gamePage/leavePageModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';
 import LoadingDialog from '../components/gamePage/loadingDialog.vue';
@@ -14,12 +15,75 @@ import {
 } from '@/helpers/gamePage.js';
 import { useUsersStore } from '@/stores/users.js';
 import { useNewGame } from '@/composables/newGame.js';
-import { useSvgStore } from '@/stores/svg';
-import { RouterLink } from 'vue-router';
+import { useSvgStore } from '@/stores/svg.js';
+import { useSavedGame } from '@/stores/savedGame.js';
+import { RouterLink, onBeforeRouteLeave, useRouter } from 'vue-router';
 const GameOver = defineAsyncComponent({
   loader: () => import('@/components/gamePage/gameOver/gameOver.vue'),
   loadingComponent: LoadingDialog,
   delay: 0
+});
+
+let canLeave = false;
+const savedGame = useSavedGame();
+const beforeLeavePage = ref(null);
+const router = useRouter();
+onBeforeRouteLeave((to) => {
+  const getInfo = async (modal) => {
+    modal.showModal();
+    const promise = new Promise((resolve) => {
+      modal.children[0].addEventListener('click', function hadler(event) {
+        if (event.target.nodeName === 'BUTTON') {
+          modal.children[0].removeEventListener('click', hadler);
+          if (event.target.textContent === ' Сохранить матч ') {
+            savedGame.setGame({
+              gameParameters,
+              startRemainder,
+              playerOne,
+              playerTwo,
+              legNumber,
+              setNumber,
+              legNumberInSets
+            });
+            resolve(true);
+          }
+
+          if (event.target.textContent.trim() === 'Не сохранять') resolve(true);
+
+          if (event.target.textContent.trim() === 'Отмена') resolve(false);
+        }
+      });
+    });
+    const leavePage = await promise;
+    if (!leavePage) modal.close();
+    return leavePage;
+  };
+
+  const showModalBeforeLeavePage = async () => {
+    const leavePage = await getInfo(beforeLeavePage.value);
+    if (leavePage) {
+      canLeave = true;
+      router.push(to.fullPath);
+    } else
+      defineFocusForNextPlayer(
+        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
+          ? 'playerTwo'
+          : 'playerOne',
+        document.forms[0]
+      );
+  };
+
+  if (
+    (legNumber.value > 1 ||
+      playerOne.legPoints.value[0] !== undefined ||
+      playerTwo.legPoints.value[0] !== undefined) &&
+    isStartedGame.value &&
+    !isGameOver.value &&
+    !canLeave
+  ) {
+    showModalBeforeLeavePage();
+    return false;
+  }
 });
 
 const svgStore = useSvgStore();
@@ -35,14 +99,16 @@ const gameSetupModal = ref(null);
 const isGameOver = ref(false);
 const isStartedGame = ref(false);
 
+let showGameSetupInStart = true;
 onMounted(() => {
   //gameSetupModal.value.showModal()
-  setTimeout(() => gameSetupModal.value.showModal(), 0);
+  if (showGameSetupInStart)
+    setTimeout(() => gameSetupModal.value.showModal(), 0);
   /*settimeout чтобы корректно работало,
   но всё равно ошибка при внесении изменении в код текущей страницы
   при обычной работе приложения всё работает нормально
   проблема отсутствует если задать атрибу open элементу,
-  но тогда не блокируется задний фон  
+  но тогда не блокируется задний фон
   */
 });
 
@@ -51,6 +117,39 @@ const { Player, startRemainder, legNumber, setNumber, legNumberInSets } =
 let gameParameters;
 let playerOne;
 let playerTwo;
+
+if (savedGame.savedGame) {
+  gameParameters = savedGame.savedGame.gameParameters;
+  startRemainder.value = savedGame.savedGame.startRemainder;
+  playerOne = new Player(
+    savedGame.savedGame.playerOne.name,
+    savedGame.savedGame.playerOne
+  );
+  playerTwo = new Player(
+    savedGame.savedGame.playerTwo.name,
+    savedGame.savedGame.playerTwo
+  );
+  legNumber.value = savedGame.savedGame.legNumber;
+  setNumber.value = savedGame.savedGame.setNumber;
+  legNumberInSets.value = savedGame.savedGame.legNumberInSets;
+  savedGame.resetGame();
+  showGameSetupInStart = false;
+  isStartedGame.value = true;
+  console.log(
+    playerOne.legPoints.value.length,
+    playerTwo.legPoints.value.length
+  );
+  setTimeout(
+    () =>
+      defineFocusForNextPlayer(
+        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
+          ? 'playerTwo'
+          : 'playerOne',
+        document.forms[0]
+      ),
+    0
+  );
+}
 
 const startGame = (parameters) => {
   gameParameters = parameters;
@@ -313,6 +412,9 @@ const startNewGame = () => {
       :seenOne="seenOneInNumberDartsModal"
       :seenThree="seenThreeInNumberDartsModal"
     />
+  </dialog>
+  <dialog class="dialog" ref="beforeLeavePage" @cancel.prevent="">
+    <LeavePageModal />
   </dialog>
   <dialog class="dialog" ref="gameOverModal" @cancel.prevent="">
     <GameOver

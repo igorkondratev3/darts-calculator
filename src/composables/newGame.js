@@ -5,7 +5,7 @@ export const useNewGame = () => {
   const legNumber = ref(1);
   const setNumber = ref(1);
   const legNumberInSets = ref([]);
- 
+
   const legNumberBeforeCurrentSet = computed(() =>
     legNumberInSets.value.reduce((acc, legNumber) => acc + legNumber, 0)
   );
@@ -22,6 +22,23 @@ export const useNewGame = () => {
     averagePointsForFirstNineDartsLegs = ref([]);
     highestCheckoutSets = ref([]);
     setsWon = ref(0);
+    constructor(name, player) {
+      this.name = name;
+      if (player) {
+        this.legRemainders.value = player.legRemainders;
+        this.legPoints.value = player.legPoints;
+        this.pointsAndDartsLegs.value = player.pointsAndDartsLegs;
+        this.dartsForDoubleSets.value = player.dartsForDoubleSets;
+        this.p180Sets.value = player.p180Sets;
+        this.p171Sets.value = player.p171Sets;
+        this.p131Sets.value = player.p131Sets;
+        this.p96Sets.value = player.p96Sets;
+        this.averagePointsForFirstNineDartsLegs.value =
+          player.averagePointsForFirstNineDartsLegs;
+        this.highestCheckoutSets.value = player.highestCheckoutSets;
+        this.setsWon.value = player.setsWon;
+      }
+    }
 
     legsWonInGame = computed(() =>
       this.pointsAndDartsLegs.value.reduce(
@@ -207,10 +224,6 @@ export const useNewGame = () => {
         () => this.highestCheckoutSets.value[setNumber.value - 1] || 0
       )
     };
-
-    constructor(name) {
-      this.name = name;
-    }
 
     clearPointsAndRemaindersLeg() {
       this.legRemainders.value = [];
