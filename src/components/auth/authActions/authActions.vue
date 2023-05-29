@@ -4,7 +4,8 @@ import LogoutAction from './components/logoutAction.vue';
 import { useUsersStore } from '@/stores/users.js';
 
 defineProps({
-  player: String
+  player: String,
+  isSingle: Boolean
 });
 defineEmits(['openAuthComp']);
 
@@ -14,10 +15,15 @@ const usersStore = useUsersStore();
 <template>
   <LoginAction
     v-if="!usersStore.users[player]"
+    :class="{ 'auth-action_single-right': player === 'P2' && isSingle }"
     :player="player"
     @openAuthComp="$emit('openAuthComp')"
   />
-  <LogoutAction v-else :player="player" />
+  <LogoutAction
+    v-else
+    :player="player"
+    :class="{ 'auth-action_single-right': player === 'P2' && isSingle }"
+  />
 </template>
 
 <style lang="scss">
@@ -31,11 +37,15 @@ const usersStore = useUsersStore();
   cursor: pointer;
 
   &_left {
-    margin-left: -16px;
+    margin-left: -12px;
   }
 
   &_right {
-    margin-left: calc(100% - 8px);
+    margin-right: -12px;
+  }
+
+  &_single-right {
+    margin-left: calc(100% - 12px);
   }
 
   &:focus {
@@ -55,9 +65,10 @@ const usersStore = useUsersStore();
 
 .auth-actions-wrapper {
   display: flex;
+  justify-content: space-between;
   position: sticky;
   top: 4px;
+  z-index: 2;
   margin-top: 4px;
-  margin-right: 8px;
 }
 </style>

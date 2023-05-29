@@ -171,6 +171,7 @@ const handleInputEnter = (event) => {
   display: flex;
   flex-direction: column;
   width: 352px;
+  height: 394px;
   margin: 0px 4px;
 }
 
@@ -183,7 +184,20 @@ const handleInputEnter = (event) => {
   padding-top: 0px;
   border-radius: 16px;
   overflow: auto;
+  scrollbar-width: none;
   background-color: rgb(182, 195, 197);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
 
   &__change-button {
     position: absolute;

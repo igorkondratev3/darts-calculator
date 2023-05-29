@@ -19,9 +19,30 @@ export const translateName = (name) => {
     case 'percentDouble':
       return 'Процент удвоений';
     case 'highestCheckout':
-      return 'Набольшие закрытия';
+      return 'Наибольшие закрытия';
     default:
       return name;
+  }
+};
+
+export const defineScoreParameterName = (chartName) => {
+  if (chartName.includes('очков'))
+    return 'количество';
+  if (chartName === 'Процент удвоений')
+    return 'средний процент'
+  if (chartName === 'Наибольшие закрытия')
+    return 'закрытие'
+  return 'средний набор';
+}
+
+export const defineCountParameterName = (chartName) => {
+  switch (chartName) {
+    case 'Выигранные леги':
+      return 'выиграно легов';
+    case 'Проигранные леги':
+      return 'проиграно легов';
+    default:
+      return 'сыграно легов';
   }
 };
 

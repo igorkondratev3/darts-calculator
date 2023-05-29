@@ -160,6 +160,8 @@ const showPopUp = (message, where) => {
     flex-direction: column;
     min-height: 200px;
     max-height: 80vh;
+    margin-left: 4px;
+    margin-right: 4px;
     padding: 0px 16px 16px 16px;
     border-radius: 16px;
     overflow: auto;

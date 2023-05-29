@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
 import StatChart from '@/components/charts/statChart.vue';
 import { useUsersStore } from '@/stores/users.js';
-
+import HomeButton from '@/components/homeButton.vue';
+import GameButton from '@/components/gameButton.vue';
 const props = defineProps({
   player: String
 });
@@ -61,14 +61,14 @@ async function getStatistic(player) {
   }
 
   statistic.value = json.statistic;
-  if (!statistic.value[0])
-    messageError.value = 'Статистика отсутствует';
+  if (!statistic.value[0]) messageError.value = 'Статистика отсутствует';
 }
 </script>
 
 <template>
   <div class="page user-profile">
-    <RouterLink class="base-button home-button" to="/">на главную</RouterLink>
+    <HomeButton />
+    <GameButton />
     <div class="user-profile__information user-information">
       <div class="user-information__avatar avatar">
         <img
@@ -91,7 +91,9 @@ async function getStatistic(player) {
         />
       </template>
     </div>
-    <div v-else class="loading-message">{{ messageError ||  'Загружается статистика игрока'}}</div>
+    <div v-else class="loading-message">
+      {{ messageError || 'Загружается статистика игрока' }}
+    </div>
   </div>
 
   <!--
@@ -265,13 +267,6 @@ async function getStatistic(player) {
 <style lang="scss">
 @use '@/assets/css/mixins/fonts.scss';
 
-.home-button {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 16px;
-}
-
 .user-information {
   display: flex;
   align-items: flex-start;
@@ -298,6 +293,7 @@ async function getStatistic(player) {
   flex-wrap: wrap;
   justify-content: center;
   align-self: center;
+  margin-bottom: 64px;
 }
 
 .loading-message {

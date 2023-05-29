@@ -10,7 +10,9 @@ import {
   calculateLineWidth,
   startDateValidate,
   endDateValidate,
-  dateIntervalValidate
+  dateIntervalValidate,
+  defineCountParameterName,
+  defineScoreParameterName
 } from './helpers';
 
 const props = defineProps({
@@ -34,7 +36,7 @@ const chartDataInInterval = computed(() =>
     )
   )
 );
-const hideZerosInChart = ref(false);
+const hideZerosInChart = ref(true);
 const chartDataInIntervalWithoutZero = computed(() =>
   chartDataInInterval.value.filter((val) => val.value > 0)
 );
@@ -59,13 +61,19 @@ const maxValue = computed(() =>
 const seenValue = ref(false);
 const dateValue = ref('');
 const scoreValue = ref(0);
-const showValue = (date, value) => {
+const countValue = ref(0);
+const countParameterName = defineCountParameterName(name);
+const scoreParameterName = defineScoreParameterName(name);
+const showValue = (date, value, count) => {
   dateValue.value = date;
   scoreValue.value = value;
+  countValue.value = count;
   seenValue.value = true;
 };
-const hideValue = () => {
-  seenValue.value = false;
+const hideValues = () => {
+  dateValue.value = '';
+  scoreValue.value = null;
+  countValue.value = null;
 };
 
 const dateValidate = () => {
@@ -86,7 +94,16 @@ const changeDateInterval = () => {
     <h4 class="chart-box__head">{{ name }}</h4>
     <div class="chart-wrapper" :data-max="maxValue.toFixed(2) || ''">
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
-      <div class="chart">
+      <button
+        class="chart__show-zero"
+        :class="{ 'chart__show-zero_border': !hideZerosInChart }"
+        @click="hideZerosInChart = !hideZerosInChart"
+        title="Изменить видимость нулевых результатов"
+      >
+        0
+        <span class="cross-line" v-show="hideZerosInChart"></span>
+      </button>
+      <div class="chart" @pointerleave="seenValue = false">
         <svg class="chart__svg" :width="chartWidth" :height="chartHeight">
           <rect
             class="chart__line"
@@ -98,13 +115,17 @@ const changeDateInterval = () => {
             :height="calculateLineHeight(chartHeight, maxValue, valueObj.value)"
             :x="calculateX(index, lineWidth)"
             :y="calculateY(chartHeight, maxValue, valueObj.value)"
-            @pointerover="showValue(valueObj.date, valueObj.value)"
-            @pointerleave="hideValue"
+            @pointerover="
+              showValue(valueObj.date, valueObj.value, valueObj.count)
+            "
+            @pointerleave="hideValues"
           ></rect>
         </svg>
       </div>
       <div class="chart-box__info" v-show="seenValue">
-        {{ dateValue }} {{ scoreValue.toFixed(2) }}
+        <p>{{ scoreParameterName }}: {{ scoreValue?.toFixed(2) }}</p>
+        <p>{{ countParameterName }}: {{ countValue }}</p>
+        <p>дата: {{ dateValue }}</p>
       </div>
     </div>
     <div class="date-interval">
@@ -133,12 +154,6 @@ const changeDateInterval = () => {
         />
       </label>
     </div>
-
-    <!--на переработку-->
-    <label>
-      <input type="checkbox" v-model="hideZerosInChart" />
-      скрывать нули
-    </label>
   </div>
 </template>
 
@@ -149,15 +164,17 @@ const changeDateInterval = () => {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin: 32px 56px 32px 56px;
+  margin: 64px 56px 32px 56px;
 
   &__info {
     position: absolute;
     bottom: 0;
-    left: 50%;
+    left: 0;
+    z-index: 2;
     width: 100%;
-    transform: translate(-50%, 100%);
-    text-align: center;
+    padding: 8px;
+    transform: translateY(calc(100% + 4px));
+    background-color: #dadada;
   }
 }
 
@@ -204,6 +221,34 @@ const changeDateInterval = () => {
     display: none;
   }
 
+  &__show-zero {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    z-index: 2;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    @include fonts.Advent($size: 16px);
+    line-height: 16px;
+    text-align: center;
+    background-color: transparent;
+
+    &_border {
+      border-left-color: black;
+      border-bottom-color: black;
+    }
+  
+    &:focus {
+      font-weight: 700;
+    }
+  }
+
   &__line {
     fill: #f0b375;
     animation-duration: 2s;
@@ -224,9 +269,18 @@ const changeDateInterval = () => {
   }
 }
 
+.cross-line {
+  position: absolute;
+  left: -2px;
+  top: 46%;
+  width: 17px;
+  transform: rotate(-45deg);
+  border-bottom: 1px solid black;
+}
+
 .date-interval {
   display: flex;
-  margin-top: 32px;
+  margin-top: 4px;
 
   &__header {
     text-align: center;

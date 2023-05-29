@@ -98,7 +98,11 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         class="statistic__player-statistic"
         v-show="!seenStatisticsVisisbilitySetting && !seenAuthComp"
       >
-        <AuthActions :player="player" @openAuthComp="seenAuthComp = true" />
+        <AuthActions
+          :player="player"
+          :isSingle="true"
+          @openAuthComp="seenAuthComp = true"
+        />
         <button
           class="statistic__setup-visibility"
           :style="positionSetupVisibility"

@@ -50,7 +50,7 @@ const usersStore = useUsersStore();
 .auth-state {
   position: absolute;
   z-index: 2;
-  top: 3px;
+  top: 2px;
   width: 28px;
   height: 28px;
   border: 1px solid black;

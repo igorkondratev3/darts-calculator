@@ -14,11 +14,11 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
         просмотра в личном профиле
       </div>
       <div class="start-page__players-wrapper">
-        <PlayerNavigation player="P1" />
-        <RouterLink class="base-button to-match" to="/game">
+        <PlayerNavigation player="P1" tabindex="1"/>
+        <RouterLink class="base-button to-match" to="/game" tabindex="3">
           К матчу
         </RouterLink>
-        <PlayerNavigation player="P2" />
+        <PlayerNavigation player="P2" tabindex="2"/>
       </div>
     </main>
   </div>
@@ -58,7 +58,12 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
 
 .to-match {
   align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 74px;
   width: 320px;
-  margin-top: 394px;
+  margin-top: 398px;
 }
 </style>

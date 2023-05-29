@@ -7,83 +7,23 @@ import LeavePageModal from '@/components/gamePage/leavePageModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';
 import LoadingDialog from '../components/gamePage/loadingDialog.vue';
+import HomeButton from '../components/homeButton.vue';
 import {
   defineFocusForNewLeg,
   defineFocusForNextPlayer,
   getNumberDarts,
-  changeOldValues
+  changeOldValues,
+  saveGame
 } from '@/helpers/gamePage.js';
 import { useUsersStore } from '@/stores/users.js';
 import { useNewGame } from '@/composables/newGame.js';
 import { useSvgStore } from '@/stores/svg.js';
 import { useSavedGame } from '@/stores/savedGame.js';
-import { RouterLink, onBeforeRouteLeave, useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 const GameOver = defineAsyncComponent({
   loader: () => import('@/components/gamePage/gameOver/gameOver.vue'),
   loadingComponent: LoadingDialog,
   delay: 0
-});
-
-let canLeave = false;
-const savedGame = useSavedGame();
-const beforeLeavePage = ref(null);
-const router = useRouter();
-onBeforeRouteLeave((to) => {
-  const getInfo = async (modal) => {
-    modal.showModal();
-    const promise = new Promise((resolve) => {
-      modal.children[0].addEventListener('click', function hadler(event) {
-        if (event.target.nodeName === 'BUTTON') {
-          modal.children[0].removeEventListener('click', hadler);
-          if (event.target.textContent === ' Сохранить матч ') {
-            savedGame.setGame({
-              gameParameters,
-              startRemainder,
-              playerOne,
-              playerTwo,
-              legNumber,
-              setNumber,
-              legNumberInSets
-            });
-            resolve(true);
-          }
-
-          if (event.target.textContent.trim() === 'Не сохранять') resolve(true);
-
-          if (event.target.textContent.trim() === 'Отмена') resolve(false);
-        }
-      });
-    });
-    const leavePage = await promise;
-    if (!leavePage) modal.close();
-    return leavePage;
-  };
-
-  const showModalBeforeLeavePage = async () => {
-    const leavePage = await getInfo(beforeLeavePage.value);
-    if (leavePage) {
-      canLeave = true;
-      router.push(to.fullPath);
-    } else
-      defineFocusForNextPlayer(
-        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
-          ? 'playerTwo'
-          : 'playerOne',
-        document.forms[0]
-      );
-  };
-
-  if (
-    (legNumber.value > 1 ||
-      playerOne.legPoints.value[0] !== undefined ||
-      playerTwo.legPoints.value[0] !== undefined) &&
-    isStartedGame.value &&
-    !isGameOver.value &&
-    !canLeave
-  ) {
-    showModalBeforeLeavePage();
-    return false;
-  }
 });
 
 const svgStore = useSvgStore();
@@ -117,6 +57,7 @@ const { Player, startRemainder, legNumber, setNumber, legNumberInSets } =
 let gameParameters;
 let playerOne;
 let playerTwo;
+const savedGame = useSavedGame();
 
 if (savedGame.savedGame) {
   gameParameters = savedGame.savedGame.gameParameters;
@@ -135,10 +76,6 @@ if (savedGame.savedGame) {
   savedGame.resetGame();
   showGameSetupInStart = false;
   isStartedGame.value = true;
-  console.log(
-    playerOne.legPoints.value.length,
-    playerTwo.legPoints.value.length
-  );
   setTimeout(
     () =>
       defineFocusForNextPlayer(
@@ -295,6 +232,45 @@ const startNewGame = () => {
   playerOne = undefined;
   playerTwo = undefined;
 };
+
+const router = useRouter();
+let canLeavePage = false;
+const beforeLeavePage = ref(null);
+onBeforeRouteLeave((to) => {
+  const showModalBeforeLeavePage = async () => {
+    const leavePage = await saveGame(beforeLeavePage.value, {
+      gameParameters,
+      startRemainder,
+      playerOne,
+      playerTwo,
+      legNumber,
+      setNumber,
+      legNumberInSets
+    });
+    if (leavePage) {
+      canLeavePage = true;
+      router.push(to.fullPath);
+    } else
+      defineFocusForNextPlayer(
+        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
+          ? 'playerTwo'
+          : 'playerOne',
+        document.forms[0]
+      );
+  };
+
+  if (
+    (legNumber.value > 1 ||
+      playerOne?.legPoints.value[0] !== undefined ||
+      playerTwo?.legPoints.value[0] !== undefined) &&
+    isStartedGame.value &&
+    !isGameOver.value &&
+    !canLeavePage
+  ) {
+    showModalBeforeLeavePage();
+    return false;
+  }
+});
 </script>
 
 <template>
@@ -308,7 +284,7 @@ const startNewGame = () => {
     <button class="game__new-game-button" @click="startNewGame">
       Новый матч
     </button>
-    <RouterLink class="base-button home-button" to="/">на главную</RouterLink>
+    <HomeButton />
     <div class="game__players-information players-information">
       <div class="players-information__name">
         {{ usersStore.users.P1?.name || playerOne?.name }}
@@ -480,14 +456,6 @@ const startNewGame = () => {
   }
 
   scrollbar-width: none;
-}
-
-.home-button {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 2;
-  font-size: 16px;
 }
 
 .game {

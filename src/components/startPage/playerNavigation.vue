@@ -52,6 +52,7 @@ const logout = (player) => {
       <button
         class="base-button player-navigation__button"
         :disabled="!usersStore.users[player]"
+        v-bind="$attrs"
       >
         Личный профиль
       </button>
@@ -60,6 +61,7 @@ const logout = (player) => {
       v-if="!usersStore.users[player]"
       class="base-button player-navigation__button player-navigation__login"
       @click="login(player)"
+      v-bind="$attrs"
     >
       Войти
     </button>
@@ -67,6 +69,7 @@ const logout = (player) => {
       v-else
       class="base-button player-navigation__button player-navigation__logout"
       @click="logout(player)"
+      v-bind="$attrs"
     >
       Выйти
     </button>
