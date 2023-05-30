@@ -234,6 +234,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   &__icon {
     width: 24px;
     height: 24px;
+    display: block;
   }
 
   &__average,

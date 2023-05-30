@@ -14,7 +14,7 @@ const focusOnButtonBox = () => {
     @click="focusOnButtonBox"
   >
     <div class="leave-page-dialog__message">
-      Вы собираетесь покинуть страницу начатого матча. Вы можете сохрнаить
+      Вы собираетесь покинуть страницу начатого матча. Вы можете сохранить
       текущий прогресс и вернуться к матчу позже
     </div>
     <div class="leave-page-dialog__values" ref="buttonsBox" tabindex="1">
@@ -40,6 +40,7 @@ const focusOnButtonBox = () => {
     font-size: 40px;
     font-weight: 700;
     text-align: center;
+    color: white
   }
 
   &__values {
@@ -54,14 +55,18 @@ const focusOnButtonBox = () => {
   }
 
   &__value {
-    max-width: 33%;
-    margin-right: 16px;
+    width: 200px;
+    height: 64px;
+    margin-right: 8px;
+    margin-left: 8px;
     padding: 8px;
     outline: none;
     border: none;
     border-radius: 8px;
+    font: inherit;
     font-size: 24px;
     color: white;
+    font-weight: 700;
     background-color: rgb(66, 63, 63);
     transition: background-color 0.5s linear, color 0.5s linear;
   }

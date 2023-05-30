@@ -58,7 +58,7 @@ const usersStore = useUsersStore();
   background-color: v-bind(backgroundColor);
 
   &:focus {
-    outline: 1px solid black;
+    outline: 1px solid v-bind(backgroundColor);
     outline-offset: 2px;
   }
 

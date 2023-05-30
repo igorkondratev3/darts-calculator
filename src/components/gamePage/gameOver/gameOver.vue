@@ -31,24 +31,25 @@ const AuthComp = defineAsyncComponent({
   delay: 0
 });
 
-const popUpSeen = ref(false);
-const popUpMessage = ref('');
-const wherePopUp = ref('');
+const popUpSeen = {
+  P1: ref(false),
+  P2: ref(false)
+};
+const popUpMessage = {
+  P1: ref(''),
+  P2: ref('')
+};
 const PopUp = defineAsyncComponent({
   loader: () => import('@/components/popUp.vue')
 });
-const showPopUp = (message, where) => {
-  popUpMessage.value = message;
-  wherePopUp.value = where;
-  popUpSeen.value = true;
+const showPopUp = (message, player) => {
+  popUpMessage[player].value = message;
+  popUpSeen[player].value = true;
 };
 </script>
 
 <template>
-  <div
-    class="dialog-content-wrapper game-over"
-    v-show="!seenAuthCompP1 && !seenAuthCompP2"
-  >
+  <div class="dialog-content-wrapper game-over">
     <AuthComp
       v-if="seenAuthCompP1"
       @closeAuthComp="seenAuthCompP1 = false"
@@ -59,7 +60,10 @@ const showPopUp = (message, where) => {
       @closeAuthComp="seenAuthCompP2 = false"
       player="P2"
     />
-    <div class="game-over__content-wrapper">
+    <div
+      class="game-over__content-wrapper"
+      v-show="!seenAuthCompP1 && !seenAuthCompP2"
+    >
       <h2 class="game-over__header">Матч окончен</h2>
       <div class="game-over__statistic-wrapper">
         <!--нужен для корректной работы transform translate - элемент скрывается из-за overflow-->
@@ -71,7 +75,7 @@ const showPopUp = (message, where) => {
           :isPercentDoubleInStat="props.isPercentDoubleInStatP1"
           :legNumber="props.legNumber"
           :legsWonInGame="legsWonInGameP1"
-          @showPopUp="(message) => showPopUp(message, 'left')"
+          @showPopUp="(message) => showPopUp(message, 'P1')"
         />
         <SaveStatistic
           player="P2"
@@ -79,7 +83,7 @@ const showPopUp = (message, where) => {
           :isPercentDoubleInStat="props.isPercentDoubleInStatP2"
           :legNumber="props.legNumber"
           :legsWonInGame="legsWonInGameP2"
-          @showPopUp="(message) => showPopUp(message, 'right')"
+          @showPopUp="(message) => showPopUp(message, 'P2')"
         />
         <div class="game-over__statistic game-statistic">
           <div class="auth-actions-wrapper">
@@ -128,12 +132,20 @@ const showPopUp = (message, where) => {
       </button>
     </div>
     <PopUp
-      :popUpSeen="popUpSeen"
-      :popUpMessage="popUpMessage"
+      :popUpSeen="popUpSeen.P1.value"
+      :popUpMessage="popUpMessage.P1.value"
       :popUpDuration="4000"
-      :where="wherePopUp"
+      where="left"
       howFar="0px"
-      @closePopUp="popUpSeen = false"
+      @closePopUp="popUpSeen.P1.value = false"
+    />
+    <PopUp
+      :popUpSeen="popUpSeen.P2.value"
+      :popUpMessage="popUpMessage.P2.value"
+      :popUpDuration="4000"
+      where="right"
+      howFar="0px"
+      @closePopUp="popUpSeen.P2.value = false"
     />
   </div>
 </template>

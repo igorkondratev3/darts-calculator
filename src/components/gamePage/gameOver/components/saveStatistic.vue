@@ -97,39 +97,39 @@ const setstatisticInDB = async (player) => {
   >
     <img class="save-icon" src="/src/assets/images/add_circle.svg" alt="add" />
   </button>
-
-  <img
-    v-if="usersStore.users[player] && showDone && isStatisticSave"
-    class="save-icon"
+  <div
+    class="game-statistic__save game-statistic__save-done"
     :class="{
-      'save-icon_left': player === 'P1',
-      'save-icon_right': player === 'P2'
+      'game-statistic__save_left': player === 'P1',
+      'game-statistic__save_right': player === 'P2'
     }"
-    src="/src/assets/images/done.svg"
-    alt="done"
-  />
+    v-if="usersStore.users[player] && showDone && isStatisticSave"
+    title="статистика сохранена"
+  >
+    <img class="save-icon" src="/src/assets/images/done.svg" alt="done" />
+  </div>
 </template>
 
 <style lang="scss">
 .game-statistic__save {
   position: absolute;
-  top: 32px;
+  bottom: 4px;
   border-radius: 8px;
   cursor: pointer;
   background-color: rgb(182, 195, 197);
 
   &_left {
     left: 0;
-    transform: translateX(calc(-100% - 8px));
+    transform: translateX(-100%);
   }
 
   &_right {
     right: 0;
-    transform: translateX(calc(100% + 8px));
+    transform: translateX(100%);
   }
 
   &:focus {
-    outline: 1px solid white;
+    outline: 1px solid rgb(182, 195, 197);
     outline-offset: 4px;
   }
 
@@ -138,22 +138,14 @@ const setstatisticInDB = async (player) => {
   }
 }
 
+.game-statistic__save-done {
+  cursor: default;
+}
+
 .save-icon {
   width: 32px;
   height: 32px;
   z-index: 2;
   display: block;
-}
-
-.save-icon_left {
-  position: absolute;
-  top: 36px;
-  left: -36px;
-}
-
-.save-icon_right {
-  position: absolute;
-  top: 36px;
-  right: -36px;
 }
 </style>

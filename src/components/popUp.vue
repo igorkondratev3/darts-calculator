@@ -67,7 +67,7 @@ watchEffect(() => {
 <template>
   <Transition>
     <div class="popUp" v-if="props.popUpSeen" :style="position">
-      {{ props.popUpMessage }} {{ props.where }}
+      {{ props.popUpMessage }}
     </div>
   </Transition>
 </template>
