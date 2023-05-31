@@ -28,7 +28,7 @@ defineProps({
 
   &__sets-won,
   &__legs-won {
-    font-size: 32px;
+    font-size: calc(var(--base) * 0.32);
     text-align: center;
   }
 }

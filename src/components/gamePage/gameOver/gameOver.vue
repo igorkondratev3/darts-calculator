@@ -160,8 +160,8 @@ const showPopUp = (message, player) => {
   }
 
   &__header {
-    margin-bottom: 8px;
-    font-size: 64px;
+    margin-bottom: calc(var(--base) * 0.08);
+    font-size: calc(var(--base) * 0.64);
     font-weight: 700;
     color: rgb(182, 195, 197);
     text-align: center;
@@ -170,12 +170,13 @@ const showPopUp = (message, player) => {
   &__statistic {
     display: flex;
     flex-direction: column;
-    min-height: 200px;
+    min-height: calc(var(--base) * 2);
     max-height: 80vh;
-    margin-left: 4px;
-    margin-right: 4px;
-    padding: 0px 16px 16px 16px;
-    border-radius: 16px;
+    margin-left: calc(var(--base) * 0.04);
+    margin-right: calc(var(--base) * 0.04);
+    padding: 0px calc(var(--base) * 0.16) calc(var(--base) * 0.16)
+      calc(var(--base) * 0.16);
+    border-radius: calc(var(--base) * 0.16);
     overflow: auto;
     overscroll-behavior: none;
     background-color: rgb(182, 195, 197);
@@ -201,18 +202,18 @@ const showPopUp = (message, player) => {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: calc(var(--base) * 0.16);
+  margin-right: calc(var(--base) * 0.16);
 
   &__name {
-    max-width: 400px;
-    font-size: 48px;
+    max-width: calc(var(--base) * 4);
+    font-size: calc(var(--base) * 0.48);
     text-align: center;
     overflow: hidden;
   }
 
   &__name_margin-right {
-    margin-right: 96px;
+    margin-right: calc(var(--base) * 0.96);
   }
 }
 
@@ -222,20 +223,20 @@ const showPopUp = (message, player) => {
   justify-content: space-around;
 
   &__player-score {
-    font-size: 48px;
+    font-size: calc(var(--base) * 0.48);
     text-align: center;
   }
 
   &__player-score_margin-right {
-    margin-right: 96px;
+    margin-right: calc(var(--base) * 0.96);
   }
 }
 
 .game-statistic {
   &__header-group {
-    margin-top: 16px;
+    margin-top: calc(var(--base) * 0.16);
     text-align: center;
-    font-size: 32px;
+    font-size: calc(var(--base) * 0.32);
     font-weight: 700;
     color: white;
   }
@@ -244,7 +245,7 @@ const showPopUp = (message, player) => {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 8px;
+    margin-top: calc(var(--base) * 0.08);
   }
 }
 
@@ -252,24 +253,24 @@ const showPopUp = (message, player) => {
   &__values {
     align-self: center;
     width: 33%;
-    font-size: 24px;
+    font-size: calc(var(--base) * 0.24);
     text-align: center;
   }
 
   &__header {
     align-self: center;
     width: 33%;
-    margin-left: 16px;
-    margin-right: 16px;
-    font-size: 24px;
+    margin-left: calc(var(--base) * 0.16);
+    margin-right: calc(var(--base) * 0.16);
+    font-size: calc(var(--base) * 0.24);
     font-weight: 400;
     text-align: center;
   }
 }
 
 .game-over__new-game {
-  margin-top: 16px;
-  padding: 24px;
+  margin-top: calc(var(--base) * 0.16);
+  padding: calc(var(--base) * 0.24);
   border: none;
   background-color: rgb(221, 231, 231);
 }

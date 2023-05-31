@@ -6,12 +6,12 @@
 .loading-auth {
   display: flex;
   flex-direction: column;
-  width: 352px;
-  height: 394px;
-  margin: 0px 4px;
-  padding: 16px;
+  width: calc(var(--base) * 3.52);
+  height: calc(var(--base) * 3.94);
+  margin: 0px calc(var(--base) * 0.04);
+  padding: calc(var(--base) * 0.16);
   padding-top: 0px;
-  border-radius: 16px;
+  border-radius: calc(var(--base) * 0.16);
   overflow: auto;
   background-color: rgb(182, 195, 197);
 }

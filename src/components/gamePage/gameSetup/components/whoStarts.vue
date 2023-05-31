@@ -37,16 +37,16 @@ defineEmits(['update:whoStarts']);
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 16px;
+  margin-top: calc(var(--base) * 0.16);
 
   &__radio-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: calc(var(--base) * 0.2);
+    height: calc(var(--base) * 0.2);
     outline: none;
-    border: 1px solid transparent;
+    border: calc(var(--base) * 0.01) solid transparent;
     border-radius: 50%;
     background-color: rgb(221, 231, 231);
     transition: background-color 0.3s linear;
@@ -56,7 +56,7 @@ defineEmits(['update:whoStarts']);
     }
 
     &:focus {
-      outline: 2px solid white;
+      outline: calc(var(--base) * 0.02) solid white;
     }
   }
 }

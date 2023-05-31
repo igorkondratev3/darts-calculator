@@ -113,8 +113,8 @@ const setstatisticInDB = async (player) => {
 <style lang="scss">
 .game-statistic__save {
   position: absolute;
-  bottom: 4px;
-  border-radius: 8px;
+  bottom: calc(var(--base) * 0.04);
+  border-radius: calc(var(--base) * 0.08);
   cursor: pointer;
   background-color: rgb(182, 195, 197);
 
@@ -129,8 +129,8 @@ const setstatisticInDB = async (player) => {
   }
 
   &:focus {
-    outline: 1px solid rgb(182, 195, 197);
-    outline-offset: 4px;
+    outline: calc(var(--base) * 0.01) solid rgb(182, 195, 197);
+    outline-offset: calc(var(--base) * 0.04);
   }
 
   &:disabled {
@@ -143,8 +143,8 @@ const setstatisticInDB = async (player) => {
 }
 
 .save-icon {
-  width: 32px;
-  height: 32px;
+  width: calc(var(--base) * 0.32);
+  height: calc(var(--base) * 0.32);
   z-index: 2;
   display: block;
 }

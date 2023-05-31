@@ -85,22 +85,22 @@ const logout = (player) => {
 @use '@/assets/css/mixins/fonts.scss';
 
 .start-page__player-navigation {
-  margin: 0px 4px;
+  margin: 0px calc(var(--base) * 0.04);
 }
 
 .player-navigation {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 352px;
-  height: 394px;
-  padding: 16px;
-  border-radius: 16px;
+  width: calc(var(--base) * 3.52);
+  height: calc(var(--base) * 3.94);
+  padding: calc(var(--base) * 0.16);
+  border-radius: calc(var(--base) * 0.16);
   background-color: rgb(182, 195, 197);
 
   &__name {
-    font-size: 40px;
-    margin-bottom: 64px;
+    font-size: calc(var(--base) * 0.4);
+    margin-bottom: calc(var(--base) * 0.64);
   }
 
   &__profile {
@@ -109,7 +109,7 @@ const logout = (player) => {
 
   &__button {
     width: 100%;
-    margin-top: 16px;
+    margin-top: calc(var(--base) * 0.16);
   }
 }
 </style>

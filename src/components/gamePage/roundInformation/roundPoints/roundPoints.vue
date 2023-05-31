@@ -11,7 +11,7 @@ const emit = defineEmits(['setPoints']);
 
 const roundPoints = ref(props.points);
 
-watch( 
+watch(
   () => props.points,
   () => {
     roundPoints.value = props.points;
@@ -57,13 +57,13 @@ const setPoints = () => {
 @use '@/assets/css/mixins/fonts.scss';
 
 .round-information__points {
-  width: 140px;
-  padding: 8px;
+  width: calc(var(--base) * 1.4);
+  padding: calc(var(--base) * 0.08);
   outline: none;
-  border: 1px solid black;
-  border-radius: 8px;
+  border: calc(var(--base) * 0.01) solid black;
+  border-radius: calc(var(--base) * 0.08);
   @include fonts.Advent;
-  font-size: 48px;
+  font-size: calc(var(--base) * 0.48);
   text-align: center;
   background: transparent;
 

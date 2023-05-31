@@ -50,24 +50,24 @@ const usersStore = useUsersStore();
 .auth-state {
   position: absolute;
   z-index: 2;
-  top: 2px;
-  width: 28px;
-  height: 28px;
-  border: 1px solid black;
+  top: calc(var(--base) * 0.02);
+  width: calc(var(--base) * 0.28);
+  height: calc(var(--base) * 0.28);
+  border: calc(var(--base) * 0.01) solid black;
   border-radius: 50%;
   background-color: v-bind(backgroundColor);
 
   &:focus {
-    outline: 1px solid v-bind(backgroundColor);
-    outline-offset: 2px;
+    outline: calc(var(--base) * 0.01) solid v-bind(backgroundColor);
+    outline-offset: calc(var(--base) * 0.02);
   }
 
   &_left {
-    left: -28px;
+    left: calc(var(--base) * -0.28);
   }
 
   &_right {
-    right: -28px;
+    right: calc(var(--base) * -0.28);
   }
 
   &_cursor_pointer {
@@ -75,8 +75,8 @@ const usersStore = useUsersStore();
   }
 
   &__icon {
-    width: 24px;
-    height: 24px;
+    width: calc(var(--base) * 0.24);
+    height: calc(var(--base) * 0.24);
     display: block;
   }
 }

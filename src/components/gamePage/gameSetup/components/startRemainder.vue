@@ -74,37 +74,37 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 180px;
-    padding: 8px;
-    padding-right: 16px;
+    width: calc(var(--base) * 1.8);
+    padding: calc(var(--base) * 0.08);
+    padding-right: calc(var(--base) * 0.16);
     outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
     font: inherit;
     text-align: center;
     cursor: default;
     background-color: rgb(221, 231, 231);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
   }
 
   &__values {
     position: absolute;
     z-index: 2;
-    border-radius: 4px;
+    border-radius: calc(var(--base) * 0.04);
     background-color: rgb(208, 216, 216);
   }
 
   &__value {
-    width: 180px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    padding: 8px;
+    width: calc(var(--base) * 1.8);
+    margin-top: calc(var(--base) * 0.04);
+    margin-bottom: calc(var(--base) * 0.04);
+    padding: calc(var(--base) * 0.08);
     outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
     font: inherit;
     text-align: center;
     cursor: default;
@@ -120,8 +120,8 @@ onUnmounted(() => {
 .arrow-down-icon {
   position: absolute;
   right: 0;
-  width: 24px;
-  height: 24px;
+  width: calc(var(--base) * 0.24);
+  height: calc(var(--base) * 0.24);
   display: block;
 }
 </style>

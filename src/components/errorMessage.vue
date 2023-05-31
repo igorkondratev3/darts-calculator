@@ -14,13 +14,15 @@ defineProps({
 .error {
   position: absolute;
   bottom: 0;
-  transform: translateY(calc(100% + 4px));
+  width: 100%;
+  min-height: calc(var(--base) * 0.74);
+  transform: translateY(calc(100% + calc(var(--base) * 0.04)));
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 8px;
-  border-radius: 8px;
+  padding: calc(var(--base) * 0.08);
+  border-radius: calc(var(--base) * 0.08);
   background-color: rgb(235, 94, 94);
 }
 </style>

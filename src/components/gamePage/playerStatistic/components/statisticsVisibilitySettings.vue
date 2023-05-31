@@ -56,25 +56,6 @@ const closeStatisticsVisibilitySettings = () => {
   );
   emits('closeStatisticsVisibilitySettings');
 };
-
-let positionSetupVisibility = {
-  'margin-right': '-12px',
-  'align-self': 'flex-end'
-};
-
-if (props.player === 'P2')
-  positionSetupVisibility = {
-    'margin-left': '-12px',
-    'align-self': 'flex-start'
-  };
-
-let positionControlSeen = {
-  left: '4px'
-};
-if (props.player === 'P2')
-  positionControlSeen = {
-    right: '4px'
-  };
 </script>
 
 <template>
@@ -84,7 +65,13 @@ if (props.player === 'P2')
     @keyup.enter="changeParameterVisibility"
     @keyup.esc="closeStatisticsVisibilitySettings"
   >
-    <div class="control-seen-elements" :style="positionControlSeen">
+    <div
+      class="control-seen-elements"
+      :class="{
+        'control-seen-elements_P1': props.player === 'P1',
+        'control-seen-elements_P2': props.player === 'P2'
+      }"
+    >
       <button
         class="control-seen-elements__select-all"
         title="Выделить все"
@@ -110,8 +97,11 @@ if (props.player === 'P2')
     </div>
     <button
       class="statistic__setup-visibility"
+      :class="{
+        'statistic__setup-visibility_P1': props.player === 'P1',
+        'statistic__setup-visibility_P2': props.player === 'P2'
+      }"
       @click="closeStatisticsVisibilitySettings"
-      :style="positionSetupVisibility"
       title="Закрыть настройку видимости параметров"
     >
       <img
@@ -306,26 +296,34 @@ if (props.player === 'P2')
 <style lang="scss">
 .control-seen-elements {
   position: absolute;
-  top: 4px;
+  top: calc(var(--base) * 0.04);
   display: flex;
+
+  &_P1 {
+    left: calc(var(--base) * 0.04);
+  }
+
+  &_P2 {
+    right: calc(var(--base) * 0.04);
+  }
 
   &__select-all {
     display: block;
     z-index: 2;
     background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
     outline: none;
     cursor: pointer;
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
   }
 
   &__icon {
-    width: 24px;
-    height: 24px;
+    width: calc(var(--base) * 0.24);
+    height: calc(var(--base) * 0.24);
     display: block;
   }
 }

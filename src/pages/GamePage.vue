@@ -440,7 +440,7 @@ onBeforeRouteLeave((to) => {
   @include fonts.Advent;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.664);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(calc(var(--base) * 0.1));
   overflow: auto;
 
   &::-webkit-scrollbar {
@@ -461,14 +461,14 @@ onBeforeRouteLeave((to) => {
 .game {
   &__new-game-button {
     position: absolute;
-    left: 4px;
-    top: 4px;
+    left: calc(var(--base) * 0.04);
+    top: calc(var(--base) * 0.04);
     z-index: 2;
-    padding: 8px;
-    border: 1px solid black;
-    border-radius: 8px;
+    padding: calc(var(--base) * 0.08);
+    border: calc(var(--base) * 0.01) solid black;
+    border-radius: calc(var(--base) * 0.08);
     @include fonts.Advent;
-    font-size: 16px;
+    font-size: calc(var(--base) * 0.16);
     transition: background-color 0.5s linear, color 0.5s linear;
 
     &:focus,
@@ -481,7 +481,7 @@ onBeforeRouteLeave((to) => {
   &__players-information {
     display: flex;
     justify-content: center;
-    margin-bottom: 32px;
+    margin-bottom: calc(var(--base) * 0.32);
     overflow-x: hidden;
   }
 
@@ -498,48 +498,48 @@ onBeforeRouteLeave((to) => {
   align-items: center;
   flex-grow: 1;
   flex-basis: 0;
-  font-size: 48px;
+  font-size: calc(var(--base) * 0.48);
   white-space: nowrap;
   overflow-x: hidden;
 }
 
 .darts-icon-wrapper {
-  margin-left: 16px;
-  margin-right: 16px;
-  width: 96px;
-  height: 96px;
+  margin-left: calc(var(--base) * 0.16);
+  margin-right: calc(var(--base) * 0.16);
+  width: calc(var(--base) * 0.96);
+  height: calc(var(--base) * 0.96);
 }
 
 .darts-icon {
-  width: 96px;
-  height: 96px;
+  width: calc(var(--base) * 0.96);
+  height: calc(var(--base) * 0.96);
   display: block;
 }
 
 .points-information__points {
   display: flex;
   flex-direction: column;
-  font-size: 64px;
+  font-size: calc(var(--base) * 0.64);
 }
 
 .points__round-information {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 16px;
+  margin-top: calc(var(--base) * 0.16);
 }
 
 .round-information {
   &__remainder {
-    width: 140px;
-    font-size: 56px;
+    width: calc(var(--base) * 1.4);
+    font-size: calc(var(--base) * 0.56);
     text-align: center;
   }
   &__number-darts {
-    width: 108px;
-    margin-left: 32px;
-    margin-right: 32px;
-    font-size: 40px;
+    width: calc(var(--base) * 1.08);
+    margin-left: calc(var(--base) * 0.32);
+    margin-right: calc(var(--base) * 0.32);
+    font-size: calc(var(--base) * 0.4);
     font-weight: 700;
     text-align: center;
   }

@@ -77,9 +77,13 @@ watchEffect(() => {
   position: fixed;
   transform: v-bind(transformEndPosition);
   z-index: 999;
-  max-width: 300px;
-  padding: 8px;
-  border-radius: 8px;
+  max-width: calc(var(--base) * 3);
+  min-height: calc(var(--base) * 0.74);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: calc(var(--base) * 0.08);
+  border-radius: calc(var(--base) * 0.08);
   font: inherit;
   text-align: center;
   background-color: rgb(235, 94, 94);

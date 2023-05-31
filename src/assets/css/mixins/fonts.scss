@@ -1,9 +1,9 @@
-@mixin Advent($size: 24px, $color: #000000, $weight: 400) {
+@mixin Advent($size: calc(var(--base) * 0.24), $color: #000000, $weight: 400) {
   font: {
     family: 'Advent ProCY', 'Advent ProLA';
     weight: $weight;
     size: $size;
   }
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.065em;
   color: $color;
 }

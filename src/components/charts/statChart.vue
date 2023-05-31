@@ -104,17 +104,26 @@ const changeDateInterval = () => {
         <span class="cross-line" v-show="hideZerosInChart"></span>
       </button>
       <div class="chart" @pointerleave="seenValue = false">
-        <svg class="chart__svg" :width="chartWidth" :height="chartHeight">
+        <svg class="chart__svg">
           <rect
             class="chart__line"
             v-for="(valueObj, index) of hideZerosInChart
               ? chartDataInIntervalWithoutZero
               : chartDataInInterval"
             :key="index + props.parameterName + valueObj.date"
-            :width="lineWidth"
-            :height="calculateLineHeight(chartHeight, maxValue, valueObj.value)"
-            :x="calculateX(index, lineWidth)"
-            :y="calculateY(chartHeight, maxValue, valueObj.value)"
+            :height="
+              String(
+                calculateLineHeight(chartHeight, maxValue, valueObj.value)
+              ) + '%'
+            "
+            :x="String((calculateX(index, lineWidth) / chartWidth) * 100) + '%'"
+            :y="
+              String(
+                (calculateY(chartHeight, maxValue, valueObj.value) /
+                  chartHeight) *
+                  100
+              ) + '%'
+            "
             @pointerover="
               showValue(valueObj.date, valueObj.value, valueObj.count)
             "
@@ -164,7 +173,8 @@ const changeDateInterval = () => {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin: 64px 56px 32px 56px;
+  margin: calc(var(--base) * 0.64) calc(var(--base) * 0.56)
+    calc(var(--base) * 0.32) calc(var(--base) * 0.56);
 
   &__info {
     position: absolute;
@@ -172,8 +182,8 @@ const changeDateInterval = () => {
     left: 0;
     z-index: 2;
     width: 100%;
-    padding: 8px;
-    transform: translateY(calc(100% + 4px));
+    padding: calc(var(--base) * 0.08);
+    transform: translateY(calc(100% + calc(var(--base) * 0.04)));
     background-color: #dadada;
   }
 }
@@ -182,10 +192,10 @@ const changeDateInterval = () => {
   &::before {
     content: attr(data-max) ' \2014';
     position: absolute;
-    top: 32px;
+    top: calc(var(--base) * 0.32);
     left: 0;
-    transform: translate(-100%, calc(-50% + 2px));
-    @include fonts.Advent($size: 16px);
+    transform: translate(-100%, calc(-50% + calc(var(--base) * 0.02)));
+    @include fonts.Advent($size: calc(var(--base) * 0.16));
   }
 
   &::after {
@@ -193,17 +203,17 @@ const changeDateInterval = () => {
     position: absolute;
     bottom: 0;
     left: 0;
-    transform: translateX(calc(-100% - 4px));
-    @include fonts.Advent($size: 16px);
+    transform: translateX(calc(-100% - calc(var(--base) * 0.04)));
+    @include fonts.Advent($size: calc(var(--base) * 0.16));
   }
 }
 
 .chart {
-  width: 300px;
-  padding-right: 32px;
-  padding-top: 32px;
-  border-bottom: 3px solid black;
-  border-left: 3px solid black;
+  width: calc(var(--base) * 3);
+  padding-right: calc(var(--base) * 0.32);
+  padding-top: calc(var(--base) * 0.32);
+  border-bottom: 0.15em solid black;
+  border-left: 0.15em solid black;
   overflow-x: scroll;
   line-height: 0;
   background-color: #dadada;
@@ -223,19 +233,19 @@ const changeDateInterval = () => {
 
   &__show-zero {
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: calc(var(--base) * 0.04);
+    top: calc(var(--base) * 0.04);
     z-index: 2;
-    width: 16px;
-    height: 16px;
+    width: calc(var(--base) * 0.16);
+    height: calc(var(--base) * 0.16);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid transparent;
+    border: calc(var(--base) * 0.01) solid transparent;
     border-radius: 50%;
     cursor: pointer;
-    @include fonts.Advent($size: 16px);
-    line-height: 16px;
+    @include fonts.Advent($size: calc(var(--base) * 0.16));
+    line-height: calc(var(--base) * 0.16);
     text-align: center;
     background-color: transparent;
 
@@ -243,13 +253,19 @@ const changeDateInterval = () => {
       border-left-color: black;
       border-bottom-color: black;
     }
-  
+
     &:focus {
       font-weight: 700;
     }
   }
 
+  &__svg {
+    width: calc(var(--base) * v-bind(chartWidth) / 100);
+    height: calc(var(--base) * v-bind(chartHeight) / 100);
+  }
+
   &__line {
+    width: calc(var(--base) * v-bind(lineWidth) / 100);
     fill: #f0b375;
     animation-duration: 2s;
     animation-name: line;
@@ -271,16 +287,23 @@ const changeDateInterval = () => {
 
 .cross-line {
   position: absolute;
-  left: -2px;
+  left: calc(var(--base) * -0.02);
   top: 46%;
-  width: 17px;
+  width: calc(var(--base) * 0.17);
   transform: rotate(-45deg);
-  border-bottom: 1px solid black;
+  border-bottom: calc(var(--base) * 0.01) solid black;
 }
 
 .date-interval {
   display: flex;
-  margin-top: 4px;
+  margin-top: calc(var(--base) * 0.04);
+
+  &__value {
+    width: calc(var(--base) * 1.12);
+    height: calc(var(--base) * 0.24);
+    font: inherit;
+    font-size: calc(var(--base) * 0.18);
+  }
 
   &__header {
     text-align: center;
@@ -293,7 +316,7 @@ const changeDateInterval = () => {
   }
 
   &_margin-right {
-    margin-right: 16px;
+    margin-right: calc(var(--base) * 0.16);
   }
 }
 </style>

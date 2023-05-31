@@ -107,14 +107,14 @@ const seenRoundPointsP2 = computed(() =>
 .round-information__points-area {
   display: flex;
   align-items: center;
-  width: 140px;
+  width: calc(var(--base) * 1.4);
 }
 
 .round-information__points-area_margin-right {
-  margin-right: 16px;
+  margin-right: calc(var(--base) * 0.16);
 }
 
 .round-information__points-area_margin-left {
-  margin-left: 16px;
+  margin-left: calc(var(--base) * 0.16);
 }
 </style>

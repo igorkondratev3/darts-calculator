@@ -48,20 +48,20 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: calc(var(--base) * 0.16);
+  margin-right: calc(var(--base) * 0.16);
 
   &__name {
-    width: 250px;
-    padding: 8px;
+    width: calc(var(--base) * 2.5);
+    padding: calc(var(--base) * 0.08);
     outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
     @include fonts.Advent;
     background-color: rgb(221, 231, 231);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
 
     &:disabled {
@@ -69,7 +69,7 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
     }
 
     &_margin-right {
-      margin-right: 140px;
+      margin-right: calc(var(--base) * 1.4);
     }
   }
 }

@@ -270,21 +270,21 @@ async function getStatistic(player) {
 .user-information {
   display: flex;
   align-items: flex-start;
-  margin-top: 32px;
+  margin-top: calc(var(--base) * 0.32);
 
   &__name {
-    font-size: 48px;
+    font-size: calc(var(--base) * 0.48);
   }
 }
 
 .avatar {
-  border: 1px solid black;
+  border: calc(var(--base) * 0.01) solid black;
   border-radius: 50%;
 
   &__img {
     display: block;
-    width: 256px;
-    height: 256px;
+    width: calc(var(--base) * 2.56);
+    height: calc(var(--base) * 2.56);
   }
 }
 
@@ -293,7 +293,7 @@ async function getStatistic(player) {
   flex-wrap: wrap;
   justify-content: center;
   align-self: center;
-  margin-bottom: 64px;
+  margin-bottom: calc(var(--base) * 0.64);
 }
 
 .loading-message {
@@ -301,9 +301,9 @@ async function getStatistic(player) {
   align-items: center;
   justify-content: center;
   align-self: center;
-  padding: 32px 16px;
-  border: 1px solid black;
-  border-radius: 8px;
-  font-size: 48px;
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.16);
+  border: calc(var(--base) * 0.01) solid black;
+  border-radius: calc(var(--base) * 0.08);
+  font-size: calc(var(--base) * 0.48);
 }
 </style>

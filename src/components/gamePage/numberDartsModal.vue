@@ -56,15 +56,16 @@ const focusOnButtonBox = () => {
 .number-darts-dialog {
   &__message {
     width: 100%;
-    font-size: 56px;
+    font-size: calc(var(--base) * 0.56);
     font-weight: 700;
+    color: white;
     text-align: center;
   }
 
   &__values {
     display: flex;
-    margin-top: 32px;
-    margin-bottom: 200px;
+    margin-top: calc(var(--base) * 0.32);
+    margin-bottom: calc(var(--base) * 2);
   }
 
   &__values:focus {
@@ -73,14 +74,16 @@ const focusOnButtonBox = () => {
   }
 
   &__value {
-    width: 64px;
-    height: 64px;
-    margin-right: 16px;
-    padding: 8px;
+    width: calc(var(--base) * 0.64);
+    height: calc(var(--base) * 0.64);
+    margin-right: calc(var(--base) * 0.16);
+    padding: calc(var(--base) * 0.08);
     outline: none;
     border: none;
     border-radius: 50%;
-    font-size: 32px;
+    font: inherit;
+    font-weight: 700;
+    font-size: calc(var(--base) * 0.32);
     color: white;
     background-color: rgb(66, 63, 63);
     transition: background-color 0.5s linear, color 0.5s linear;

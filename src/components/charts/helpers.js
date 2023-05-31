@@ -95,7 +95,7 @@ export const calculateLineWidth = (chartWidth, numberOfValues) => {
   if (lineWidth > 25) lineWidth = 25;
   if (lineWidth < 7) lineWidth = 7;
   return lineWidth;
-}; //не будет помещяться при маленьком значении подумать (когдп много параметров)
+}; //не будет помещаться при маленьком значении подумать (когдп много параметров)
 
 export const startDateValidate = (startDate, minDate, maxDate) => {
   const arrDate = startDate.value.split('-').map((value) => Number(value));

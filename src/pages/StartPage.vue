@@ -14,11 +14,11 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
         просмотра в личном профиле
       </div>
       <div class="start-page__players-wrapper">
-        <PlayerNavigation player="P1" tabindex="1"/>
+        <PlayerNavigation player="P1" tabindex="1" />
         <RouterLink class="base-button to-match" to="/game" tabindex="3">
           К матчу
         </RouterLink>
-        <PlayerNavigation player="P2" tabindex="2"/>
+        <PlayerNavigation player="P2" tabindex="2" />
       </div>
     </main>
   </div>
@@ -29,9 +29,9 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
 
 .start-page {
   &__header {
-    font-size: 64px;
+    font-size: calc(var(--base) * 0.64);
     font-weight: 700;
-    margin-bottom: 32px;
+    margin-bottom: calc(var(--base) * 0.32);
     text-align: center;
   }
 
@@ -43,11 +43,11 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
   }
 
   &__hello-message {
-    padding: 16px;
-    border-radius: 8px;
-    max-width: 600px;
+    padding: calc(var(--base) * 0.16);
+    border-radius: calc(var(--base) * 0.08);
+    max-width: calc(var(--base) * 6);
     text-align: justify;
-    margin-bottom: 16px;
+    margin-bottom: calc(var(--base) * 0.16);
     background-color: rgb(173, 206, 236);
   }
 
@@ -62,8 +62,8 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 74px;
-  width: 320px;
-  margin-top: 398px;
+  height: calc(var(--base) * 0.74);
+  width: calc(var(--base) * 3.2);
+  margin-top: calc(var(--base) * 3.98);
 }
 </style>

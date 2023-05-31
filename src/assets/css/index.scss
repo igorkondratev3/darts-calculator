@@ -1,9 +1,24 @@
 @use './styles/reset.scss';
 @use './styles/scrollbar.scss';
 @use './styles/inputNumber.scss';
-@use './styles/checkbox.scss';
 @use './styles/importFonts.scss';
 @use '@/assets/css/mixins/fonts.scss';
+
+:root {
+  --base: 100px;
+}
+
+@media (min-width: 2100px) {
+  :root {
+    --base: 5.2vmax;
+  }
+}
+
+@media (min-height: 2100px) {
+  :root {
+    --base: 5.2vmax;
+  }
+}
 
 body {
   min-height: 100vh;
@@ -16,17 +31,16 @@ body {
   flex-grow: 1;
   width: 100%;
   min-height: 100vh;
-  padding: 16px;
+  padding: calc(var(--base) * 0.16);
   @include fonts.Advent;
 }
 
 .base-button {
-  padding: 8px;
-  border: 1px solid black;
-  border-radius: 8px;
+  padding: calc(var(--base) * 0.08);
+  border: calc(var(--base) * 0.01) solid black;
+  border-radius: calc(var(--base) * 0.08);
   text-decoration: none;
   cursor: default;
-  color: black;
   text-align: center;
   @include fonts.Advent;
   transition: background-color 0.5s linear, color 0.5s linear;
@@ -43,3 +57,33 @@ body {
     opacity: 25%;
   }
 }
+
+input[type='checkbox'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: calc(var(--base) * 0.2);
+  height: calc(var(--base) * 0.2);
+  outline: calc(var(--base) * 0.01) solid transparent;
+  outline-offset: calc(var(--base) * 0.02);
+  border: calc(var(--base) * 0.01) solid white;
+  border-radius: calc(var(--base) * 0.04);
+  background: rgb(232, 238, 233);
+  transition: background 0.3s linear, border 0.3s linear;
+
+  &:checked {
+    background: rgb(66, 63, 63) url('/src/assets/images/check.svg');
+    background-size: calc(var(--base) * 0.24);
+    border: calc(var(--base) * 0.01) solid rgb(66, 63, 63);
+  }
+
+  &:focus {
+    outline: calc(var(--base) * 0.02) solid rgb(66, 63, 63);
+  }
+
+  &:checked:focus {
+    outline: calc(var(--base) * 0.02) solid white;
+  }
+}
+
+

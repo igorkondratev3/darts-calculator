@@ -43,7 +43,7 @@ defineEmits([
 
 <style lang="scss">
 .game-setup__is-percent-double {
-  margin-top: 32px;
+  margin-top: calc(var(--base) * 0.32);
 }
 
 .is-percent-double {

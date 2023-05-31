@@ -10,15 +10,15 @@ import { RouterLink } from 'vue-router';
 
 <style lang="scss">
 .game-button {
-  font-size: 16px;
-  width: 105px;
+  font-size: calc(var(--base) * 0.16);
+  width: calc(var(--base) * 1.05);
 
   &_right {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: calc(var(--base) * 0.04);
+    right: calc(var(--base) * 0.04);
     z-index: 2;
-    transform: translateY(calc(100% + 4px));
+    transform: translateY(calc(100% + calc(var(--base) * 0.04)));
   }
 }
 </style>

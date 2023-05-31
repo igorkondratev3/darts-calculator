@@ -79,17 +79,17 @@ const checkAreSetsInGame = (setInput) => {
   justify-content: center;
 
   &__value {
-    width: 100px;
-    padding: 8px;
+    width: var(--base);
+    padding: calc(var(--base) * 0.08);
     outline: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
     font: inherit;
     text-align: center;
     background-color: rgb(221, 231, 231);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
 
     &:disabled {
@@ -97,12 +97,12 @@ const checkAreSetsInGame = (setInput) => {
     }
 
     &_margin-right {
-      margin-right: 128px;
+      margin-right: calc(var(--base) * 1.28);
     }
   }
 
   &__is-disabled {
-    margin-left: 8px;
+    margin-left: calc(var(--base) * 0.08);
   }
 }
 </style>

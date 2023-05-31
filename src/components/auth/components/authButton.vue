@@ -115,11 +115,11 @@ const chechAuthAsAnotherPlayer = () => {
 @use '@/assets/css/mixins/fonts.scss';
 
 .auth__button {
-  width: 160px;
-  height: 56px;
-  margin-top: 32px;
+  width: calc(var(--base) * 1.6);
+  height: calc(var(--base) * 0.56);
+  margin-top: calc(var(--base) * 0.32);
   border: none;
-  border-radius: 8px;
+  border-radius: calc(var(--base) * 0.08);
   cursor: pointer;
   @include fonts.Advent;
   background-color: #55b2f0;
@@ -129,8 +129,8 @@ const chechAuthAsAnotherPlayer = () => {
   }
 
   &:focus {
-    outline: 1px solid black;
-    outline-offset: 2px;
+    outline: calc(var(--base) * 0.01) solid black;
+    outline-offset: calc(var(--base) * 0.02);
   }
 }
 </style>

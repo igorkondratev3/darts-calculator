@@ -107,11 +107,11 @@ const AuthComp = defineAsyncComponent({
   flex-direction: column;
   max-height: 95vh;
   max-width: 95vw;
-  padding: 16px;
+  padding: calc(var(--base) * 0.16);
   padding-top: 0px;
-  border-radius: 16px;
-  margin-left: 4px;
-  margin-right: 4px;
+  border-radius: calc(var(--base) * 0.16);
+  margin-left: calc(var(--base) * 0.04);
+  margin-right: calc(var(--base) * 0.04);
   overflow: scroll;
   background-color: rgb(177, 205, 223);
 
@@ -130,28 +130,28 @@ const AuthComp = defineAsyncComponent({
   scrollbar-width: none;
 
   &__header {
-    font-size: 32px;
+    font-size: calc(var(--base) * 0.32);
     font-weight: 700;
     text-align: center;
   }
 
   &__parameter-header {
-    margin-top: 32px;
-    margin-bottom: 16px;
+    margin-top: calc(var(--base) * 0.32);
+    margin-bottom: calc(var(--base) * 0.16);
     font-weight: 700;
     text-align: center;
   }
 
   &__start-game-button {
     align-self: center;
-    width: 450px;
-    margin-top: 64px;
+    width: calc(var(--base) * 4.5);
+    margin-top: calc(var(--base) * 0.64);
     border: none;
     background-color: rgb(221, 231, 231);
   }
 }
 
 .game-setup__parameter-header_margin_zero {
-  margin: 0 16px;
+  margin: 0 calc(var(--base) * 0.16);
 }
 </style>

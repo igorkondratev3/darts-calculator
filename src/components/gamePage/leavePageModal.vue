@@ -18,15 +18,9 @@ const focusOnButtonBox = () => {
       текущий прогресс и вернуться к матчу позже
     </div>
     <div class="leave-page-dialog__values" ref="buttonsBox" tabindex="1">
-      <button class="leave-page-dialog__value">
-        Сохранить матч
-      </button>
-      <button class="leave-page-dialog__value">
-        Не сохранять
-      </button>
-      <button class="leave-page-dialog__value">
-        Отмена
-      </button>
+      <button class="leave-page-dialog__value">Сохранить матч</button>
+      <button class="leave-page-dialog__value">Не сохранять</button>
+      <button class="leave-page-dialog__value">Отмена</button>
     </div>
   </div>
 </template>
@@ -36,17 +30,17 @@ const focusOnButtonBox = () => {
 
 .leave-page-dialog {
   &__message {
-    max-width: 1000px;
-    font-size: 40px;
+    max-width: calc(var(--base) * 10);
+    font-size: calc(var(--base) * 0.4);
     font-weight: 700;
     text-align: center;
-    color: white
+    color: white;
   }
 
   &__values {
     display: flex;
-    margin-top: 24px;
-    margin-bottom: 200px;
+    margin-top: calc(var(--base) * 0.24);
+    margin-bottom: calc(var(--base) * 2);
   }
 
   &__values:focus {
@@ -55,16 +49,16 @@ const focusOnButtonBox = () => {
   }
 
   &__value {
-    width: 200px;
-    height: 64px;
-    margin-right: 8px;
-    margin-left: 8px;
-    padding: 8px;
+    width: calc(var(--base) * 2);
+    height: calc(var(--base) * 0.64);
+    margin-right: calc(var(--base) * 0.08);
+    margin-left: calc(var(--base) * 0.08);
+    padding: calc(var(--base) * 0.08);
     outline: none;
     border: none;
-    border-radius: 8px;
+    border-radius: calc(var(--base) * 0.08);
     font: inherit;
-    font-size: 24px;
+    font-size: calc(var(--base) * 0.24);
     color: white;
     font-weight: 700;
     background-color: rgb(66, 63, 63);

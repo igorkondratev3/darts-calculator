@@ -23,13 +23,18 @@ const isCompleted = computed(() => [
 <template>
   <nav class="auth__parameter-navigation parameter-navigation">
     <template v-for="n in numberOfButtons" :key="n + 'button'">
-      <svg v-if="!(n === 1)" height="40" :width="lineWidth">
+      <svg class="parameter-navigation__svg-area" v-if="!(n === 1)">
         <line
-          x1="10"
-          y1="20"
-          :x2="lineWidth - 10"
-          y2="20"
-          style="stroke: rgb(0, 0, 0); stroke-width: 1"
+          class="parameter-navigation__line"
+          :class="{
+            'parameter-navigation__line_width_1': props.authType === 'Вход',
+            'parameter-navigation__line_width_2':
+              props.authType === 'Регистрация'
+          }"
+          x1="10%"
+          y1="50%"
+          x2="90%"
+          y2="50%"
         />
       </svg>
       <button
@@ -52,36 +57,51 @@ const isCompleted = computed(() => [
 .auth__parameter-navigation {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
+  margin-top: calc(var(--base) * 0.32);
 }
 
 .parameter-navigation {
+  &__svg-area {
+    height: calc(var(--base) * 0.4);
+    width: calc(var(--base) * v-bind(lineWidth) / 100);
+  }
+
+  &__line {
+    stroke: rgb(0, 0, 0);
+    &_width_1 {
+      stroke-width: 1%;
+    }
+    &_width_2 {
+      stroke-width: 2%;
+    }
+  }
+
   &__button {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
+    width: calc(var(--base) * 0.4);
+    height: calc(var(--base) * 0.4);
+    border: calc(var(--base) * 0.01) solid black;
     border-radius: 50%;
     cursor: pointer;
     @include fonts.Advent;
 
     &:focus {
-      outline: 1px solid black;
-      outline-offset: 2px;
+      outline: calc(var(--base) * 0.01) solid black;
+      outline-offset: calc(var(--base) * 0.02);
     }
   }
 
   &__current::before {
     position: absolute;
     content: '';
-    top: -20px;
-    left: 13px;
-    width: 12px;
-    height: 12px;
+    top: calc(var(--base) * -0.2);
+    left: calc(var(--base) * 0.13);
+    width: calc(var(--base) * 0.12);
+    height: calc(var(--base) * 0.12);
     border: solid black;
-    border-width: 0 2px 2px 0;
+    border-width: 0 0.1em 0.1em 0;
     transform: rotate(45deg);
   }
 

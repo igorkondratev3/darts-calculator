@@ -30,31 +30,31 @@ const usersStore = useUsersStore();
 .auth-action {
   position: sticky;
   display: inline;
-  width: 24px;
-  top: 4px;
+  width: calc(var(--base) * 0.24);
+  top: calc(var(--base) * 0.04);
   z-index: 2;
-  border-radius: 4px;
+  border-radius: calc(var(--base) * 0.04);
   cursor: pointer;
 
   &_left {
-    margin-left: -12px;
+    margin-left: calc(var(--base) * -0.12);
   }
 
   &_right {
-    margin-right: -12px;
+    margin-right: calc(var(--base) * -0.12);
   }
 
   &_single-right {
-    margin-left: calc(100% - 12px);
+    margin-left: calc(100% - calc(var(--base) * 0.12));
   }
 
   &:focus {
-    outline: 1px solid black;
+    outline: calc(var(--base) * 0.01) solid black;
   }
 
   &__icon {
-    width: 24px;
-    height: 24px;
+    width: calc(var(--base) * 0.24);
+    height: calc(var(--base) * 0.24);
     display: block;
 
     &_rotate_180deg {
@@ -67,8 +67,8 @@ const usersStore = useUsersStore();
   display: flex;
   justify-content: space-between;
   position: sticky;
-  top: 4px;
+  top: calc(var(--base) * 0.04);
   z-index: 2;
-  margin-top: 4px;
+  margin-top: calc(var(--base) * 0.04);
 }
 </style>

@@ -170,19 +170,19 @@ const handleInputEnter = (event) => {
 .auth-and-error {
   display: flex;
   flex-direction: column;
-  width: 352px;
-  height: 394px;
-  margin: 0px 4px;
+  width: calc(var(--base) * 3.52);
+  height: calc(var(--base) * 3.94);
+  margin: 0px calc(var(--base) * 0.04);
 }
 
 .auth {
   display: flex;
   flex-direction: column;
-  width: 352px;
-  height: 394px;
-  padding: 16px;
+  width: calc(var(--base) * 3.52);
+  height: calc(var(--base) * 3.94);
+  padding: calc(var(--base) * 0.16);
   padding-top: 0px;
-  border-radius: 16px;
+  border-radius: calc(var(--base) * 0.16);
   overflow: auto;
   scrollbar-width: none;
   background-color: rgb(182, 195, 197);
@@ -201,54 +201,55 @@ const handleInputEnter = (event) => {
 
   &__change-button {
     position: absolute;
-    top: 4px;
-    left: 4px;
+    top: calc(var(--base) * 0.04);
+    left: calc(var(--base) * 0.04);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    @include fonts.Advent($size: 16px, $weight: 700);
+    padding: calc(var(--base) * 0.04);
+    border-radius: calc(var(--base) * 0.04);
+    @include fonts.Advent($size: calc(var(--base) * 0.16), $weight: 700);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
   }
 
   &__close {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: calc(var(--base) * 0.04);
+    right: calc(var(--base) * 0.04);
     z-index: 2;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: calc(var(--base) * 0.04);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
   }
 
   &__icon {
-    height: 24px;
-    width: 24px;
+    height: calc(var(--base) * 0.24);
+    width: calc(var(--base) * 0.24);
     display: block;
   }
 
   &__header {
-    margin-top: 64px;
-    margin-bottom: 32px;
+    margin-top: calc(var(--base) * 0.64);
+    margin-bottom: calc(var(--base) * 0.32);
     font: inherit;
     font-weight: 700;
-    font-size: 28px;
+    font-size: calc(var(--base) * 0.28);
     text-align: center;
   }
 
   &__input {
     display: block;
     align-self: center;
-    height: 64px;
-    width: 320px;
-    padding: 16px 24px 24px 24px;
+    height: calc(var(--base) * 0.64);
+    width: calc(var(--base) * 3.2);
+    padding: calc(var(--base) * 0.16) calc(var(--base) * 0.24)
+      calc(var(--base) * 0.24) calc(var(--base) * 0.24);
     outline: none;
-    border: 1px solid rgba(0, 0, 0, 0.5);
+    border: calc(var(--base) * 0.01) solid rgba(0, 0, 0, 0.5);
     background-color: white;
     @include fonts.Advent;
   }
@@ -265,15 +266,15 @@ const handleInputEnter = (event) => {
 
   &__clue-button {
     align-self: flex-start;
-    margin-top: 2px;
-    margin-left: 4px;
-    padding: 2px;
+    margin-top: calc(var(--base) * 0.02);
+    margin-left: calc(var(--base) * 0.04);
+    padding: calc(var(--base) * 0.02);
     cursor: pointer;
-    @include fonts.Advent($size: 16px);
+    @include fonts.Advent($size: calc(var(--base) * 0.16));
     font-style: italic;
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
     }
 
     &:disabled {
@@ -283,13 +284,16 @@ const handleInputEnter = (event) => {
 
   &__clue {
     position: absolute;
-    left: calc(50% - 160px);
-    top: calc(64px + 1px + 124px + 8px);
+    left: calc(50% - calc(var(--base) * 1.6));
+    top: calc(
+      calc(var(--base) * 0.64) + calc(var(--base) * 0.01) +
+        calc(var(--base) * 1.24) + calc(var(--base) * 0.08)
+    );
     z-index: 2;
-    width: 320px;
-    padding: 8px;
+    width: calc(var(--base) * 3.2);
+    padding: calc(var(--base) * 0.08);
     opacity: 90%;
-    font-size: 20px;
+    font-size: calc(var(--base) * 0.2);
     background-color: rgb(232, 238, 233);
   }
 }

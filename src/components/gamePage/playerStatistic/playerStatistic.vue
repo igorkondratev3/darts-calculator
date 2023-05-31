@@ -30,16 +30,6 @@ const props = defineProps({
   isPercentDoubleInStat: Boolean
 });
 
-let positionSetupVisibility = {
-  'margin-right': '-12px',
-  'align-self': 'flex-end'
-};
-if (props.player === 'P2')
-  positionSetupVisibility = {
-    'margin-left': '-12px',
-    'align-self': 'flex-start'
-  };
-
 const seenAuthComp = ref(false);
 const seenStatisticsVisisbilitySetting = ref(false);
 const seenAveragePointsLeg = ref(
@@ -105,7 +95,10 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         />
         <button
           class="statistic__setup-visibility"
-          :style="positionSetupVisibility"
+          :class="{
+            'statistic__setup-visibility_P1': props.player === 'P1',
+            'statistic__setup-visibility_P2': props.player === 'P2'
+          }"
           @click="seenStatisticsVisisbilitySetting = true"
           title="Настроить видимость параметров"
         >
@@ -183,22 +176,22 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
 .player-statistic-wrapper {
   position: sticky;
-  top: 8px;
-  margin-top: 8px;
+  top: calc(var(--base) * 0.08);
+  margin-top: calc(var(--base) * 0.08);
 }
 
 .statistic {
   &__player-statistic {
     display: flex;
     flex-direction: column;
-    min-height: 200px;
+    min-height: calc(var(--base) * 2);
     max-height: 80vh;
-    min-width: 200px;
-    margin-left: 4px;
-    margin-right: 4px;
-    padding: 16px;
+    min-width: calc(var(--base) * 2);
+    margin-left: calc(var(--base) * 0.04);
+    margin-right: calc(var(--base) * 0.04);
+    padding: calc(var(--base) * 0.16);
     padding-top: 0px;
-    border-radius: 16px;
+    border-radius: calc(var(--base) * 0.16);
     overflow: auto;
     background-color: rgb(182, 195, 197);
 
@@ -219,21 +212,31 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
   &__setup-visibility {
     position: sticky;
-    top: 4px;
+    top: calc(var(--base) * 0.04);
     z-index: 2;
-    margin-top: -20px;
+    margin-top: calc(var(--base) * -0.2);
     cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    border: calc(var(--base) * 0.01) solid transparent;
+    border-radius: calc(var(--base) * 0.04);
 
     &:focus {
-      outline: 1px solid black;
+      outline: calc(var(--base) * 0.01) solid black;
+    }
+
+    &_P1 {
+      align-self: flex-end;
+      margin-right: calc(var(--base) * -0.12);
+    }
+
+    &_P2 {
+      margin-left: calc(var(--base) * -0.12);
+      align-self: flex-start;
     }
   }
 
   &__icon {
-    width: 24px;
-    height: 24px;
+    width: calc(var(--base) * 0.24);
+    height: calc(var(--base) * 0.24);
     display: block;
   }
 
@@ -245,27 +248,27 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   }
 
   &__group-header {
-    margin-top: 24px;
-    font-size: 28px;
+    margin-top: calc(var(--base) * 0.24);
+    font-size: calc(var(--base) * 0.28);
     font-weight: 700;
     color: white;
     text-align: center;
   }
 
   &__group-header_margin-bottom {
-    margin-bottom: 8px;
+    margin-bottom: calc(var(--base) * 0.08);
   }
 
   &__parameter-header {
     width: 100%;
-    margin-top: 16px;
-    font-size: 24px;
+    margin-top: calc(var(--base) * 0.16);
+    font-size: calc(var(--base) * 0.24);
     color: white;
     text-align: center;
   }
 
   &__values {
-    font-size: 24px;
+    font-size: calc(var(--base) * 0.24);
     text-align: center;
   }
 
