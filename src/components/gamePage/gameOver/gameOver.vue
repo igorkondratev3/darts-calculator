@@ -348,19 +348,19 @@ const showPopUp = (message, player) => {
   }
 }
 
-@media(max-height: 740px) {
+@media (max-height: 740px) {
   .game-over {
     padding-top: calc(var(--base) * 0.64);
   }
 }
 
-@media(max-height: 420px) {
+@media (max-height: 420px) {
   .game-over {
     padding-top: calc(var(--base) * 1.28);
   }
 }
 
-@media(max-height: 420px) {
+@media (max-height: 420px) {
   .game-over {
     padding-top: calc(var(--base) * 1.92);
   }

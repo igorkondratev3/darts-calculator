@@ -1,3 +1,3 @@
 <template>
-  <input type="text" class="auth__input" disabled/>
+  <input type="text" class="auth__input" disabled />
 </template>

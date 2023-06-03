@@ -311,7 +311,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   }
 }
 
-@media(max-width: 1370px) {
+@media (max-width: 1370px) {
   .points-information__statistic {
     margin-top: calc(var(--base) * 0.64);
   }

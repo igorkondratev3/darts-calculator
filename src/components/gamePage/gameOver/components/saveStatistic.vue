@@ -149,17 +149,17 @@ const setstatisticInDB = async (player) => {
   display: block;
 }
 
-@media(max-width: 750px) {
+@media (max-width: 750px) {
   .game-statistic__save {
     &_left {
-    left: calc(var(--base) * 0.04);
-    transform: translateY(calc(100% + calc(var(--base) * 0.08)));
-  }
+      left: calc(var(--base) * 0.04);
+      transform: translateY(calc(100% + calc(var(--base) * 0.08)));
+    }
 
-  &_right {
-    right: calc(var(--base) * 0.04);
-    transform: translateY(calc(100% + calc(var(--base) * 0.08)));
-  }
+    &_right {
+      right: calc(var(--base) * 0.04);
+      transform: translateY(calc(100% + calc(var(--base) * 0.08)));
+    }
   }
 }
 </style>

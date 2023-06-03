@@ -26,14 +26,11 @@ export const translateName = (name) => {
 };
 
 export const defineScoreParameterName = (chartName) => {
-  if (chartName.includes('очков'))
-    return 'количество';
-  if (chartName === 'Процент удвоений')
-    return 'средний процент'
-  if (chartName === 'Наибольшие закрытия')
-    return 'закрытие'
+  if (chartName.includes('очков')) return 'количество';
+  if (chartName === 'Процент удвоений') return 'средний процент';
+  if (chartName === 'Наибольшие закрытия') return 'закрытие';
   return 'средний набор';
-}
+};
 
 export const defineCountParameterName = (chartName) => {
   switch (chartName) {

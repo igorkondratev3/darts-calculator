@@ -3,7 +3,7 @@ import { useUsersStore } from '@/stores/users';
 
 export class GameParameters {
   #usersStore = useUsersStore();
-  
+
   constructor(gameParameters) {
     this.nameP1 = computed(
       () =>
