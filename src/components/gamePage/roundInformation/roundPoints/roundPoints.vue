@@ -71,4 +71,17 @@ const setPoints = () => {
     background: radial-gradient(transparent 65%, rgb(182, 195, 197));
   }
 }
+
+@media(max-width: 800px) {
+  .round-information__points {
+    width: calc(var(--base) * 0.9);
+  }
+}
+
+@media(max-width: 550px) {
+  .round-information__points {
+    font-size: calc(var(--base) * 0.32);
+    width: calc(var(--base) * 0.7);
+  }
+}
 </style>

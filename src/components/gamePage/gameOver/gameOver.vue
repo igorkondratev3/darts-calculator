@@ -67,8 +67,16 @@ const showPopUp = (message, player) => {
       <h2 class="game-over__header">Матч окончен</h2>
       <div class="game-over__statistic-wrapper">
         <!--нужен для корректной работы transform translate - элемент скрывается из-за overflow-->
-        <AuthState player="P1" backgroundColor="rgb(182, 195, 197)" />
-        <AuthState player="P2" backgroundColor="rgb(182, 195, 197)" />
+        <AuthState
+          class="game-over__auth-state_top-left"
+          player="P1"
+          backgroundColor="rgb(182, 195, 197)"
+        />
+        <AuthState
+          class="game-over__auth-state_top-right"
+          player="P2"
+          backgroundColor="rgb(182, 195, 197)"
+        />
         <SaveStatistic
           player="P1"
           :gameStatistic="props.gameStatisticP1"
@@ -206,14 +214,15 @@ const showPopUp = (message, player) => {
   margin-right: calc(var(--base) * 0.16);
 
   &__name {
-    max-width: calc(var(--base) * 4);
-    font-size: calc(var(--base) * 0.48);
+    width: calc(var(--base) * 2.8);
+    font-size: calc(var(--base) * 0.32);
     text-align: center;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__name_margin-right {
-    margin-right: calc(var(--base) * 0.96);
+    margin-right: calc(var(--base) * 0.48);
   }
 }
 
@@ -221,14 +230,17 @@ const showPopUp = (message, player) => {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  margin-left: calc(var(--base) * 0.16);
+  margin-right: calc(var(--base) * 0.16);
 
   &__player-score {
+    width: calc(var(--base) * 2.8);
     font-size: calc(var(--base) * 0.48);
     text-align: center;
   }
 
   &__player-score_margin-right {
-    margin-right: calc(var(--base) * 0.96);
+    margin-right: calc(var(--base) * 0.48);
   }
 }
 
@@ -270,8 +282,87 @@ const showPopUp = (message, player) => {
 
 .game-over__new-game {
   margin-top: calc(var(--base) * 0.16);
+  margin-bottom: calc(var(--base) * 0.04);
   padding: calc(var(--base) * 0.24);
   border: none;
   background-color: rgb(221, 231, 231);
+}
+
+@media (max-width: 750px) {
+  .game-over__header {
+    margin-top: calc(var(--base) * 0.64);
+  }
+
+  .game-over__auth-state_top-left {
+    top: calc(var(--base) * -0.32);
+    left: calc(var(--base) * 0.34);
+  }
+
+  .game-over__auth-state_top-right {
+    top: calc(var(--base) * -0.32);
+    right: calc(var(--base) * 0.34);
+  }
+
+  .game-over__statistic-wrapper {
+    margin-top: calc(var(--base) * 0.24);
+  }
+
+  .game-over__new-game {
+    margin-top: calc(var(--base) * 0.48);
+  }
+
+  .game-statistic-player-names {
+    &__name {
+      width: calc(var(--base) * 1.4);
+      font-size: calc(var(--base) * 0.24);
+      overflow: hidden;
+    }
+
+    &__name_margin-right {
+      margin-right: calc(var(--base) * 0.24);
+    }
+  }
+  .game-result {
+    &__player-score {
+      width: calc(var(--base) * 1.4);
+    }
+  }
+}
+
+@media (max-width: 430px) {
+  .game-statistic-player-names {
+    &__name {
+      width: calc(var(--base) * 1);
+      font-size: calc(var(--base) * 0.2);
+      overflow: hidden;
+    }
+
+    &__name_margin-right {
+      margin-right: calc(var(--base) * 0.16);
+    }
+  }
+  .game-result {
+    &__player-score {
+      width: calc(var(--base) * 1);
+    }
+  }
+}
+
+@media(max-height: 740px) {
+  .game-over {
+    padding-top: calc(var(--base) * 0.64);
+  }
+}
+
+@media(max-height: 420px) {
+  .game-over {
+    padding-top: calc(var(--base) * 1.28);
+  }
+}
+
+@media(max-height: 420px) {
+  .game-over {
+    padding-top: calc(var(--base) * 1.92);
+  }
 }
 </style>

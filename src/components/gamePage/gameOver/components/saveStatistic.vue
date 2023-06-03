@@ -148,4 +148,18 @@ const setstatisticInDB = async (player) => {
   z-index: 2;
   display: block;
 }
+
+@media(max-width: 750px) {
+  .game-statistic__save {
+    &_left {
+    left: calc(var(--base) * 0.04);
+    transform: translateY(calc(100% + calc(var(--base) * 0.08)));
+  }
+
+  &_right {
+    right: calc(var(--base) * 0.04);
+    transform: translateY(calc(100% + calc(var(--base) * 0.08)));
+  }
+  }
+}
 </style>

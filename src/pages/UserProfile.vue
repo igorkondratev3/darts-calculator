@@ -306,4 +306,28 @@ async function getStatistic(player) {
   border-radius: calc(var(--base) * 0.08);
   font-size: calc(var(--base) * 0.48);
 }
+
+@media (max-width: 800px) {
+  .user-information {
+    align-self: center;
+    flex-direction: column;
+    margin-top: calc(var(--base) * 0.92);
+
+    &__name {
+      align-self: center;
+    }
+  }
+}
+
+@media (max-width: 440px) {
+  .charts {
+    margin-left: calc(var(--base) * 0.64);
+  }
+}
+
+@media (max-width: 375px) {
+  .charts {
+    margin-left: calc(var(--base) * 0.92);
+  }
+}
 </style>

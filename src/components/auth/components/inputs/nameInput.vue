@@ -19,7 +19,7 @@ const name = ref('');
       'auth__input_border-valid': name
     }"
     placeholder="Имя"
-    maxlength="30"
+    maxlength="15"
     required
     data-type="name"
     ref="nameInput"

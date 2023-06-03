@@ -16,7 +16,7 @@ defineEmits(['update:whoStarts']);
       @change="$emit('update:whoStarts', 'nameP1')"
     />
     <h3
-      class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
+      class="game-setup__parameter-header game-setup__parameter-header_margin_zero who-starts__header"
     >
       Кто начинает
     </h3>
@@ -57,6 +57,19 @@ defineEmits(['update:whoStarts']);
 
     &:focus {
       outline: calc(var(--base) * 0.02) solid white;
+    }
+  }
+}
+
+@media (max-width: 580px) {
+  .who-starts {
+    flex-direction: column;
+    &__header {
+      order: -1;
+    }
+
+    &__radio-button {
+      margin-top: calc(var(--base) * 0.08);
     }
   }
 }

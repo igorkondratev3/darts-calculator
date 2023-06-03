@@ -75,6 +75,7 @@ const logout = (player) => {
     </button>
   </div>
   <AuthComp
+    class="margin-top_less_755px"
     v-if="seenAuthComp"
     @closeAuthComp="seenAuthComp = false"
     :player="player"
@@ -110,6 +111,16 @@ const logout = (player) => {
   &__button {
     width: 100%;
     margin-top: calc(var(--base) * 0.16);
+  }
+}
+
+@media (max-width: 755px) {
+  .start-page__player-navigation {
+    margin-top: calc(var(--base) * 0.04);
+  }
+
+  .margin-top_less_755px {
+    margin-top: calc(var(--base) * 0.04);
   }
 }
 </style>

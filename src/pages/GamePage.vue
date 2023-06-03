@@ -286,7 +286,9 @@ onBeforeRouteLeave((to) => {
     </button>
     <HomeButton />
     <div class="game__players-information players-information">
-      <div class="players-information__name">
+      <div
+        class="players-information__name players-information__name_position-left"
+      >
         {{ usersStore.users.P1?.name || playerOne?.name }}
       </div>
       <PalyerScore
@@ -311,7 +313,9 @@ onBeforeRouteLeave((to) => {
         :legsWonInSet="playerTwo?.legsWonInSet.value"
         player="P2"
       />
-      <div class="players-information__name">
+      <div
+        class="players-information__name players-information__name_position-right"
+      >
         {{ usersStore.users.P2?.name || playerTwo?.name }}
       </div>
     </div>
@@ -327,6 +331,9 @@ onBeforeRouteLeave((to) => {
       />
       <form class="points-information__points points">
         <div class="points__round-information round-information">
+          <div
+            class="round-information__points-area round-information__points-area_margin-right"
+          ></div>
           <div class="round-information__remainder" v-show="isStartedGame">
             {{ startRemainder }}
           </div>
@@ -334,6 +341,9 @@ onBeforeRouteLeave((to) => {
           <div class="round-information__remainder" v-show="isStartedGame">
             {{ startRemainder }}
           </div>
+          <div
+            class="round-information__points-area round-information__points-area_margin-right"
+          ></div>
         </div>
         <template v-if="playerOne && playerTwo">
           <template
@@ -435,8 +445,8 @@ onBeforeRouteLeave((to) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   @include fonts.Advent;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.664);
@@ -482,11 +492,11 @@ onBeforeRouteLeave((to) => {
     display: flex;
     justify-content: center;
     margin-bottom: calc(var(--base) * 0.32);
-    overflow-x: hidden;
   }
 
   &__points-information {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     flex-grow: 1;
   }
@@ -542,6 +552,90 @@ onBeforeRouteLeave((to) => {
     font-size: calc(var(--base) * 0.4);
     font-weight: 700;
     text-align: center;
+  }
+}
+
+@media (max-width: 1400px) {
+  .game__players-information {
+    margin-top: calc(var(--base) * 0.48);
+  }
+}
+
+@media (max-width: 1370px) {
+  .points-information__points {
+    width: 100%;
+    order: -1;
+  }
+
+  .game__players-information {
+    margin-top: calc(var(--base) * 0.96);
+  }
+
+  .players-information__name_position-left {
+    position: absolute;
+    top: calc(var(--base) * -0.48);
+    left: 0;
+  }
+  .players-information__name_position-right {
+    position: absolute;
+    top: calc(var(--base) * -0.48);
+    right: 0;
+  }
+}
+
+@media (max-width: 800px) {
+  .points__round-information {
+    justify-content: flex-start;
+  }
+
+  .points-information__points {
+    width: auto;
+  }
+
+  .players-information__name {
+    font-size: calc(var(--base) * 0.24);
+  }
+}
+
+@media (max-width: 700px) {
+  .points-information__points {
+    width: 100%;
+  }
+}
+
+@media (max-width: 550px) {
+  .points-information__points {
+    width: auto;
+  }
+}
+
+@media (max-width: 550px) {
+  .round-information {
+    &__remainder {
+      width: calc(var(--base) * 0.7);
+      font-size: calc(var(--base) * 0.38);
+    }
+    &__number-darts {
+      width: calc(var(--base) * 0.5);
+      font-size: calc(var(--base) * 0.28);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .points-information__points {
+    width: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+  .round-information__number-darts {
+    margin-left: calc(var(--base) * 0.04);
+    margin-right: calc(var(--base) * 0.04);
+  }
+
+  .players-information__name {
+    font-size: calc(var(--base) * 0.16);
   }
 }
 </style>

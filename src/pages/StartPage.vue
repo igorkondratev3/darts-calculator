@@ -53,6 +53,8 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
 
   &__players-wrapper {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
@@ -64,6 +66,23 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
   text-align: center;
   height: calc(var(--base) * 0.74);
   width: calc(var(--base) * 3.2);
-  margin-top: calc(var(--base) * 3.98);
+  transform: translateY(calc(100% + calc(var(--base) * 0.04)));
+}
+
+@media (max-width: 1070px) {
+  .to-match {
+    order: 3;
+    transform: translateY(calc(var(--base) * 0.04));
+  }
+}
+
+@media (max-width: 755px) {
+  .start-page__players-wrapper {
+    flex-direction: column;
+  }
+
+  .to-match {
+    align-self: center;
+  }
 }
 </style>

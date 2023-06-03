@@ -117,4 +117,18 @@ const seenRoundPointsP2 = computed(() =>
 .round-information__points-area_margin-left {
   margin-left: calc(var(--base) * 0.16);
 }
+
+@media (max-width: 550px) {
+  .round-information__points-area {
+    display: flex;
+    align-items: center;
+    width: calc(var(--base) * 0.7);
+  }
+}
+
+@media (max-width: 800px) {
+  .round-information__points-area {
+    width: calc(var(--base) * 0.9);
+  }
+}
 </style>

@@ -23,7 +23,7 @@ defineEmits([
       "
     />
     <h3
-      class="game-setup__parameter-header game-setup__parameter-header_margin_zero"
+      class="game-setup__parameter-header game-setup__parameter-header_margin_zero is-percent-double__header"
     >
       Подсчитывать процент удвоений
     </h3>
@@ -51,5 +51,18 @@ defineEmits([
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 580px) {
+  .is-percent-double {
+    flex-direction: column;
+    &__header {
+      order: -1;
+    }
+
+    &__value {
+      margin-top: calc(var(--base) * 0.08);
+    }
+  }
 }
 </style>

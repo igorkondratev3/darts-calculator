@@ -32,6 +32,7 @@ const focusOnButtonBox = () => {
   &__message {
     max-width: calc(var(--base) * 10);
     font-size: calc(var(--base) * 0.4);
+    padding: 16px;
     font-weight: 700;
     text-align: center;
     color: white;
@@ -69,6 +70,56 @@ const focusOnButtonBox = () => {
   &__value:focus {
     color: black;
     background-color: white;
+  }
+}
+
+@media (max-width: 670px) {
+  .leave-page-dialog {
+    &__values {
+      flex-direction: column;
+    }
+
+    &__value {
+      margin-top: calc(var(--base) * 0.08);
+      margin-bottom: calc(var(--base) * 0.08);
+    }
+  }
+}
+
+@media (max-width: 501px) {
+  .leave-page-dialog {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-height: 780px) {
+  .leave-page-dialog__message {
+    font-size: calc(var(--base) * 0.24);
+    margin-top: calc(var(--base) * 0.64);
+  }
+}
+
+@media (max-height: 535px) {
+  .leave-page-dialog__message {
+    margin-top: calc(var(--base) * 1.28);
+  }
+}
+
+@media (max-height: 475px) {
+  .leave-page-dialog__message {
+    margin-top: calc(var(--base) * 1.92);
+  }
+}
+
+@media (max-height: 405px) {
+  .leave-page-dialog__message {
+    margin-top: calc(var(--base) * 2.56);
+  }
+}
+
+@media (max-height: 345px) {
+  .leave-page-dialog__message {
+    margin-top: calc(var(--base) * 3.2);
   }
 }
 </style>

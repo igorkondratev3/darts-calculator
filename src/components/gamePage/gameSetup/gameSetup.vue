@@ -45,19 +45,29 @@ const AuthComp = defineAsyncComponent({
 <template>
   <div class="dialog-content-wrapper">
     <AuthComp
+      class="game-setup__auth-comp_margin-top"
       v-if="seenAuthCompP1"
       @closeAuthComp="seenAuthCompP1 = false"
       player="P1"
     />
     <AuthComp
+      class="game-setup__auth-comp_margin-top"
       v-if="seenAuthCompP2"
       @closeAuthComp="seenAuthCompP2 = false"
       player="P2"
     />
-    <div v-show="!seenAuthCompP1 && !seenAuthCompP2">
+    <div class="game-setup-wrapper" v-show="!seenAuthCompP1 && !seenAuthCompP2">
       <!--обертка нужна так как блок имеет overflow и элементы с fixed и прочим скрываются-->
-      <AuthState player="P1" backgroundColor="rgb(177, 205, 223)" />
-      <AuthState player="P2" backgroundColor="rgb(177, 205, 223)" />
+      <AuthState
+        class="game-setup__auth-state_top-left"
+        player="P1"
+        backgroundColor="rgb(177, 205, 223)"
+      />
+      <AuthState
+        class="game-setup__auth-state_top-right"
+        player="P2"
+        backgroundColor="rgb(177, 205, 223)"
+      />
       <div class="game-setup">
         <div class="auth-actions-wrapper">
           <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
@@ -112,6 +122,7 @@ const AuthComp = defineAsyncComponent({
   border-radius: calc(var(--base) * 0.16);
   margin-left: calc(var(--base) * 0.04);
   margin-right: calc(var(--base) * 0.04);
+  margin-bottom: calc(var(--base) * 0.04);
   overflow: scroll;
   background-color: rgb(177, 205, 223);
 
@@ -153,5 +164,55 @@ const AuthComp = defineAsyncComponent({
 
 .game-setup__parameter-header_margin_zero {
   margin: 0 calc(var(--base) * 0.16);
+}
+
+@media (max-width: 775px) {
+  .game-setup__auth-state_top-left {
+    top: calc(var(--base) * -0.32);
+    left: calc(var(--base) * 0.34);
+  }
+
+  .game-setup__auth-state_top-right {
+    top: calc(var(--base) * -0.32);
+    right: calc(var(--base) * 0.34);
+  }
+
+  .game-setup-wrapper {
+    margin-top: calc(var(--base) * 0.48);
+  }
+}
+
+@media (max-width: 500px) {
+  .game-setup__start-game-button {
+    width: 90%;
+  }
+}
+
+@media (max-height: 400px) {
+  .game-setup__auth-comp_margin-top {
+    margin-top: calc(var(--base) * 0.64);
+  }
+}
+@media (max-height: 340px) {
+  .game-setup__auth-comp_margin-top {
+    margin-top: calc(var(--base) * 1.28);
+  }
+}
+
+@media (max-height: 270px) {
+  .game-setup__auth-comp_margin-top {
+    margin-top: calc(var(--base) * 1.92);
+  }
+}
+@media (max-height: 210px) {
+  .game-setup__auth-comp_margin-top {
+    margin-top: calc(var(--base) * 2.56);
+  }
+}
+
+@media (max-height: 250px) {
+  .game-setup-wrapper {
+    margin-top: calc(var(--base) * 0.64);
+  }
 }
 </style>

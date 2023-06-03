@@ -19,12 +19,12 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
   <h3 class="game-setup__parameter-header">Имена игроков</h3>
   <div class="game-setup__player-names player-names">
     <input
-      class="player-names__name player-names__name_margin-right"
+      class="player-names__name player-names__name_margin-right player-names__name_margin-bottom"
       type="text"
       :value="nameP1 || usersStore.users.P1?.name"
       :disabled="usersStore.users.P1"
       @input="$emit('update:nameP1', $event.currentTarget.value)"
-      maxlength="30"
+      maxlength="15"
       required
       @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
     />
@@ -34,7 +34,7 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
       :value="usersStore.users.P2?.name || nameP2"
       :disabled="usersStore.users.P2"
       @input="$emit('update:nameP2', $event.currentTarget.value)"
-      maxlength="30"
+      maxlength="15"
       required
       @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
     />
@@ -70,6 +70,27 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
 
     &_margin-right {
       margin-right: calc(var(--base) * 1.4);
+    }
+  }
+}
+
+@media (max-width: 745px) {
+  .player-names__name_margin-right {
+    margin-right: calc(var(--base) * 0.04);
+  }
+}
+
+@media (max-width: 580px) {
+  .player-names {
+    flex-direction: column;
+    align-self: center;
+
+    &__name_margin-right {
+      margin-right: 0;
+    }
+
+    &__name_margin-bottom {
+      margin-bottom: calc(var(--base) * 0.04);
     }
   }
 }

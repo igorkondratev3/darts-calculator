@@ -83,7 +83,14 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 <template>
   <div class="points-information__statistic statistic">
     <div class="player-statistic-wrapper">
-      <AuthState backgroundColor="rgb(182, 195, 197)" :player="props.player" />
+      <AuthState
+        backgroundColor="rgb(182, 195, 197)"
+        :player="props.player"
+        :class="{
+          'player-statistic__auth-state_top-left': props.player === 'P1',
+          'player-statistic__auth-state_top-right': props.player === 'P2'
+        }"
+      />
       <div
         class="statistic__player-statistic"
         v-show="!seenStatisticsVisisbilitySetting && !seenAuthComp"
@@ -270,6 +277,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   &__values {
     font-size: calc(var(--base) * 0.24);
     text-align: center;
+    margin-left: calc(var(--base) * 0.04);
+    margin-right: calc(var(--base) * 0.04);
   }
 
   &__value-header {
@@ -288,5 +297,23 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+@media (max-width: 1570px) {
+  .player-statistic__auth-state_top-left {
+    top: calc(var(--base) * -0.32);
+    left: calc(var(--base) * 0.34);
+  }
+
+  .player-statistic__auth-state_top-right {
+    top: calc(var(--base) * -0.32);
+    right: calc(var(--base) * 0.34);
+  }
+}
+
+@media(max-width: 1370px) {
+  .points-information__statistic {
+    margin-top: calc(var(--base) * 0.64);
+  }
 }
 </style>

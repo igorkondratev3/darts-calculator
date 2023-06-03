@@ -39,7 +39,9 @@ const checkAreSetsInGame = (setInput) => {
 <template>
   <h3 class="game-setup__parameter-header">Необходимо для победы</h3>
   <div class="game-setup__sets-legs sets-legs">
-    <label class="sets-legs__parameter sets-legs__value_margin-right">
+    <label
+      class="sets-legs__parameter sets-legs__value_margin-right sets-legs__value_margin-left"
+    >
       Сетов
       <input
         class="sets-legs__value"
@@ -103,6 +105,35 @@ const checkAreSetsInGame = (setInput) => {
 
   &__is-disabled {
     margin-left: calc(var(--base) * 0.08);
+  }
+}
+
+@media (max-width: 580px) {
+  .sets-legs {
+    flex-direction: column;
+    align-self: center;
+
+    &__parameter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: calc(var(--base) * 0.16);
+    }
+
+    &__value {
+      margin-top: calc(var(--base) * 0.08);
+      &_margin-right {
+        margin-right: 0px;
+      }
+      &_margin-left {
+        margin-left: calc(var(--base) * 0.02);
+      }
+    }
+
+    &__is-disabled {
+      margin-left: 0;
+      margin-top: calc(var(--base) * 0.08);
+    }
   }
 }
 </style>
