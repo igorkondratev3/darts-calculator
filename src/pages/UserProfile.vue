@@ -321,13 +321,13 @@ async function getStatistic(player) {
 
 @media (max-width: 440px) {
   .charts {
-    margin-left: calc(var(--base) * 0.64);
+    margin-left: calc(var(--base) * 0.32);
   }
 }
 
 @media (max-width: 375px) {
   .charts {
-    margin-left: calc(var(--base) * 0.92);
+    margin-left: calc(var(--base) * 0.64);
   }
 }
 </style>

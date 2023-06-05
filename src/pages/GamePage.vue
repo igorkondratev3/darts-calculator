@@ -39,11 +39,11 @@ const gameSetupModal = ref(null);
 const isGameOver = ref(false);
 const isStartedGame = ref(false);
 
-let showGameSetupInStart = true;
+//let showGameSetupInStart = true; - для showmodal при hot reload
 onMounted(() => {
-  //gameSetupModal.value.showModal()
-  if (showGameSetupInStart)
-    setTimeout(() => gameSetupModal.value.showModal(), 0);
+  gameSetupModal.value.showModal();
+  /*if (showGameSetupInStart)
+    setTimeout(() => gameSetupModal.value.showModal(), 0);*/
   /*settimeout чтобы корректно работало,
   но всё равно ошибка при внесении изменении в код текущей страницы
   при обычной работе приложения всё работает нормально
@@ -74,7 +74,7 @@ if (savedGame.savedGame) {
   setNumber.value = savedGame.savedGame.setNumber;
   legNumberInSets.value = savedGame.savedGame.legNumberInSets;
   savedGame.resetGame();
-  showGameSetupInStart = false;
+  //showGameSetupInStart = false; - для showmodal при hot reload
   isStartedGame.value = true;
   setTimeout(
     () =>

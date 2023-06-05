@@ -1,16 +1,24 @@
-# darts_calculator
+# Дартс-калькулятор
 
-This template should help get you started developing with Vue 3 in Vite.
+    Приложение "дартс калькулятор" предназначено для подсчета очков при игре
+    в дартс и ведения статистика матча. Зарегистрированные пользователи
+    дополнительно имеют возможность сохранения статистики матчей и ее
+    просмотра в личном профиле
 
-## Recommended IDE Setup
+## Развернутое приложение
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+[darts-calculator](https://igorkondratev3.github.io/darts-calculator/)
 
-## Customize configuration
+## Внешний вид приложения
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+#### 1
+![image1] (https://drive.google.com/file/d/1KP_e0jTkFkXbg7PQRdvw2LSIMvgs_8BZ/view?usp=sharing)
 
-## Project Setup
+#### 2
+![image2] (https://drive.google.com/file/d/1hoQ-PTFowoAS4F7nziVnga2EnjpQ4Wqi/view?usp=sharing)
+
+
+### Project Setup
 
 ```sh
 npm install
@@ -22,14 +30,3 @@ npm install
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```

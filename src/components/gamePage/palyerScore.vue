@@ -35,7 +35,7 @@ defineProps({
   &__sets-won,
   &__legs-won {
     font-size: calc(var(--base) * 0.32);
-    width: calc(var(--base) * 0.92);
+    width: calc(var(--base) * 1.08);
   }
 
   &__align_end {
