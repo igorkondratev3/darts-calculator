@@ -12,10 +12,10 @@
 ## Внешний вид приложения
 
 #### 1
-![image1] (https://drive.google.com/file/d/1KP_e0jTkFkXbg7PQRdvw2LSIMvgs_8BZ/view?usp=sharing)
+<img align="center" src="https://drive.google.com/file/d/1KP_e0jTkFkXbg7PQRdvw2LSIMvgs_8BZ/view?usp=sharing" height="200" />
 
 #### 2
-![image2] (https://drive.google.com/file/d/1hoQ-PTFowoAS4F7nziVnga2EnjpQ4Wqi/view?usp=sharing)
+<img align="center" src="https://drive.google.com/file/d/1hoQ-PTFowoAS4F7nziVnga2EnjpQ4Wqi/view?usp=sharing" height="200" />
 
 
 ### Project Setup
