@@ -1,1 +1,0 @@
-import{o as t,i as e,j as o,e as s,a,R as _}from"./index-a42a8121.js";const i="/darts-calculator/assets/yes_login-c17a1bb8.svg";const l={__name:"homeButton",setup(n){return(r,c)=>(t(),e(a(_),{class:"base-button home-button home-button_right",to:"/"},{default:o(()=>[s("на главную")]),_:1}))}};export{i as _,l as a};

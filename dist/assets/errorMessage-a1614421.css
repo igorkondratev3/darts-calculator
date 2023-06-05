@@ -1,1 +1,0 @@
-.error{position:absolute;bottom:0;width:100%;min-height:calc(var(--base) * .74);transform:translateY(calc(100% + var(--base) * .04));display:flex;justify-content:center;align-items:center;text-align:center;padding:calc(var(--base) * .08);border-radius:calc(var(--base) * .08);background-color:#eb5e5e}
