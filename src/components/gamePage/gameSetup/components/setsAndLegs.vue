@@ -90,7 +90,7 @@ const checkAreSetsInGame = (setInput) => {
     text-align: center;
     background-color: rgb(221, 231, 231);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
 

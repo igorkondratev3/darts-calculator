@@ -85,7 +85,7 @@ onUnmounted(() => {
     cursor: default;
     background-color: rgb(221, 231, 231);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
   }
@@ -111,7 +111,7 @@ onUnmounted(() => {
     background-color: rgb(221, 231, 231);
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       background-color: rgb(146, 188, 214);
     }
   }

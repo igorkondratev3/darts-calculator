@@ -6,8 +6,9 @@ import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
 import LeavePageModal from '@/components/gamePage/leavePageModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';
-import LoadingDialog from '../components/gamePage/loadingDialog.vue';
-import HomeButton from '../components/homeButton.vue';
+import LoadingDialog from '@/components/gamePage/loadingDialog.vue';
+import HomeButton from '@/components/homeButton.vue';
+import StarterFlag from '@/components/gamePage/starterFlag.vue';
 import {
   defineFocusForNewLeg,
   defineFocusForNextPlayer,
@@ -38,6 +39,7 @@ const gameOverModal = ref(null);
 const gameSetupModal = ref(null);
 const isGameOver = ref(false);
 const isStartedGame = ref(false);
+const whoStarted = ref('P1');
 
 //let showGameSetupInStart = true; - для showmodal при hot reload
 onMounted(() => {
@@ -95,7 +97,11 @@ const startGame = (parameters) => {
   playerTwo = new Player(gameParameters.nameP2);
   isStartedGame.value = true;
   gameSetupModal.value.close();
-  defineFocusForNewLeg(legNumber.value, setNumber.value, document.forms[0]);
+  whoStarted.value = defineFocusForNewLeg(
+    legNumber.value,
+    setNumber.value,
+    document.forms[0]
+  );
 };
 
 const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
@@ -216,7 +222,11 @@ const legCompleted = async (player) => {
   }
 
   legNumber.value++;
-  defineFocusForNewLeg(legNumber.value, setNumber.value, document.forms[0]);
+  whoStarted.value = defineFocusForNewLeg(
+    legNumber.value,
+    setNumber.value,
+    document.forms[0]
+  );
 };
 
 const startNewGame = () => {
@@ -280,17 +290,18 @@ onBeforeRouteLeave((to) => {
     игры всё было адекватно, может лучше менять сам объект с параметрами игры - подумать
     -->
   </dialog>
-  <main class="page game-page game">
+  <div class="page game-page game">
     <button class="game__new-game-button" @click="startNewGame">
       Новый матч
     </button>
     <HomeButton />
-    <div class="game__players-information players-information">
+    <header class="game__players-information players-information">
       <div
         class="players-information__name players-information__name_position-left"
       >
         {{ usersStore.users.P1?.name || playerOne?.name }}
       </div>
+      <StarterFlag :isSeen="whoStarted === 'P1'" />
       <PalyerScore
         v-if="Boolean(playerOne)"
         :areSetsInGame="gameParameters?.areSetsInGame"
@@ -313,13 +324,14 @@ onBeforeRouteLeave((to) => {
         :legsWonInSet="playerTwo?.legsWonInSet.value"
         player="P2"
       />
+      <StarterFlag :isSeen="whoStarted === 'P2'" />
       <div
         class="players-information__name players-information__name_position-right"
       >
         {{ usersStore.users.P2?.name || playerTwo?.name }}
       </div>
-    </div>
-    <div class="game__points-information points-information">
+    </header>
+    <main class="game__points-information points-information">
       <PlayerStatistic
         v-if="Boolean(playerOne)"
         player="P1"
@@ -389,8 +401,8 @@ onBeforeRouteLeave((to) => {
         :areSetsInGame="gameParameters?.areSetsInGame"
         :isPercentDoubleInStat="gameParameters?.isPercentDoubleInStatP2"
       />
-    </div>
-  </main>
+    </main>
+  </div>
   <dialog class="dialog" ref="numberDartsModal" @cancel.prevent="">
     <NumberDartsModal
       :message="messageNumberDartsModal"
@@ -469,6 +481,8 @@ onBeforeRouteLeave((to) => {
 }
 
 .game {
+  padding-bottom: calc(var(--base) * 0.32);
+
   &__new-game-button {
     position: absolute;
     left: calc(var(--base) * 0.04);
@@ -481,7 +495,7 @@ onBeforeRouteLeave((to) => {
     font-size: calc(var(--base) * 0.16);
     transition: background-color 0.5s linear, color 0.5s linear;
 
-    &:focus,
+    &:focus-visible,
     &:hover {
       background-color: black;
       color: white;
@@ -489,9 +503,13 @@ onBeforeRouteLeave((to) => {
   }
 
   &__players-information {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     display: flex;
     justify-content: center;
     margin-bottom: calc(var(--base) * 0.32);
+    background-color: rgb(232, 238, 233);
   }
 
   &__points-information {

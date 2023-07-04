@@ -183,7 +183,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 
 .player-statistic-wrapper {
   position: sticky;
-  top: calc(var(--base) * 0.08);
+  top: calc(var(--base) * 0.08 + var(--base) * 0.96);
+  //96 - высота хедера
   margin-top: calc(var(--base) * 0.08);
 }
 
@@ -226,7 +227,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
     border: calc(var(--base) * 0.01) solid transparent;
     border-radius: calc(var(--base) * 0.04);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
 

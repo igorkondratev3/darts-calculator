@@ -209,7 +209,7 @@ const handleInputEnter = (event) => {
     border-radius: calc(var(--base) * 0.04);
     @include fonts.Advent($size: calc(var(--base) * 0.16), $weight: 700);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
   }
@@ -222,7 +222,7 @@ const handleInputEnter = (event) => {
     cursor: pointer;
     border-radius: calc(var(--base) * 0.04);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
   }
@@ -274,7 +274,7 @@ const handleInputEnter = (event) => {
     @include fonts.Advent($size: calc(var(--base) * 0.16));
     font-style: italic;
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
 

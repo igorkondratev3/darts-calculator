@@ -2,11 +2,21 @@ import { useSavedGame } from '@/stores/savedGame.js';
 
 export const defineFocusForNewLeg = (legNumber, setNumber, points) => {
   if (setNumber % 2) {
-    if (legNumber % 2) setTimeout(() => points[points.length - 2].focus(), 0);
-    else setTimeout(() => points[points.length - 1].focus(), 0);
+    if (legNumber % 2) {
+      setTimeout(() => points[points.length - 2].focus(), 0);
+      return 'P1';
+    } else {
+      setTimeout(() => points[points.length - 1].focus(), 0);
+      return 'P2';
+    }
   } else {
-    if (legNumber % 2) setTimeout(() => points[points.length - 1].focus(), 0);
-    else setTimeout(() => points[points.length - 2].focus(), 0);
+    if (legNumber % 2) {
+      setTimeout(() => points[points.length - 1].focus(), 0);
+      return 'P2';
+    } else {
+      setTimeout(() => points[points.length - 2].focus(), 0);
+      return 'P1';
+    }
   }
 };
 

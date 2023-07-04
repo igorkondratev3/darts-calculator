@@ -32,7 +32,7 @@ const focusOnButtonBox = () => {
   &__message {
     max-width: calc(var(--base) * 10);
     font-size: calc(var(--base) * 0.4);
-    padding: 16px;
+    padding: calc(var(--base) * 0.16);
     font-weight: 700;
     text-align: center;
     color: white;
@@ -67,7 +67,7 @@ const focusOnButtonBox = () => {
   }
 
   &__value:hover,
-  &__value:focus {
+  &__value:focus-visible {
     color: black;
     background-color: white;
   }

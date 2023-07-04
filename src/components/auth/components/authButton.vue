@@ -128,7 +128,7 @@ const chechAuthAsAnotherPlayer = () => {
     opacity: 40%;
   }
 
-  &:focus {
+  &:focus-visible {
     outline: calc(var(--base) * 0.01) solid black;
     outline-offset: calc(var(--base) * 0.02);
   }

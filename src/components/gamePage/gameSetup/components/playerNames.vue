@@ -60,7 +60,7 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
     @include fonts.Advent;
     background-color: rgb(221, 231, 231);
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
 

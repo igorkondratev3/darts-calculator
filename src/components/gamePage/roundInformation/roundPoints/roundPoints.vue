@@ -38,6 +38,10 @@ const setPoints = () => {
   if (roundPoints.value || roundPoints.value === 0)
     emit('setPoints', roundPoints.value);
 };
+
+const scrollDown = (event) => {
+  if (!event.currentTarget.value) event.currentTarget.scrollIntoView();
+};
 </script>
 
 <template>
@@ -50,6 +54,7 @@ const setPoints = () => {
     v-model="roundPoints"
     @input="checkNumber"
     @keyup.enter="setPoints"
+    @focus="scrollDown"
   />
 </template>
 

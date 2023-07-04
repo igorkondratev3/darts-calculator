@@ -87,7 +87,7 @@ const isCompleted = computed(() => [
     cursor: pointer;
     @include fonts.Advent;
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
       outline-offset: calc(var(--base) * 0.02);
     }

@@ -55,7 +55,7 @@ defineEmits(['update:whoStarts']);
       background-color: rgb(66, 63, 63);
     }
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.02) solid white;
     }
   }

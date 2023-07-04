@@ -128,7 +128,7 @@ const setstatisticInDB = async (player) => {
     transform: translateX(100%);
   }
 
-  &:focus {
+  &:focus-visible {
     outline: calc(var(--base) * 0.01) solid rgb(182, 195, 197);
     outline-offset: calc(var(--base) * 0.04);
   }

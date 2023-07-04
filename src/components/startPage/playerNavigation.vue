@@ -46,22 +46,17 @@ const logout = (player) => {
         name: 'UserProfile',
         query: { player: player }
       }"
-      tabindex="-1"
-      class="player-navigation__profile"
+      :tabindex="Boolean(usersStore.users[player]) ? player.at(-1) : '-1'"
+      class="player-navigation__profile base-button player-navigation__button"
+      :class="{ 'link-disabled': !usersStore.users[player] }"
     >
-      <button
-        class="base-button player-navigation__button"
-        :disabled="!usersStore.users[player]"
-        v-bind="$attrs"
-      >
-        Личный профиль
-      </button>
+      Личный профиль
     </RouterLink>
     <button
       v-if="!usersStore.users[player]"
       class="base-button player-navigation__button player-navigation__login"
       @click="login(player)"
-      v-bind="$attrs"
+      :tabindex="player.at(-1)"
     >
       Войти
     </button>
@@ -69,7 +64,7 @@ const logout = (player) => {
       v-else
       class="base-button player-navigation__button player-navigation__logout"
       @click="logout(player)"
-      v-bind="$attrs"
+      :tabindex="player.at(-1)"
     >
       Выйти
     </button>
@@ -112,6 +107,11 @@ const logout = (player) => {
     width: 100%;
     margin-top: calc(var(--base) * 0.16);
   }
+}
+
+.link-disabled {
+  pointer-events: none;
+  opacity: 25%;
 }
 
 @media (max-width: 755px) {

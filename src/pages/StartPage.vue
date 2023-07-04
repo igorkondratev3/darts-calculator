@@ -14,11 +14,11 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
         просмотра в личном профиле
       </div>
       <div class="start-page__players-wrapper">
-        <PlayerNavigation player="P1" tabindex="1" />
+        <PlayerNavigation player="P1" />
         <RouterLink class="base-button to-match" to="/game" tabindex="3">
           К матчу
         </RouterLink>
-        <PlayerNavigation player="P2" tabindex="2" />
+        <PlayerNavigation player="P2" />
       </div>
     </main>
   </div>

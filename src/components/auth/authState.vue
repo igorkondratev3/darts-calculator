@@ -57,7 +57,7 @@ const usersStore = useUsersStore();
   border-radius: 50%;
   background-color: v-bind(backgroundColor);
 
-  &:focus {
+  &:focus-visible {
     outline: calc(var(--base) * 0.01) solid v-bind(backgroundColor);
     outline-offset: calc(var(--base) * 0.02);
   }

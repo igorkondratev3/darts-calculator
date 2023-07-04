@@ -316,7 +316,7 @@ const closeStatisticsVisibilitySettings = () => {
     outline: none;
     cursor: pointer;
 
-    &:focus {
+    &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
   }

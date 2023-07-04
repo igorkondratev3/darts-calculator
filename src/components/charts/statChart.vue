@@ -254,7 +254,7 @@ const changeDateInterval = () => {
       border-bottom-color: black;
     }
 
-    &:focus {
+    &:focus-visible {
       font-weight: 700;
     }
   }

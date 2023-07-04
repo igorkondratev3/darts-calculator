@@ -48,7 +48,7 @@ const usersStore = useUsersStore();
     margin-left: calc(100% - calc(var(--base) * 0.12));
   }
 
-  &:focus {
+  &:focus-visible {
     outline: calc(var(--base) * 0.01) solid black;
   }
 

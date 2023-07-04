@@ -45,10 +45,11 @@ body {
   @include fonts.Advent;
   transition: background-color 0.5s linear, color 0.5s linear;
 
-  &:focus,
+  &:focus-visible,
   &:hover {
     color: white;
     background-color: black;
+    outline: none;
   }
 
   &:disabled {
@@ -77,11 +78,11 @@ input[type='checkbox'] {
     border: calc(var(--base) * 0.01) solid rgb(66, 63, 63);
   }
 
-  &:focus {
+  &:focus-visible {
     outline: calc(var(--base) * 0.02) solid rgb(66, 63, 63);
   }
 
-  &:checked:focus {
+  &:checked:focus-visible {
     outline: calc(var(--base) * 0.02) solid white;
   }
 }

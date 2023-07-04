@@ -90,7 +90,7 @@ const focusOnButtonBox = () => {
   }
 
   &__value:hover,
-  &__value:focus {
+  &__value:focus-visible {
     color: black;
     background-color: white;
   }
