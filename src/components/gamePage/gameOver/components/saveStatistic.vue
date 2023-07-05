@@ -133,6 +133,10 @@ const setstatisticInDB = async (player) => {
     outline-offset: calc(var(--base) * 0.04);
   }
 
+  &:active {
+    box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
+  }
+
   &:disabled {
     background-color: rgb(107, 107, 107);
   }

@@ -62,6 +62,10 @@ const usersStore = useUsersStore();
     outline-offset: calc(var(--base) * 0.02);
   }
 
+  &:active {
+    box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
+  }
+
   &_left {
     left: calc(var(--base) * -0.28);
   }

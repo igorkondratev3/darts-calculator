@@ -319,6 +319,10 @@ const closeStatisticsVisibilitySettings = () => {
     &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
+
+    &:active {
+      box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
+    }
   }
 
   &__icon {

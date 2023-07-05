@@ -231,6 +231,10 @@ const changeParameterSeen = (groupName, parameterName, value) => {
       outline: calc(var(--base) * 0.01) solid black;
     }
 
+    &:active {
+      box-shadow: calc(var(--base) * 0.05) 5px calc(var(--base) * 0.05) gray;
+    }
+
     &_P1 {
       align-self: flex-end;
       margin-right: calc(var(--base) * -0.12);

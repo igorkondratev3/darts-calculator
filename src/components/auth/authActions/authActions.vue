@@ -52,6 +52,10 @@ const usersStore = useUsersStore();
     outline: calc(var(--base) * 0.01) solid black;
   }
 
+  &:active {
+    box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
+  }
+
   &__icon {
     width: calc(var(--base) * 0.24);
     height: calc(var(--base) * 0.24);

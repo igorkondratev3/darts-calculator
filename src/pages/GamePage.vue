@@ -276,7 +276,7 @@ onBeforeRouteLeave((to) => {
     -->
   </dialog>
   <div class="page game-page game">
-    <button class="game__new-game-button" @click="startNewGame">
+    <button class="base-button game__new-game-button" @click="startNewGame">
       Новый матч
     </button>
     <HomeButton />
@@ -473,18 +473,7 @@ onBeforeRouteLeave((to) => {
     left: calc(var(--base) * 0.04);
     top: calc(var(--base) * 0.04);
     z-index: 2;
-    padding: calc(var(--base) * 0.08);
-    border: calc(var(--base) * 0.01) solid black;
-    border-radius: calc(var(--base) * 0.08);
-    @include fonts.Advent;
     font-size: calc(var(--base) * 0.16);
-    transition: background-color 0.5s linear, color 0.5s linear;
-
-    &:focus-visible,
-    &:hover {
-      background-color: black;
-      color: white;
-    }
   }
 
   &__players-information {

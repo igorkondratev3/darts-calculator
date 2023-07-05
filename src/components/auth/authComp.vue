@@ -212,6 +212,11 @@ const handleInputEnter = (event) => {
     &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
     }
+
+    &:active {
+      text-shadow: calc(var(--base) * 0.08) calc(var(--base) * 0.03)
+        calc(var(--base) * 0.05) gray;
+    }
   }
 
   &__close {
@@ -224,6 +229,10 @@ const handleInputEnter = (event) => {
 
     &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
+    }
+
+    &:active {
+      box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
     }
   }
 
@@ -276,6 +285,11 @@ const handleInputEnter = (event) => {
 
     &:focus-visible {
       outline: calc(var(--base) * 0.01) solid black;
+    }
+
+    &:active {
+      text-shadow: calc(var(--base) * 0.08) calc(var(--base) * 0.03)
+        calc(var(--base) * 0.05) black;
     }
 
     &:disabled {

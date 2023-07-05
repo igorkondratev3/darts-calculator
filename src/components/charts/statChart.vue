@@ -92,7 +92,10 @@ const changeDateInterval = () => {
 <template>
   <div class="chart-box">
     <h4 class="chart-box__head">{{ name }}</h4>
-    <div class="chart-wrapper" :data-max="maxValue.toFixed(2) || ''">
+    <div
+      class="chart-wrapper"
+      :data-max="(maxValue % 1 === 0 ? maxValue : maxValue.toFixed(2)) || ''"
+    >
       <!--чтобы можно было сделать псевдоэлемент, overflow скрывает-->
       <button
         class="chart__show-zero"
@@ -132,7 +135,10 @@ const changeDateInterval = () => {
         </svg>
       </div>
       <div class="chart-box__info" v-show="seenValue">
-        <p>{{ scoreParameterName }}: {{ scoreValue?.toFixed(2) }}</p>
+        <p>
+          {{ scoreParameterName }}:
+          {{ scoreValue % 1 === 0 ? scoreValue : scoreValue?.toFixed(2) }}
+        </p>
         <p>{{ countParameterName }}: {{ countValue }}</p>
         <p>дата: {{ dateValue }}</p>
       </div>
@@ -257,6 +263,10 @@ const changeDateInterval = () => {
     &:focus-visible {
       font-weight: 700;
     }
+
+    &:active {
+      box-shadow: 0px 5px 5px gray;
+    }
   }
 
   &__svg {
@@ -299,7 +309,7 @@ const changeDateInterval = () => {
   margin-top: calc(var(--base) * 0.04);
 
   &__value {
-    width: calc(var(--base) * 1.12);
+    width: calc(var(--base) * 1.2);
     height: calc(var(--base) * 0.24);
     font: inherit;
     font-size: calc(var(--base) * 0.18);

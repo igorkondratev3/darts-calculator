@@ -132,5 +132,10 @@ const chechAuthAsAnotherPlayer = () => {
     outline: calc(var(--base) * 0.01) solid black;
     outline-offset: calc(var(--base) * 0.02);
   }
+
+  &:active {
+    box-shadow: calc(var(--base) * 0.1) calc(var(--base) * 0.05)
+      calc(var(--base) * 0.05) gray;
+  }
 }
 </style>
