@@ -40,7 +40,8 @@ const setPoints = () => {
 };
 
 const scrollDown = (event) => {
-  if (!event.currentTarget.value) event.currentTarget.scrollIntoView();
+  if (!event.currentTarget.value)
+    event.currentTarget.scrollIntoView({ block: 'center' });
 };
 </script>
 

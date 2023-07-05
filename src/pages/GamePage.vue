@@ -43,7 +43,7 @@ const whoStarted = ref('P1');
 
 //let showGameSetupInStart = true; - для showmodal при hot reload
 onMounted(() => {
-  gameSetupModal.value.showModal();
+  if (!isStartedGame.value) gameSetupModal.value.showModal();
   /*if (showGameSetupInStart)
     setTimeout(() => gameSetupModal.value.showModal(), 0);*/
   /*settimeout чтобы корректно работало,
@@ -78,16 +78,7 @@ if (savedGame.savedGame) {
   savedGame.resetGame();
   //showGameSetupInStart = false; - для showmodal при hot reload
   isStartedGame.value = true;
-  setTimeout(
-    () =>
-      defineFocusForNextPlayer(
-        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
-          ? 'playerTwo'
-          : 'playerOne',
-        document.forms[0]
-      ),
-    0
-  );
+  setTimeout(() => defineFocusForNextPlayer(document.forms[0]), 0);
 }
 
 const startGame = (parameters) => {
@@ -109,7 +100,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
 
   if (roundNumber <= currentPlayer.legRemainders.value.length) {
     changeOldValues(currentPlayer, point, roundNumber, legNumber.value);
-    defineFocusForNextPlayer(player, document.forms[0]);
+    defineFocusForNextPlayer(document.forms[0]);
     return;
   }
 
@@ -133,7 +124,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   currentPlayer.setInPointsAndDartsLegs(point, 3, legNumber.value);
   if (currentPlayer.pointsAndDartsLegs.value[legNumber.value - 1][1] === 9)
     currentPlayer.setAveragePointsForFirstNineDarts();
-  defineFocusForNextPlayer(player, document.forms[0]);
+  defineFocusForNextPlayer(document.forms[0]);
 };
 
 const legCompleted = async (player) => {
@@ -260,13 +251,7 @@ onBeforeRouteLeave((to) => {
     if (leavePage) {
       canLeavePage = true;
       router.push(to.fullPath);
-    } else
-      defineFocusForNextPlayer(
-        playerOne.legPoints.value.length === playerTwo.legPoints.value.length
-          ? 'playerTwo'
-          : 'playerOne',
-        document.forms[0]
-      );
+    } else defineFocusForNextPlayer(document.forms[0]);
   };
 
   if (

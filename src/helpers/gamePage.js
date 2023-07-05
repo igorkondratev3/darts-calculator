@@ -20,11 +20,15 @@ export const defineFocusForNewLeg = (legNumber, setNumber, points) => {
   }
 };
 
-export const defineFocusForNextPlayer = (previousPlayer, points) => {
-  if (previousPlayer === 'playerOne')
-    setTimeout(() => points[points.length - 1].focus(), 0);
-  if (previousPlayer === 'playerTwo')
-    setTimeout(() => points[points.length - 2].focus(), 0);
+export const defineFocusForNextPlayer = (points) => {
+  setTimeout(() => {
+    for (let i = points.length - 1; i >= 0; i--) {
+      if (points[i].style.display !== 'none') {
+        points[i].focus();
+        return;
+      }
+    }
+  });
 };
 
 export const getNumberDarts = async (numberDarts) => {
@@ -56,7 +60,7 @@ export const saveGame = async (modal, gameInfo) => {
     modal.children[0].addEventListener('click', function hadler(event) {
       if (event.target.nodeName === 'BUTTON') {
         modal.children[0].removeEventListener('click', hadler);
-        if (event.target.textContent === ' Сохранить матч ') {
+        if (event.target.textContent.trim() === 'Сохранить матч') {
           useSavedGame().setGame(gameInfo);
           resolve(true);
         }
