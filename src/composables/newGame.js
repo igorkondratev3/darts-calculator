@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useNewGame = () => {
   const startRemainder = ref(0);
@@ -22,6 +22,16 @@ export const useNewGame = () => {
     averagePointsForFirstNineDartsLegs = ref([]);
     highestCheckoutSets = ref([]);
     setsWon = ref(0);
+    legStatForEndGame = {
+      dartsForDouble: 0,
+      p180: 0,
+      p171: 0,
+      p131: 0,
+      p96: 0,
+      reset() {
+        for (const key in this) this[key] = 0;
+      }
+    };
     constructor(name, player) {
       this.name = name;
       if (player) {
@@ -240,18 +250,22 @@ export const useNewGame = () => {
       if (points === 180) {
         this.p180Sets.value[setNumber.value - 1] ??= 0;
         this.p180Sets.value[setNumber.value - 1]++;
+        this.legStatForEndGame.p180++;
       }
       if (points >= 171 && points < 180) {
         this.p171Sets.value[setNumber.value - 1] ??= 0;
         this.p171Sets.value[setNumber.value - 1]++;
+        this.legStatForEndGame.p171++;
       }
       if (points >= 131 && points < 171) {
         this.p131Sets.value[setNumber.value - 1] ??= 0;
         this.p131Sets.value[setNumber.value - 1]++;
+        this.legStatForEndGame.p131++;
       }
       if (points >= 96 && points < 131) {
         this.p96Sets.value[setNumber.value - 1] ??= 0;
         this.p96Sets.value[setNumber.value - 1]++;
+        this.legStatForEndGame.p96++;
       }
     }
 
@@ -273,6 +287,74 @@ export const useNewGame = () => {
             3 *
             100
         ) / 100;
+    }
+
+    calcStatWithoutLastLeg(legNumber) {
+      return {
+        averagePoints: {
+          value:
+            Math.round(
+              (((this.pointsAndDartsLegs.value.reduce(
+                (acc, legStat) => acc + legStat[0],
+                0
+              ) -
+                this.pointsAndDartsLegs.value.at(-1)[0]) /
+                (this.pointsAndDartsLegs.value.reduce(
+                  (acc, legStat) => acc + legStat[1],
+                  0
+                ) -
+                  this.pointsAndDartsLegs.value.at(-1)[1])) *
+                3 || 0) * 100
+            ) / 100
+        },
+        percentDouble: {
+          value:
+            Math.round(
+              ((this.legsWonInGame.value /
+                (this.dartsForDoubleSets.value.reduce(
+                  (acc, doubleSet) => acc + doubleSet,
+                  0
+                ) -
+                  this.legStatForEndGame.dartsForDouble)) *
+                100 || 0) * 100
+            ) / 100
+        },
+        p180: {
+          value: this.gameStatistic.p180.value - this.legStatForEndGame.p180
+        },
+        p171: {
+          value: this.gameStatistic.p171.value - this.legStatForEndGame.p171
+        },
+        p131: {
+          value: this.gameStatistic.p131.value - this.legStatForEndGame.p131
+        },
+        p96: {
+          value: this.gameStatistic.p96.value - this.legStatForEndGame.p96
+        },
+        averageFirstNineDarts: {
+          value:
+            legNumber > this.averagePointsForFirstNineDartsLegs.value.length
+              ? this.gameStatistic.averageFirstNineDarts.value
+              : Math.round(
+                  ((this.averagePointsForFirstNineDartsLegs.value.reduce(
+                    (acc, points) => acc + points,
+                    0
+                  ) -
+                    this.averagePointsForFirstNineDartsLegs.value.at(-1)) /
+                    (this.averagePointsForFirstNineDartsLegs.value.length -
+                      1) || 0) * 100
+                ) / 100
+        },
+        averagePointsWinLegs: {
+          value: this.gameStatistic.averagePointsWinLegs.value
+        },
+        averagePointsLoseLegs: {
+          value: this.gameStatistic.averagePointsLoseLegs.value
+        },
+        highestCheckout: {
+          value: this.gameStatistic.highestCheckout.value
+        }
+      };
     }
   }
 

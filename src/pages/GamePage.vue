@@ -41,11 +41,11 @@ const isGameOver = ref(false);
 const isStartedGame = ref(false);
 const whoStarted = ref('P1');
 
-//let showGameSetupInStart = true; - для showmodal при hot reload
+let showGameSetupInStart = true; //- для showmodal при hot reload
 onMounted(() => {
-  if (!isStartedGame.value) gameSetupModal.value.showModal();
-  /*if (showGameSetupInStart)
-    setTimeout(() => gameSetupModal.value.showModal(), 0);*/
+  //if (!isStartedGame.value) gameSetupModal.value.showModal();
+  if (showGameSetupInStart)
+    setTimeout(() => gameSetupModal.value.showModal(), 0);
   /*settimeout чтобы корректно работало,
   но всё равно ошибка при внесении изменении в код текущей страницы
   при обычной работе приложения всё работает нормально
@@ -76,7 +76,7 @@ if (savedGame.savedGame) {
   setNumber.value = savedGame.savedGame.setNumber;
   legNumberInSets.value = savedGame.savedGame.legNumberInSets;
   savedGame.resetGame();
-  //showGameSetupInStart = false; - для showmodal при hot reload
+  showGameSetupInStart = false; // - для showmodal при hot reload
   isStartedGame.value = true;
   setTimeout(() => defineFocusForNextPlayer(document.forms[0]), 0);
 }
@@ -116,6 +116,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
     currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] ??= 0;
     currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] +=
       endNumberDarts;
+    currentPlayer.legStatForEndGame.dartsForDouble += endNumberDarts;
   }
 
   currentPlayer.checkAndSetHighPoints(point);
@@ -190,6 +191,7 @@ const legCompleted = async (player) => {
     currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] ??= 0;
     currentPlayer.dartsForDoubleSets.value[setNumber.value - 1] +=
       doubleNumberDarts;
+    currentPlayer.legStatForEndGame.dartsForDouble += doubleNumberDarts;
   }
   currentPlayer.checkAndSetHighestCheckout();
   currentPlayer.checkAndSetHighPoints(currentPlayer.legRemainders.value.at(-1));
@@ -211,7 +213,8 @@ const legCompleted = async (player) => {
     legNumber.value++; //для корректного расчет среднего значения в проигранных легах при завершении игры
     return;
   }
-
+  playerOne.legStatForEndGame.reset();
+  playerTwo.legStatForEndGame.reset();
   legNumber.value++;
   whoStarted.value = defineFocusForNewLeg(
     legNumber.value,
@@ -220,10 +223,20 @@ const legCompleted = async (player) => {
   );
 };
 
-/*const endGame = () => {
+let statisticP1WithoutLastLeg = {};
+let statisticP2WithoutLastLeg = {};
+const isEarlyEndGame = ref(false);
+const endGame = () => {
+  if (legNumber.value === 1) {
+    startNewGame();
+    return;
+  }
+  statisticP1WithoutLastLeg = playerOne.calcStatWithoutLastLeg(legNumber.value);
+  statisticP2WithoutLastLeg = playerTwo.calcStatWithoutLastLeg(legNumber.value);
+  isEarlyEndGame.value = true;
   isGameOver.value = true;
   gameOverModal.value.showModal();
-};*/
+};
 
 const startNewGame = () => {
   //сделать метод с обнулением в классе
@@ -237,6 +250,9 @@ const startNewGame = () => {
   gameSetupModal.value.showModal();
   playerOne = undefined;
   playerTwo = undefined;
+  statisticP1WithoutLastLeg = {};
+  statisticP2WithoutLastLeg = {};
+  isEarlyEndGame.value = false;
 };
 
 const router = useRouter();
@@ -281,11 +297,9 @@ onBeforeRouteLeave((to) => {
     -->
   </dialog>
   <div class="page game-page game">
-    <div class="game__buttons">
-      <button class="base-button game__button" @click="startNewGame">
-        Новый матч
-      </button>
-    </div>
+    <button class="base-button game__end-button" @click="endGame">
+      Заврешить
+    </button>
     <HomeButton />
     <header class="game__players-information players-information">
       <div
@@ -424,8 +438,12 @@ onBeforeRouteLeave((to) => {
       "
       :legsWonInGameP1="playerOne.legsWonInGame.value"
       :legsWonInGameP2="playerTwo.legsWonInGame.value"
-      :gameStatisticP1="playerOne.gameStatistic"
-      :gameStatisticP2="playerTwo.gameStatistic"
+      :gameStatisticP1="
+        isEarlyEndGame ? statisticP1WithoutLastLeg : playerOne.gameStatistic
+      "
+      :gameStatisticP2="
+        isEarlyEndGame ? statisticP2WithoutLastLeg : playerTwo.gameStatistic
+      "
       :isPercentDoubleInStatP1="gameParameters.isPercentDoubleInStatP1"
       :isPercentDoubleInStatP2="gameParameters.isPercentDoubleInStatP2"
       :legNumber="legNumber - 1"
@@ -475,18 +493,12 @@ onBeforeRouteLeave((to) => {
 .game {
   padding-bottom: calc(var(--base) * 0.32);
 
-  &__buttons {
+  &__end-button {
     position: absolute;
     left: calc(var(--base) * 0.04);
     top: calc(var(--base) * 0.04);
     z-index: 2;
-    display: flex;
-    gap: 4px;
-  }
-
-  &__button {
     font-size: calc(var(--base) * 0.16);
-    width: 101px;
   }
 
   &__players-information {
