@@ -170,8 +170,8 @@ const handleInputEnter = (event) => {
 .auth-and-error {
   display: flex;
   flex-direction: column;
-  width: calc(var(--base) * 3.52);
-  height: calc(var(--base) * 3.94);
+  width: var(--authWIdth);
+  height: var(--authHeight);
   margin-left: calc(var(--base) * 0.04);
   margin-right: calc(var(--base) * 0.04);
 }
@@ -179,8 +179,8 @@ const handleInputEnter = (event) => {
 .auth {
   display: flex;
   flex-direction: column;
-  width: calc(var(--base) * 3.52);
-  height: calc(var(--base) * 3.94);
+  width: var(--authWIdth);
+  height: var(--authHeight);
   padding: calc(var(--base) * 0.16);
   padding-top: 0px;
   border-radius: calc(var(--base) * 0.16);

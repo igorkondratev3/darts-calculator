@@ -88,8 +88,8 @@ const logout = (player) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(var(--base) * 3.52);
-  height: calc(var(--base) * 3.94);
+  width: var(--authWIdth);
+  height: var(--authHeight);
   padding: calc(var(--base) * 0.16);
   border-radius: calc(var(--base) * 0.16);
   background-color: rgb(182, 195, 197);

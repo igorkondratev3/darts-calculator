@@ -184,7 +184,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
 .player-statistic-wrapper {
   position: sticky;
   top: calc(var(--base) * 0.08 + var(--base) * 0.96);
-  //96 - высота хедера
+  //96 - высота хедера + 24 если значок переносится
   margin-top: calc(var(--base) * 0.08);
 }
 
@@ -313,6 +313,10 @@ const changeParameterSeen = (groupName, parameterName, value) => {
   .player-statistic__auth-state_top-right {
     top: calc(var(--base) * -0.32);
     right: calc(var(--base) * 0.34);
+  }
+  .player-statistic-wrapper {
+    top: calc(var(--base) * 0.08 + var(--base) * 0.96 + var(--base) * 0.24);
+    //96 - высота хедера + 24 если значок переносится
   }
 }
 

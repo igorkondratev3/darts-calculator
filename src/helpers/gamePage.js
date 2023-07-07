@@ -23,7 +23,7 @@ export const defineFocusForNewLeg = (legNumber, setNumber, points) => {
 export const defineFocusForNextPlayer = (points) => {
   setTimeout(() => {
     for (let i = points.length - 1; i >= 0; i--) {
-      if (points[i].style.display !== 'none') {
+      if (points[i].style.display !== 'none' && !points[i].value) {
         points[i].focus();
         return;
       }

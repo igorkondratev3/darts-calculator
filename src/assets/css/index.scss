@@ -6,6 +6,8 @@
 
 :root {
   --base: 100px;
+  --authWIdth: calc(var(--base) * 3.52);
+  --authHeight: calc(var(--base) * 3.94);
 }
 
 @media (min-width: 2100px) {

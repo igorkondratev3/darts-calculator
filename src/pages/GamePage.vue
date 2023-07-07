@@ -220,6 +220,11 @@ const legCompleted = async (player) => {
   );
 };
 
+/*const endGame = () => {
+  isGameOver.value = true;
+  gameOverModal.value.showModal();
+};*/
+
 const startNewGame = () => {
   //сделать метод с обнулением в классе
   legNumber.value = 1;
@@ -276,9 +281,11 @@ onBeforeRouteLeave((to) => {
     -->
   </dialog>
   <div class="page game-page game">
-    <button class="base-button game__new-game-button" @click="startNewGame">
-      Новый матч
-    </button>
+    <div class="game__buttons">
+      <button class="base-button game__button" @click="startNewGame">
+        Новый матч
+      </button>
+    </div>
     <HomeButton />
     <header class="game__players-information players-information">
       <div
@@ -468,12 +475,18 @@ onBeforeRouteLeave((to) => {
 .game {
   padding-bottom: calc(var(--base) * 0.32);
 
-  &__new-game-button {
+  &__buttons {
     position: absolute;
     left: calc(var(--base) * 0.04);
     top: calc(var(--base) * 0.04);
     z-index: 2;
+    display: flex;
+    gap: 4px;
+  }
+
+  &__button {
     font-size: calc(var(--base) * 0.16);
+    width: 101px;
   }
 
   &__players-information {
