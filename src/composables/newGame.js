@@ -22,16 +22,7 @@ export const useNewGame = () => {
     averagePointsForFirstNineDartsLegs = ref([]);
     highestCheckoutSets = ref([]);
     setsWon = ref(0);
-    legStatForEndGame = {
-      dartsForDouble: 0,
-      p180: 0,
-      p171: 0,
-      p131: 0,
-      p96: 0,
-      reset() {
-        for (const key in this) this[key] = 0;
-      }
-    };
+
     constructor(name, player) {
       this.name = name;
       if (player) {
@@ -48,6 +39,22 @@ export const useNewGame = () => {
         this.highestCheckoutSets.value = player.highestCheckoutSets;
         this.setsWon.value = player.setsWon;
       }
+
+      this.legStatForEndGame = {
+        dartsForDouble: 0,
+        p180: 0,
+        p171: 0,
+        p131: 0,
+        p96: 0
+      };
+      Object.defineProperty(this.legStatForEndGame, 'reset', {
+        value: function () {
+          for (const key in this) this[key] = 0;
+        },
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
     }
 
     legsWonInGame = computed(() =>
