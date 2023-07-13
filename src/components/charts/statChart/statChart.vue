@@ -1,45 +1,33 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, toRef } from 'vue';
+import DateInterval from '../dateInterval.vue';
 import {
   translateName,
   formattedDate,
-  isDateInInterval,
   calculateLineHeight,
   calculateX,
   calculateY,
   calculateLineWidth,
-  startDateValidate,
-  endDateValidate,
-  dateIntervalValidate,
   defineCountParameterName,
   defineScoreParameterName
-} from './helpers';
+} from '../helpers.js';
+import { useChartDataInRange } from './chartDataInRange.js';
+import { useVisibilityOfZerosInChart } from './visibilityOfZeroInChart.js';
 
 const props = defineProps({
   parameterName: String,
-  chartData: Array
+  chartData: Array,
+  zeroSeenGlobal: Boolean,
+  globalRangeDate: Object
 });
 
 const name = translateName(props.parameterName);
-const minDate = formattedDate(props.chartData[0].date);
-const maxDate = formattedDate(props.chartData.at(-1).date);
-const startDate = ref(minDate);
-const endDate = ref(maxDate);
-const correctStartDate = ref(minDate);
-const correctEndDate = ref(maxDate);
-const chartDataInInterval = computed(() =>
-  props.chartData.filter((val) =>
-    isDateInInterval(
-      formattedDate(val.date),
-      correctStartDate.value,
-      correctEndDate.value
-    )
-  )
+const { chartDataInInterval, chartDataInIntervalWithoutZero, updateDates } =
+  useChartDataInRange(props.chartData);
+const { hideZerosInChart, changeHideZeroInChart } = useVisibilityOfZerosInChart(
+  toRef(props, 'zeroSeenGlobal')
 );
-const hideZerosInChart = ref(true);
-const chartDataInIntervalWithoutZero = computed(() =>
-  chartDataInInterval.value.filter((val) => val.value > 0)
-);
+
 const chartWidth = computed(() =>
   chartDataInInterval.value.length * 7 + chartDataInInterval.value.length - 1 >
   260
@@ -53,9 +41,13 @@ const lineWidth = computed(() =>
   calculateLineWidth(chartWidth.value, chartDataInInterval.value.length)
 );
 const maxValue = computed(() =>
-  Math.max(
-    ...chartDataInInterval.value.map((parameterValue) => parameterValue.value)
-  )
+  chartDataInInterval.value.length > 0
+    ? Math.max(
+        ...chartDataInInterval.value.map(
+          (parameterValue) => parameterValue.value
+        )
+      )
+    : 0
 );
 
 const seenValue = ref(false);
@@ -75,18 +67,6 @@ const hideValues = () => {
   scoreValue.value = null;
   countValue.value = null;
 };
-
-const dateValidate = () => {
-  startDateValidate(startDate, minDate, maxDate);
-  endDateValidate(endDate, minDate, maxDate);
-  dateIntervalValidate(startDate, endDate, minDate, maxDate);
-};
-
-const changeDateInterval = () => {
-  dateValidate();
-  correctStartDate.value = startDate.value;
-  correctEndDate.value = endDate.value;
-};
 </script>
 
 <template>
@@ -100,7 +80,7 @@ const changeDateInterval = () => {
       <button
         class="chart__show-zero"
         :class="{ 'chart__show-zero_border': !hideZerosInChart }"
-        @click="hideZerosInChart = !hideZerosInChart"
+        @click="changeHideZeroInChart"
         title="Изменить видимость нулевых результатов"
       >
         0
@@ -143,32 +123,12 @@ const changeDateInterval = () => {
         <p>дата: {{ dateValue }}</p>
       </div>
     </div>
-    <div class="date-interval">
-      <label class="date-interval__from date-interval_margin-right">
-        <h6 class="date-interval__header">с</h6>
-        <input
-          class="date-interval__value"
-          type="date"
-          v-model="startDate"
-          :min="minDate"
-          :max="maxDate"
-          @blur="changeDateInterval"
-          @keypress.enter="$event.currentTarget.blur()"
-        />
-      </label>
-      <label class="date-interval__to">
-        <h6 class="date-interval__header">по</h6>
-        <input
-          class="date-interval__value"
-          type="date"
-          v-model="endDate"
-          :min="minDate"
-          :max="maxDate"
-          @blur="changeDateInterval"
-          @keypress.enter="$event.currentTarget.blur()"
-        />
-      </label>
-    </div>
+    <DateInterval
+      :minDate="formattedDate(props.chartData[0].date)"
+      :maxDate="formattedDate(props.chartData.at(-1).date)"
+      :globalRangeDate="props.globalRangeDate"
+      @updateDates="updateDates"
+    />
   </div>
 </template>
 
@@ -302,31 +262,5 @@ const changeDateInterval = () => {
   width: calc(var(--base) * 0.17);
   transform: rotate(-45deg);
   border-bottom: calc(var(--base) * 0.01) solid black;
-}
-
-.date-interval {
-  display: flex;
-  margin-top: calc(var(--base) * 0.04);
-
-  &__value {
-    width: calc(var(--base) * 1.2);
-    height: calc(var(--base) * 0.24);
-    font: inherit;
-    font-size: calc(var(--base) * 0.18);
-  }
-
-  &__header {
-    text-align: center;
-  }
-
-  &__from,
-  &__to {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &_margin-right {
-    margin-right: calc(var(--base) * 0.16);
-  }
 }
 </style>

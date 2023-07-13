@@ -1,93 +1,44 @@
 <script setup>
-import { ref } from 'vue';
-import StatChart from '@/components/charts/statChart.vue';
-import { useUsersStore } from '@/stores/users.js';
 import HomeButton from '@/components/homeButton.vue';
 import GameButton from '@/components/gameButton.vue';
+import UserProfile from '@/components/charts/userProfile.vue';
+import StatChart from '@/components/charts/statChart/statChart.vue';
+import ChartSetting from '@/components/charts/chartSetting.vue';
+import { useUsersStore } from '@/stores/users.js';
+import { useStatistic } from '@/composables/userProfile/statistic.js';
+
 const props = defineProps({
   player: String
 });
 
 const usersStore = useUsersStore();
-const statistic = ref(null);
-getStatistic(props.player);
 
-const messageError = ref('');
-async function getStatistic(player) {
-  const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic/get`;
-  const fetchParams = {
-    method: 'POST',
-    body: JSON.stringify({
-      refreshToken: usersStore.users[player]?.refreshToken || ''
-    }),
-    headers: {
-      authorization: `Bearer ${usersStore.users[player]?.token}`,
-      'Content-Type': 'application/json'
-    }
-  };
-  let response;
-  let json;
-
-  try {
-    response = await fetch(URI, fetchParams);
-    json = await response.json();
-  } catch (error) {
-    console.error(error);
-    messageError.value = 'Ошибка сервера получении статистики';
-    return;
-  }
-
-  if (json && Object.hasOwn(json, 'newTokens')) {
-    usersStore.updateTokens(
-      player,
-      json.newTokens.token,
-      json.newTokens.refreshToken
-    );
-    const user = JSON.parse(localStorage.getItem(`user${player}`));
-    user.token = json.newTokens.token;
-    user.refreshToken = json.newTokens.refreshToken;
-    localStorage.setItem(`user${player}`, JSON.stringify(user));
-  }
-
-  if (json && Object.hasOwn(json, 'error')) {
-    console.error(json.error);
-    messageError.value = json.error;
-    return;
-  }
-
-  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
-    messageError.value = 'Не удалось получить статистику';
-    return;
-  }
-
-  statistic.value = json.statistic;
-  if (!statistic.value[0]) messageError.value = 'Статистика отсутствует';
-}
+const { statistic, messageError, chartsSettings, getStatNamesWithValues } =
+  useStatistic(props.player, usersStore);
 </script>
 
 <template>
   <div class="page user-profile">
     <HomeButton />
     <GameButton />
-    <div class="user-profile__information user-information">
-      <div class="user-information__avatar avatar">
-        <img
-          class="avatar__img"
-          src="/src/assets/images/yes_login.svg"
-          alt="avatar"
-        />
-      </div>
-      <h3 class="user-information__name">
-        {{ usersStore.users[props.player].name }}
-      </h3>
-    </div>
-
+    <UserProfile :player="player" />
     <div v-if="statistic" class="charts">
+      <ChartSetting
+        v-model:zeroSeen="chartsSettings.zeroSeen.value"
+        :visibleCharts="chartsSettings.visible.value"
+        @update:visibleCharts="chartsSettings.updateVisibleCharts"
+        :chartNames="getStatNamesWithValues(statistic)"
+        :minDateCharts="chartsSettings.minDate"
+        :maxDateCharts="chartsSettings.maxDate"
+        @updateDates="chartsSettings.globalRangeDate.value.updateGlobalDates"
+      />
       <template v-for="(statisticParameter, key) in statistic" :key="key">
         <StatChart
-          v-if="statisticParameter[0]"
+          v-if="chartsSettings.visible.value.has(key) && statisticParameter[0]"
           :parameterName="key"
           :chartData="statisticParameter"
+          :zeroSeenGlobal="chartsSettings.zeroSeen.value"
+          :globalRangeDate="chartsSettings.globalRangeDate.value"
         />
       </template>
     </div>
@@ -265,35 +216,13 @@ async function getStatistic(player) {
 </template>
 
 <style lang="scss">
-@use '@/assets/css/mixins/fonts.scss';
-
-.user-information {
-  display: flex;
-  align-items: flex-start;
-  margin-top: calc(var(--base) * 0.32);
-
-  &__name {
-    font-size: calc(var(--base) * 0.48);
-  }
-}
-
-.avatar {
-  border: calc(var(--base) * 0.01) solid black;
-  border-radius: 50%;
-
-  &__img {
-    display: block;
-    width: calc(var(--base) * 2.56);
-    height: calc(var(--base) * 2.56);
-  }
-}
-
 .charts {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-self: center;
   margin-bottom: calc(var(--base) * 0.64);
+  margin-top: calc(var(--base) * 0.32);
 }
 
 .loading-message {
@@ -305,18 +234,6 @@ async function getStatistic(player) {
   border: calc(var(--base) * 0.01) solid black;
   border-radius: calc(var(--base) * 0.08);
   font-size: calc(var(--base) * 0.48);
-}
-
-@media (max-width: 800px) {
-  .user-information {
-    align-self: center;
-    flex-direction: column;
-    margin-top: calc(var(--base) * 0.92);
-
-    &__name {
-      align-self: center;
-    }
-  }
 }
 
 @media (max-width: 440px) {
