@@ -1,9 +1,9 @@
 <script setup>
 import HomeButton from '@/components/homeButton.vue';
 import GameButton from '@/components/gameButton.vue';
-import UserProfile from '@/components/charts/userProfile.vue';
-import StatChart from '@/components/charts/statChart/statChart.vue';
-import ChartSetting from '@/components/charts/chartSetting.vue';
+import UserProfile from '@/components/userProfilePage/userProfile.vue';
+import StatChart from '@/components/userProfilePage/statChart/statChart.vue';
+import ChartSetting from '@/components/userProfilePage/chartSettings/chartSettings.vue';
 import { useUsersStore } from '@/stores/users.js';
 import { useStatistic } from '@/composables/userProfile/statistic.js';
 
@@ -24,20 +24,20 @@ const { statistic, messageError, chartsSettings, getStatNamesWithValues } =
     <UserProfile :player="player" />
     <div v-if="statistic" class="charts">
       <ChartSetting
-        v-model:zeroSeen="chartsSettings.zeroSeen.value"
+        v-model:globalVisibilityOfZeroValues="chartsSettings.zeroSeen.value"
         :visibleCharts="chartsSettings.visible.value"
         @update:visibleCharts="chartsSettings.updateVisibleCharts"
         :chartNames="getStatNamesWithValues(statistic)"
-        :minDateCharts="chartsSettings.minDate"
-        :maxDateCharts="chartsSettings.maxDate"
+        :minChartDate="chartsSettings.minDate"
+        :maxChartDate="chartsSettings.maxDate"
         @updateDates="chartsSettings.globalRangeDate.value.updateGlobalDates"
       />
       <template v-for="(statisticParameter, key) in statistic" :key="key">
         <StatChart
           v-if="chartsSettings.visible.value.has(key) && statisticParameter[0]"
-          :parameterName="key"
+          :chartName="key"
           :chartData="statisticParameter"
-          :zeroSeenGlobal="chartsSettings.zeroSeen.value"
+          :globalVisibilityOfZeroValues="chartsSettings.zeroSeen.value"
           :globalRangeDate="chartsSettings.globalRangeDate.value"
         />
       </template>

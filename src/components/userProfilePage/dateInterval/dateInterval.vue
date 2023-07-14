@@ -1,10 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
-import {
-  startDateValidate,
-  endDateValidate,
-  dateIntervalValidate
-} from './helpers';
+import { useDateInterval } from './composables/dateInterval.js';
 
 const props = defineProps({
   minDate: String,
@@ -14,29 +9,12 @@ const props = defineProps({
 
 const emits = defineEmits(['updateDates']);
 
-const startDate = ref(props.minDate);
-const endDate = ref(props.maxDate);
-const correctStartDate = ref(props.minDate);
-const correctEndDate = ref(props.maxDate);
-
-const dateValidate = () => {
-  startDateValidate(startDate, props.minDate, props.maxDate);
-  endDateValidate(endDate, props.minDate, props.maxDate);
-  dateIntervalValidate(startDate, endDate, props.minDate, props.maxDate);
-};
-
-const changeDateInterval = () => {
-  dateValidate();
-  correctStartDate.value = startDate.value;
-  correctEndDate.value = endDate.value;
-  emits('updateDates', correctStartDate.value, correctEndDate.value);
-};
-
-watch(props.globalRangeDate, () => {
-  startDate.value = props.globalRangeDate.start;
-  endDate.value = props.globalRangeDate.end;
-  changeDateInterval();
-});
+const { startDate, endDate, changeDateInterval } = useDateInterval(
+  props.minDate,
+  props.maxDate,
+  props.globalRangeDate,
+  emits
+);
 </script>
 
 <template>

@@ -1,77 +1,42 @@
 <script setup>
-import { ref, computed, toRef } from 'vue';
-import DateInterval from '../dateInterval.vue';
-import {
-  translateName,
-  formattedDate,
-  calculateLineHeight,
-  calculateX,
-  calculateY,
-  calculateLineWidth,
-  defineCountParameterName,
-  defineScoreParameterName
-} from '../helpers.js';
-import { useChartDataInRange } from './chartDataInRange.js';
-import { useVisibilityOfZerosInChart } from './visibilityOfZeroInChart.js';
+import { toRef } from 'vue';
+import DateInterval from '../dateInterval/dateInterval.vue';
+import { useChartDataInRange } from './composables/chartDataInRange.js';
+import { useVisibilityOfZerosInChart } from './composables/visibilityOfZeroInChart.js';
+import { useChartSize } from './composables/chartSize.js';
+import { useChartParameterInfo } from './composables/chartParameterInfo.js';
+import { translateName, formattedDate } from '../helpers.js';
+import { calculateLineHeight, calculateX, calculateY } from './helpers.js';
 
 const props = defineProps({
-  parameterName: String,
+  chartName: String,
   chartData: Array,
-  zeroSeenGlobal: Boolean,
+  globalVisibilityOfZeroValues: Boolean,
   globalRangeDate: Object
 });
 
-const name = translateName(props.parameterName);
-const { chartDataInInterval, chartDataInIntervalWithoutZero, updateDates } =
-  useChartDataInRange(props.chartData);
-const { hideZerosInChart, changeHideZeroInChart } = useVisibilityOfZerosInChart(
-  toRef(props, 'zeroSeenGlobal')
-);
-
-const chartWidth = computed(() =>
-  chartDataInInterval.value.length * 7 + chartDataInInterval.value.length - 1 >
-  260
-    ? chartDataInInterval.value.length * 7 +
-      chartDataInInterval.value.length -
-      1
-    : 260
-);
-const chartHeight = 300;
-const lineWidth = computed(() =>
-  calculateLineWidth(chartWidth.value, chartDataInInterval.value.length)
-);
-const maxValue = computed(() =>
-  chartDataInInterval.value.length > 0
-    ? Math.max(
-        ...chartDataInInterval.value.map(
-          (parameterValue) => parameterValue.value
-        )
-      )
-    : 0
-);
-
-const seenValue = ref(false);
-const dateValue = ref('');
-const scoreValue = ref(0);
-const countValue = ref(0);
-const countParameterName = defineCountParameterName(name);
-const scoreParameterName = defineScoreParameterName(name);
-const showValue = (date, value, count) => {
-  dateValue.value = date;
-  scoreValue.value = value;
-  countValue.value = count;
-  seenValue.value = true;
-};
-const hideValues = () => {
-  dateValue.value = '';
-  scoreValue.value = null;
-  countValue.value = null;
-};
+const chartNameRU = translateName(props.chartName);
+const {
+  chartDataInInterval,
+  chartDataInIntervalWithoutZero,
+  maxValue,
+  updateDates
+} = useChartDataInRange(props.chartData);
+const { hideZerosInChart, changeHideZerosInChart } =
+  useVisibilityOfZerosInChart(toRef(props, 'globalVisibilityOfZeroValues'));
+const { chartWidth, chartHeight, lineWidth } =
+  useChartSize(chartDataInInterval);
+const {
+  parameterInfo,
+  parameterInfoVisivility,
+  showParameterInfo,
+  hideParameterInfo
+} = useChartParameterInfo(chartNameRU);
 </script>
 
 <template>
   <div class="chart-box">
-    <h4 class="chart-box__head">{{ name }}</h4>
+    <h4 class="chart-box__head">{{ chartNameRU }}</h4>
     <div
       class="chart-wrapper"
       :data-max="(maxValue % 1 === 0 ? maxValue : maxValue.toFixed(2)) || ''"
@@ -80,20 +45,20 @@ const hideValues = () => {
       <button
         class="chart__show-zero"
         :class="{ 'chart__show-zero_border': !hideZerosInChart }"
-        @click="changeHideZeroInChart"
+        @click="changeHideZerosInChart"
         title="Изменить видимость нулевых результатов"
       >
         0
         <span class="cross-line" v-show="hideZerosInChart"></span>
       </button>
-      <div class="chart" @pointerleave="seenValue = false">
+      <div class="chart" @pointerleave="hideParameterInfo">
         <svg class="chart__svg">
           <rect
             class="chart__line"
             v-for="(valueObj, index) of hideZerosInChart
               ? chartDataInIntervalWithoutZero
               : chartDataInInterval"
-            :key="index + props.parameterName + valueObj.date"
+            :key="index + props.chartName + valueObj.date"
             :height="
               String(
                 calculateLineHeight(chartHeight, maxValue, valueObj.value)
@@ -108,19 +73,26 @@ const hideValues = () => {
               ) + '%'
             "
             @pointerover="
-              showValue(valueObj.date, valueObj.value, valueObj.count)
+              showParameterInfo(valueObj.date, valueObj.value, valueObj.count)
             "
-            @pointerleave="hideValues"
+            @pointerleave="parameterInfo.resetInfo()"
           ></rect>
         </svg>
       </div>
-      <div class="chart-box__info" v-show="seenValue">
+      <div class="chart-box__info" v-show="parameterInfoVisivility">
         <p>
-          {{ scoreParameterName }}:
-          {{ scoreValue % 1 === 0 ? scoreValue : scoreValue?.toFixed(2) }}
+          {{ parameterInfo.scoreParameterName }}:
+          {{
+            parameterInfo.score.value % 1 === 0
+              ? parameterInfo.score.value
+              : parameterInfo.score.value?.toFixed(2)
+          }}
         </p>
-        <p>{{ countParameterName }}: {{ countValue }}</p>
-        <p>дата: {{ dateValue }}</p>
+        <p>
+          {{ parameterInfo.countParameterName }}:
+          {{ parameterInfo.count.value }}
+        </p>
+        <p>дата: {{ parameterInfo.date.value }}</p>
       </div>
     </div>
     <DateInterval
