@@ -1,29 +1,14 @@
 <script setup>
-import { ref, onActivated } from 'vue';
+import { ref } from 'vue';
+import { usePassword } from './composables.js';
 
 const emits = defineEmits(['updateParameter']);
 
 const passwordInput = ref(null);
-onActivated(() => {
-  passwordInput.value.focus();
-});
-
-const password = ref('');
-const regexPassword =
-  /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
-const isCorrectPassword = ref(false);
-const passwordValidation = () => {
-  isCorrectPassword.value = false;
-  if (regexPassword.test(password.value)) isCorrectPassword.value = true;
-};
-const updatePassword = () => {
-  passwordValidation();
-  emits(
-    'updateParameter',
-    'password',
-    isCorrectPassword.value ? password.value : ''
-  );
-};
+const { password, isCorrectPassword, updatePassword } = usePassword(
+  passwordInput,
+  emits
+);
 </script>
 
 <template>

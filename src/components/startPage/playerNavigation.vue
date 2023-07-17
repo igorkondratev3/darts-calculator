@@ -1,11 +1,11 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
 import { RouterLink } from 'vue-router';
-import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
+import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
 import { deleteRefreshTokenFromDB } from '@/helpers/fetch.js';
 import { useUsersStore } from '@/stores/users';
 const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/auth/authComp.vue'),
+  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
   loadingComponent: LoadingAuth,
   delay: 0
 });

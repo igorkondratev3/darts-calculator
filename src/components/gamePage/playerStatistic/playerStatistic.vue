@@ -2,12 +2,12 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
-import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
-import AuthState from '@/components/auth/authState.vue';
-import AuthActions from '@/components/auth/authActions/authActions.vue';
+import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
+import AuthState from '@/components/common/auth/authState.vue';
+import AuthActions from '@/components/common/auth/authActions/authActions.vue';
 
 const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/auth/authComp.vue'),
+  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
   loadingComponent: LoadingAuth,
   delay: 0
 });

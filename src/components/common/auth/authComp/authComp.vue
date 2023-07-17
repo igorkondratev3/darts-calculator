@@ -1,26 +1,14 @@
 <script setup>
-import EmailInput from './components/inputs/emailInput.vue';
+import { ref, defineAsyncComponent } from 'vue';
 import LoadingInput from './components/inputs/loadingInput.vue';
-import AuthButton from './components/authButton.vue';
-import ParameterNavigation from './components/parameterNavigation.vue';
-import { ref, computed, defineAsyncComponent } from 'vue';
-const NameInput = defineAsyncComponent({
-  loader: () => import('./components/inputs/nameInput.vue'),
-  loadingComponent: LoadingInput,
-  delay: 0
-});
-const RepeatPasswordInput = defineAsyncComponent({
-  loader: () => import('./components/inputs/repeatPasswordInput.vue'),
-  loadingComponent: LoadingInput,
-  delay: 0
-});
+import AuthButton from './components/authButton/authButton.vue';
+import ParameterNavigation from './components/navigation/parameterNavigation.vue';
+import { useError } from './composables/error.js';
+import { useCurrentParameter } from './composables/currentParameter.js';
+import { useClue } from './composables/clue.js';
+import { useAuthInformation } from './composables/authInformation.js';
 const ErrorMessage = defineAsyncComponent({
   loader: () => import('@/components/errorMessage.vue'),
-  loadingComponent: LoadingInput,
-  delay: 0
-});
-const PasswordInput = defineAsyncComponent({
-  loader: () => import('./components/inputs/passwordInput.vue'),
   loadingComponent: LoadingInput,
   delay: 0
 });
@@ -30,86 +18,25 @@ const props = defineProps({
 });
 defineEmits(['closeAuthComp']);
 
-const errorMessage = ref('');
-const changeErrorMessage = (message) => (errorMessage.value = message);
-const parameterNumber = ref(1);
-const changeParameterNumber = (newValue) => (parameterNumber.value = newValue);
-const header = ref('Вход');
-const changeHeader = () => {
-  if (header.value === 'Вход') header.value = 'Регистрация';
-  else header.value = 'Вход';
-  parameterNumber.value = 1;
-  errorMessage.value = '';
-};
-const authInformation = {
-  name: ref(''),
-  email: ref(''),
-  password: ref(''),
-  repeatPassword: ref(''),
-  updateParameter(parameterName, newValue) {
-    this[parameterName].value = newValue;
-  }
-};
-const updateParameter = (parameterName, newValue) => {
-  authInformation.updateParameter(parameterName, newValue);
-  if (authInformation[parameterName].value) clueSeen.value = false;
-};
-
-const currentParameter = computed(() => {
-  if (header.value === 'Вход') {
-    if (parameterNumber.value === 1) return EmailInput;
-    if (parameterNumber.value === 2) return PasswordInput;
-  }
-  if (header.value === 'Регистрация') {
-    if (parameterNumber.value === 1) return NameInput;
-    if (parameterNumber.value === 2) return EmailInput;
-    if (parameterNumber.value === 3) return PasswordInput;
-    if (parameterNumber.value === 4) return RepeatPasswordInput;
-  }
-  return EmailInput;
-});
-
-const clueSeen = ref(false);
-const showClue = (event) => {
-  clueSeen.value = true;
-  event.currentTarget.previousSibling.focus();
-};
-const clueMessage = computed(() => {
-  if (header.value === 'Вход') {
-    if (parameterNumber.value === 1)
-      return 'Email должен соответствовать следующему шаблону: example@example.com';
-    if (parameterNumber.value === 2)
-      return 'Пароль должен состоять из не менее чем 8 символов, содержащих латинские буквы в верхнем и нижнем регистре, цифры и спецсимволы';
-  }
-  if (header.value === 'Регистрация') {
-    if (parameterNumber.value === 1) return 'Поле должно быть заполнено';
-    if (parameterNumber.value === 2)
-      return 'Email должен соответствовать следующему шаблону: example@example.com';
-    if (parameterNumber.value === 3)
-      return 'Пароль должен состоять из не менее чем 8 символов, содержащих латинские буквы в верхнем и нижнем регистре, цифры и спецсимволы';
-    if (parameterNumber.value === 4)
-      return 'Значение должно соответстовать значению, введенному в поле "Пароль"';
-  }
-  return 'Поле должно быть заполнено';
-});
-
 const auth = ref(null);
-const handleInputEnter = (event) => {
-  if (!authInformation[event.currentTarget.dataset.type].value) {
-    clueSeen.value = true;
-    return;
-  }
-  if (header.value === 'Вход') {
-    if (parameterNumber.value === 1) parameterNumber.value++;
-    if (parameterNumber.value === 2)
-      auth.value.children[auth.value.children.length - 1].focus();
-  }
-  if (header.value === 'Регистрация') {
-    if (parameterNumber.value < 4) parameterNumber.value++;
-    if (parameterNumber.value === 4)
-      auth.value.children[auth.value.children.length - 1].focus();
-  }
-};
+
+const {
+  header,
+  parameterNumber,
+  currentParameter,
+  changeHeader,
+  changeParameterNumber,
+  checkParameter
+} = useCurrentParameter(LoadingInput);
+
+const { clueSeen, clueMessage, showClue, closeClue } = useClue(
+  header,
+  parameterNumber
+);
+
+const { errorMessage, changeErrorMessage } = useError(header);
+
+const { authInformation, updateParameter } = useAuthInformation(closeClue);
 </script>
 
 <template>
@@ -134,7 +61,9 @@ const handleInputEnter = (event) => {
       <KeepAlive>
         <component
           :is="currentParameter"
-          @keydown.enter.prevent="handleInputEnter"
+          @keydown.enter.prevent="
+            checkParameter($event, auth, authInformation, showClue)
+          "
           @updateParameter="updateParameter"
           @blur="clueSeen = false"
           :password="authInformation.password.value"

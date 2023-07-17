@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onActivated } from 'vue';
+import { ref, toRef } from 'vue';
+import { useRepeatPassword } from './composables.js';
 
 const props = defineProps({
   password: String
@@ -7,25 +8,8 @@ const props = defineProps({
 const emits = defineEmits(['updateParameter']);
 
 const repeatPasswordInput = ref(null);
-onActivated(() => {
-  repeatPasswordInput.value.focus();
-});
-
-const repeatPassword = ref('');
-const isCorrectRepeatPassword = ref(false);
-const repeatPasswordValidation = () => {
-  isCorrectRepeatPassword.value = false;
-  if (repeatPassword.value && repeatPassword.value === props.password)
-    isCorrectRepeatPassword.value = true;
-};
-const updateRepeatPassword = () => {
-  repeatPasswordValidation();
-  emits(
-    'updateParameter',
-    'repeatPassword',
-    isCorrectRepeatPassword.value ? repeatPassword.value : ''
-  );
-};
+const { repeatPassword, isCorrectRepeatPassword, updateRepeatPassword } =
+  useRepeatPassword(repeatPasswordInput, toRef(props, 'password'), emits);
 </script>
 
 <template>

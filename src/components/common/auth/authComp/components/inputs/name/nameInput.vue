@@ -1,14 +1,12 @@
 <script setup>
-import { ref, onActivated } from 'vue';
+import { ref } from 'vue';
+import { useName } from './composables.js';
 
 defineEmits(['updateParameter']);
 
 const nameInput = ref(null);
-onActivated(() => {
-  nameInput.value.focus();
-});
 
-const name = ref('');
+const name = useName(nameInput);
 </script>
 
 <template>

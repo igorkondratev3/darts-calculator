@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue';
+import { toRef } from 'vue';
+import { useNavigation } from './composables.js';
 
 const props = defineProps({
   parameterNumber: Number,
@@ -7,17 +8,10 @@ const props = defineProps({
   authInformation: Object
 });
 defineEmits(['changeParameterNumber']);
-
-const lineWidth = computed(() => (props.authType === 'Вход' ? 120 : 40));
-const numberOfButtons = computed(() => (props.authType === 'Вход' ? 2 : 4));
-const isCompleted = computed(() => [
-  (props.authType === 'Вход' && props.authInformation.email.value) ||
-    (props.authType === 'Регистрация' && props.authInformation.name.value),
-  (props.authType === 'Вход' && props.authInformation.password.value) ||
-    (props.authType === 'Регистрация' && props.authInformation.email.value),
-  props.authInformation.password.value,
-  props.authInformation.repeatPassword.value
-]);
+const { lineWidth, numberOfButtons, isCompleted } = useNavigation(
+  toRef(props, 'authType'),
+  props.authInformation
+);
 </script>
 
 <template>

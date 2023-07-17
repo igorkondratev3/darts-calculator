@@ -3,9 +3,9 @@ import { ref, defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters.js';
 import { useUsersStore } from '@/stores/users.js';
 import { swapPlayersInLS } from '@/helpers/swapPlayersInLS.js';
-import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
-import AuthState from '@/components/auth/authState.vue';
-import AuthActions from '@/components/auth/authActions/authActions.vue';
+import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
+import AuthState from '@/components/common/auth/authState.vue';
+import AuthActions from '@/components/common/auth/authActions/authActions.vue';
 import SetsAndLegs from './components/setsAndLegs.vue';
 import PlayerNames from './components/playerNames.vue';
 import WhoStarts from './components/whoStarts.vue';
@@ -36,7 +36,7 @@ const startGame = (gameParameters) => {
 const seenAuthCompP1 = ref(false);
 const seenAuthCompP2 = ref(false);
 const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/auth/authComp.vue'),
+  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
   loadingComponent: LoadingAuth,
   delay: 0
 });

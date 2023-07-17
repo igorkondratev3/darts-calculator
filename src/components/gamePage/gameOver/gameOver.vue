@@ -1,8 +1,8 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
-import LoadingAuth from '@/components/auth/components/loadingAuth.vue';
-import AuthActions from '@/components/auth/authActions/authActions.vue';
-import AuthState from '@/components/auth/authState.vue';
+import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
+import AuthActions from '@/components/common/auth/authActions/authActions.vue';
+import AuthState from '@/components/common/auth/authState.vue';
 import SaveStatistic from './components/saveStatistic.vue';
 import GameAverage from './components/gameAverage.vue';
 import GamePoints from './components/gamePoints.vue';
@@ -26,7 +26,7 @@ const props = defineProps({
 const seenAuthCompP1 = ref(false);
 const seenAuthCompP2 = ref(false);
 const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/auth/authComp.vue'),
+  loader: () => import('@/components/common/common/auth/authComp/authComp.vue'),
   loadingComponent: LoadingAuth,
   delay: 0
 });
