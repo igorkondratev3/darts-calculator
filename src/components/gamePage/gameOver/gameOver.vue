@@ -1,14 +1,23 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
 import AuthActions from '@/components/common/auth/authActions/authActions.vue';
 import AuthState from '@/components/common/auth/authState.vue';
-import SaveStatistic from './components/saveStatistic.vue';
+import SaveStatistic from './components/saveStatistic/saveStatistic.vue';
 import GameAverage from './components/gameAverage.vue';
 import GamePoints from './components/gamePoints.vue';
 import GameCheckout from './components/gameCheckout.vue';
+import { usePopUp } from './composables/popUp';
+import { useSeenAuthComps } from './composables/seenAuthComps.js';
+const AuthComp = defineAsyncComponent({
+  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
+  loadingComponent: LoadingAuth,
+  delay: 0
+});
+const PopUp = defineAsyncComponent({
+  loader: () => import('@/components/popUp.vue')
+});
 
-defineEmits(['startNewGame']);
 const props = defineProps({
   nameP1: String,
   nameP2: String,
@@ -22,47 +31,27 @@ const props = defineProps({
   isPercentDoubleInStatP2: Boolean,
   legNumber: Number
 });
+defineEmits(['startNewGame']);
 
-const seenAuthCompP1 = ref(false);
-const seenAuthCompP2 = ref(false);
-const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/common/common/auth/authComp/authComp.vue'),
-  loadingComponent: LoadingAuth,
-  delay: 0
-});
-
-const popUpSeen = {
-  P1: ref(false),
-  P2: ref(false)
-};
-const popUpMessage = {
-  P1: ref(''),
-  P2: ref('')
-};
-const PopUp = defineAsyncComponent({
-  loader: () => import('@/components/popUp.vue')
-});
-const showPopUp = (message, player) => {
-  popUpMessage[player].value = message;
-  popUpSeen[player].value = true;
-};
+const { popUpMessage, showPopUp, closePopUp } = usePopUp();
+const seenAuthComps = useSeenAuthComps();
 </script>
 
 <template>
   <div class="dialog-content-wrapper game-over">
     <AuthComp
-      v-if="seenAuthCompP1"
-      @closeAuthComp="seenAuthCompP1 = false"
+      v-if="seenAuthComps.P1.value"
+      @closeAuthComp="seenAuthComps.close('P1')"
       player="P1"
     />
     <AuthComp
-      v-if="seenAuthCompP2"
-      @closeAuthComp="seenAuthCompP2 = false"
+      v-if="seenAuthComps.P2.value"
+      @closeAuthComp="seenAuthComps.close('P2')"
       player="P2"
     />
     <div
       class="game-over__content-wrapper"
-      v-show="!seenAuthCompP1 && !seenAuthCompP2"
+      v-show="!seenAuthComps.P1.value && !seenAuthComps.P2.value"
     >
       <h2 class="game-over__header">Матч окончен</h2>
       <div class="game-over__statistic-wrapper">
@@ -95,8 +84,8 @@ const showPopUp = (message, player) => {
         />
         <div class="game-over__statistic game-statistic">
           <div class="auth-actions-wrapper">
-            <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
-            <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
+            <AuthActions player="P1" @openAuthComp="seenAuthComps.show('P1')" />
+            <AuthActions player="P2" @openAuthComp="seenAuthComps.show('P2')" />
           </div>
           <div class="game-statistic__player-names game-statistic-player-names">
             <div
@@ -140,20 +129,20 @@ const showPopUp = (message, player) => {
       </button>
     </div>
     <PopUp
-      :popUpSeen="popUpSeen.P1.value"
+      :popUpSeen="Boolean(popUpMessage.P1.value)"
       :popUpMessage="popUpMessage.P1.value"
       :popUpDuration="4000"
       where="left"
       howFar="0px"
-      @closePopUp="popUpSeen.P1.value = false"
+      @closePopUp="closePopUp('P1')"
     />
     <PopUp
-      :popUpSeen="popUpSeen.P2.value"
+      :popUpSeen="Boolean(popUpMessage.P2.value)"
       :popUpMessage="popUpMessage.P2.value"
       :popUpDuration="4000"
       where="right"
       howFar="0px"
-      @closePopUp="popUpSeen.P2.value = false"
+      @closePopUp="closePopUp('P2')"
     />
   </div>
 </template>

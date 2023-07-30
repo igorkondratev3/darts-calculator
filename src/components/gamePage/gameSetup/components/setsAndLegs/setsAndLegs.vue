@@ -1,39 +1,12 @@
 <script setup>
-const props = defineProps({
+import { changeValuesToWin, changeAreSetsInGame } from './helpers.js';
+
+defineProps({
   setsToWin: Number,
   areSetsInGame: Boolean,
   legsToWin: Number
 });
-const emits = defineEmits([
-  'update:setsToWin',
-  'update:areSetsInGame',
-  'update:legsToWin'
-]);
-
-const checkValuesToWin = (parameterName, event) => {
-  let newValue = Number(event.currentTarget.value);
-  if (event.data < '0' || event.data > '9') newValue = 1;
-  emits(`update:${parameterName}`, newValue);
-};
-
-const checkParameterForEmpty = (parameterName, altParameterValue) => {
-  if (!props[parameterName])
-    emits(`update:${parameterName}`, altParameterValue);
-};
-
-const changeAreSetsInGame = (event) => {
-  if (event.type === 'change')
-    emits('update:areSetsInGame', event.currentTarget.checked);
-  else emits('update:areSetsInGame', !event.currentTarget.checked);
-  checkAreSetsInGame(event.currentTarget.previousElementSibling);
-};
-
-const checkAreSetsInGame = (setInput) => {
-  //так как emit отработает после выполнения функции значения поменяны на обратные
-  //можно передавать в функцию сразу актуальный параметр - подумать
-  if (props.areSetsInGame) emits('update:setsToWin', 1);
-  if (!props.areSetsInGame) setTimeout(() => setInput.focus(), 0);
-};
+defineEmits(['update:setsToWin', 'update:areSetsInGame', 'update:legsToWin']);
 </script>
 
 <template>
@@ -48,16 +21,16 @@ const checkAreSetsInGame = (setInput) => {
         type="number"
         min="1"
         :value="setsToWin"
-        @input="checkValuesToWin('setsToWin', $event)"
-        @blur="checkParameterForEmpty('setsToWin', 1)"
+        @input="changeValuesToWin('setsToWin', $event, $emit)"
+        @blur="!setsToWin ? $emit('update:setsToWin', 1) : undefined"
         :disabled="!areSetsInGame"
       />
       <input
         class="sets-legs__is-disabled"
         type="checkbox"
         :checked="areSetsInGame"
-        @change="changeAreSetsInGame"
-        @keyup.enter="changeAreSetsInGame"
+        @change="changeAreSetsInGame($event, areSetsInGame, $emit)"
+        @keyup.enter="changeAreSetsInGame($event, areSetsInGame, $emit)"
       />
     </label>
     <label class="sets-legs__parameter">
@@ -67,8 +40,8 @@ const checkAreSetsInGame = (setInput) => {
         type="number"
         min="1"
         :value="legsToWin"
-        @input="checkValuesToWin('legsToWin', $event)"
-        @blur="checkParameterForEmpty('legsToWin', 1)"
+        @input="changeValuesToWin('legsToWin', $event, $emit)"
+        @blur="!legsToWin ? $emit('update:legsToWin', 1) : undefined"
       />
     </label>
   </div>

@@ -1,18 +1,13 @@
 <script setup>
 import { useUsersStore } from '@/stores/users.js';
 
-const props = defineProps({
+defineProps({
   nameP1: String,
   nameP2: String
 });
-const emits = defineEmits(['update:nameP1', 'update:nameP2']);
+defineEmits(['update:nameP1', 'update:nameP2']);
 
 const usersStore = useUsersStore();
-
-const checkParameterForEmpty = (parameterName, altParameterValue) => {
-  if (!props[parameterName])
-    emits(`update:${parameterName}`, altParameterValue);
-};
 </script>
 
 <template>
@@ -26,7 +21,7 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
       @input="$emit('update:nameP1', $event.currentTarget.value)"
       maxlength="15"
       required
-      @blur="checkParameterForEmpty('nameP1', 'Игрок 1')"
+      @blur="!nameP1 ? $emit('update:nameP1', 'Игрок 1') : undefined"
     />
     <input
       class="player-names__name"
@@ -36,7 +31,7 @@ const checkParameterForEmpty = (parameterName, altParameterValue) => {
       @input="$emit('update:nameP2', $event.currentTarget.value)"
       maxlength="15"
       required
-      @blur="checkParameterForEmpty('nameP2', 'Игрок 2')"
+      @blur="!nameP2 ? $emit('update:nameP2', 'Игрок 2') : undefined"
     />
   </div>
 </template>

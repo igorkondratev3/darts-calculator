@@ -46,3 +46,21 @@ export class GameParameters {
     return result;
   }
 }
+
+export const startGame = (
+  gameParameters,
+  usersStore,
+  swapPlayersInLS,
+  emits
+) => {
+  const gameParametersForNewGame = gameParameters.normalize();
+  if (gameParametersForNewGame.whoStarts === 'nameP2') {
+    usersStore.swap();
+    swapPlayersInLS();
+  }
+  localStorage.setItem(
+    'gameParameters',
+    JSON.stringify(gameParametersForNewGame)
+  );
+  emits('startGame', gameParametersForNewGame);
+};

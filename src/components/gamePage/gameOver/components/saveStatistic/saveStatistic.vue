@@ -1,86 +1,19 @@
 <script setup>
 import { useUsersStore } from '@/stores/users.js';
-import { ref } from 'vue';
+import { useSetStatisticInDB } from './composables.js';
 
-const props = defineProps({
+defineProps({
   player: String,
   gameStatistic: Object,
   isPercentDoubleInStat: Boolean,
   legNumber: Number,
   legsWonInGame: Number
 });
-const emits = defineEmits(['showPopUp']);
-
-const isStatisticSave = ref(false);
-
-const showDone = ref(false);
+defineEmits(['showPopUp']);
 
 const usersStore = useUsersStore();
 
-const setstatisticInDB = async (player) => {
-  isStatisticSave.value = true;
-  const gameStatistic = {};
-  for (const key in props.gameStatistic)
-    gameStatistic[key] = props.gameStatistic[key].value;
-
-  if (!props.isPercentDoubleInStat) {
-    delete gameStatistic.percentDouble;
-  }
-
-  const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic/set`;
-  const fetchParams = {
-    method: 'POST',
-    body: JSON.stringify({
-      refreshToken: usersStore.users[player]?.refreshToken || '',
-      statistic: gameStatistic,
-      legs: props.legNumber,
-      legsWon: props.legsWonInGame,
-      legsLose: props.legNumber - props.legsWonInGame,
-      timeZone: new Date().getTimezoneOffset() / 60
-    }),
-    headers: {
-      authorization: `Bearer ${usersStore.users[player]?.token}`,
-      'Content-Type': 'application/json'
-    }
-  };
-  let response;
-  let json;
-  try {
-    response = await fetch(URI, fetchParams);
-    json = await response.json();
-  } catch (error) {
-    console.error(error);
-    emits('showPopUp', 'Ошибка доступа к серверу');
-    isStatisticSave.value = false;
-    return;
-  }
-
-  if (json && Object.hasOwn(json, 'newTokens')) {
-    usersStore.updateTokens(
-      player,
-      json.newTokens.token,
-      json.newTokens.refreshToken
-    );
-    const user = JSON.parse(localStorage.getItem(`user${player}`));
-    user.token = json.newTokens.token;
-    user.refreshToken = json.newTokens.refreshToken;
-    localStorage.setItem(`user${player}`, JSON.stringify(user));
-  }
-
-  if (json && Object.hasOwn(json, 'error')) {
-    console.error(json.error);
-    emits('showPopUp', json.error);
-    isStatisticSave.value = false;
-    return;
-  }
-
-  if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
-    isStatisticSave.value = false;
-    emits('showPopUp', 'Не удалось сохранить статистику');
-    return;
-  }
-  showDone.value = true;
-};
+const { isStatisticSave, showDone, setStatisticInDB } = useSetStatisticInDB();
 </script>
 
 <template>
@@ -90,7 +23,17 @@ const setstatisticInDB = async (player) => {
       'game-statistic__save_left': player === 'P1',
       'game-statistic__save_right': player === 'P2'
     }"
-    @click="setstatisticInDB(player)"
+    @click="
+      setStatisticInDB(
+        player,
+        gameStatistic,
+        isPercentDoubleInStat,
+        legNumber,
+        legsWonInGame,
+        usersStore,
+        $emit
+      )
+    "
     title="сохранить статистику матча"
     v-if="usersStore.users[player] && !showDone"
     :disabled="isStatisticSave"

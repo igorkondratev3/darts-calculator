@@ -1,36 +1,27 @@
 <script setup>
-import { onUnmounted, ref } from 'vue';
+import { toRef } from 'vue';
+import { useSeenSelectRemainders } from './composables.js';
 
-defineProps({
+const props = defineProps({
   startRemainder: Number
 });
-const emits = defineEmits(['updateStartRemainder']);
+defineEmits(['updateStartRemainder']);
 
-const seenSelectRemainders = ref(false);
-
-const setStartRemainder = (remainder) => {
-  emits('updateStartRemainder', remainder);
-  closeSelectRemainders();
-};
-
-const closeSelectRemainders = () => (seenSelectRemainders.value = false);
-
-document.addEventListener('click', closeSelectRemainders);
-onUnmounted(() => {
-  document.removeEventListener('click', closeSelectRemainders);
-});
-//не нравится прослушиватель события на документе, подумать, если оставлю, то проверить
-//корректное уничтожени события если буду менять v-if на компонент настройки игры
+const { seenSelectRemainders, showSelectRemainders, closeSelectRemainders } =
+  useSeenSelectRemainders(toRef(props, 'startRemainder'));
 </script>
 
 <template>
   <h3 class="game-setup__parameter-header">Формат матча</h3>
-  <div class="game-setup__start-remainder start-remainder">
+  <div
+    class="game-setup__start-remainder start-remainder"
+    @keyup.esc="closeSelectRemainders"
+  >
     <div
       class="start-remainder__header"
       tabindex="0"
-      @click.stop="seenSelectRemainders = true"
-      @keyup.enter="seenSelectRemainders = true"
+      @click.stop="showSelectRemainders"
+      @keyup.enter="showSelectRemainders"
       autofocus
     >
       {{ startRemainder }}
@@ -48,16 +39,32 @@ onUnmounted(() => {
       <div
         class="start-remainder__value"
         tabindex="0"
-        @click="setStartRemainder(501)"
-        @keyup.enter="setStartRemainder(501)"
+        @click="
+          !(startRemainder === 501)
+            ? $emit('updateStartRemainder', 501)
+            : closeSelectRemainders()
+        "
+        @keyup.enter="
+          !(startRemainder === 501)
+            ? $emit('updateStartRemainder', 501)
+            : closeSelectRemainders()
+        "
       >
         501
       </div>
       <div
         class="start-remainder__value"
         tabindex="0"
-        @click="setStartRemainder(1001)"
-        @keyup.enter="setStartRemainder(1001)"
+        @click="
+          !(startRemainder === 1001)
+            ? $emit('updateStartRemainder', 1001)
+            : closeSelectRemainders()
+        "
+        @keyup.enter="
+          !(startRemainder === 1001)
+            ? $emit('updateStartRemainder', 1001)
+            : closeSelectRemainders()
+        "
         @keydown.tab="closeSelectRemainders"
       >
         1001

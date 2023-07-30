@@ -1,18 +1,25 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { GameParameters } from './gamePararmeters.js';
 import { useUsersStore } from '@/stores/users.js';
 import { swapPlayersInLS } from '@/helpers/swapPlayersInLS.js';
+import { startGame } from './gamePararmeters.js';
+import { useElementVisibility } from '@/composables/elementVisibility.js';
 import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
 import AuthState from '@/components/common/auth/authState.vue';
 import AuthActions from '@/components/common/auth/authActions/authActions.vue';
-import SetsAndLegs from './components/setsAndLegs.vue';
+import SetsAndLegs from './components/setsAndLegs/setsAndLegs.vue';
 import PlayerNames from './components/playerNames.vue';
 import WhoStarts from './components/whoStarts.vue';
 import IsPercentDoubleInStat from './components/isPercentDouble.vue';
-import StartRemainder from './components/startRemainder.vue';
+import StartRemainder from './components/startRemainder/startRemainder.vue';
+const AuthComp = defineAsyncComponent({
+  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
+  loadingComponent: LoadingAuth,
+  delay: 0
+});
 
-const emit = defineEmits(['startGame']);
+const emits = defineEmits(['startGame']);
 
 const usersStore = useUsersStore();
 
@@ -20,43 +27,37 @@ const gameParameters = new GameParameters(
   JSON.parse(localStorage.getItem('gameParameters'))
 );
 
-const startGame = (gameParameters) => {
-  const gameParametersForNewGame = gameParameters.normalize();
-  if (gameParametersForNewGame.whoStarts === 'nameP2') {
-    usersStore.swap();
-    swapPlayersInLS();
-  }
-  localStorage.setItem(
-    'gameParameters',
-    JSON.stringify(gameParametersForNewGame)
-  );
-  emit('startGame', gameParametersForNewGame);
-};
+const {
+  visibility: authCompP1Visibility,
+  showElement: showAuthCompP1,
+  hideElement: hideAuthCompP1
+} = useElementVisibility();
 
-const seenAuthCompP1 = ref(false);
-const seenAuthCompP2 = ref(false);
-const AuthComp = defineAsyncComponent({
-  loader: () => import('@/components/common/auth/authComp/authComp.vue'),
-  loadingComponent: LoadingAuth,
-  delay: 0
-});
+const {
+  visibility: authCompP2Visibility,
+  showElement: showAuthCompP2,
+  hideElement: hideAuthCompP2
+} = useElementVisibility();
 </script>
 
 <template>
   <div class="dialog-content-wrapper">
     <AuthComp
       class="game-setup__auth-comp_margin-top"
-      v-if="seenAuthCompP1"
-      @closeAuthComp="seenAuthCompP1 = false"
+      v-if="authCompP1Visibility"
+      @closeAuthComp="hideAuthCompP1"
       player="P1"
     />
     <AuthComp
       class="game-setup__auth-comp_margin-top"
-      v-if="seenAuthCompP2"
-      @closeAuthComp="seenAuthCompP2 = false"
+      v-if="authCompP2Visibility"
+      @closeAuthComp="hideAuthCompP2"
       player="P2"
     />
-    <div class="game-setup-wrapper" v-show="!seenAuthCompP1 && !seenAuthCompP2">
+    <div
+      class="game-setup-wrapper"
+      v-show="!authCompP1Visibility && !authCompP2Visibility"
+    >
       <!--обертка нужна так как блок имеет overflow и элементы с fixed и прочим скрываются-->
       <AuthState
         class="game-setup__auth-state_top-left"
@@ -70,8 +71,8 @@ const AuthComp = defineAsyncComponent({
       />
       <div class="game-setup">
         <div class="auth-actions-wrapper">
-          <AuthActions player="P1" @openAuthComp="seenAuthCompP1 = true" />
-          <AuthActions player="P2" @openAuthComp="seenAuthCompP2 = true" />
+          <AuthActions player="P1" @openAuthComp="showAuthCompP1" />
+          <AuthActions player="P2" @openAuthComp="showAuthCompP2" />
         </div>
         <h2 class="game-setup__header">Настройка параметров матча</h2>
         <StartRemainder
@@ -100,7 +101,9 @@ const AuthComp = defineAsyncComponent({
         />
         <button
           class="base-button game-setup__start-game-button"
-          @click.prevent="startGame(gameParameters)"
+          @click.prevent="
+            startGame(gameParameters, usersStore, swapPlayersInLS, emits)
+          "
         >
           Начать матч
         </button>
