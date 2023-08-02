@@ -1,5 +1,11 @@
 <script setup>
 import ParameterVisibilitySetting from './parameterVisibilitySetting.vue';
+import {
+  changeParameterVisibility,
+  updateParameterVisibility,
+  closeStatisticsVisibilitySettings
+} from './parameterVisibility.js';
+
 
 const props = defineProps({
   player: String,
@@ -18,52 +24,24 @@ const emits = defineEmits([
   'update:parameterVisibility'
 ]);
 
-const changeParameterVisibility = (event) => {
-  if (event.target.type === 'checkbox')
-    emits(
-      'update:parameterVisibility',
-      event.target.dataset.groupName,
-      event.target.dataset.parameterName,
-      !event.target.checked
-    );
-};
-
-const updateParameterVisibility = (elem) => {
-  if (elem.groupName === 'leg') {
-    emits('update:seenAveragePointsLeg', elem.checked);
-    return;
-  }
-  emits(
-    'update:parameterVisibility',
-    elem.dataset.groupName,
-    elem.dataset.parameterName,
-    elem.checked
-  );
-};
-
-const closeStatisticsVisibilitySettings = () => {
-  localStorage.setItem(
-    `seenParametersGame${props.player}`,
-    JSON.stringify(props.seenParametersGame.unRef())
-  );
-  localStorage.setItem(
-    `seenParametersSet${props.player}`,
-    JSON.stringify(props.seenParametersSet.unRef())
-  );
-  localStorage.setItem(
-    `seenAveragePointsLeg${props.player}`,
-    JSON.stringify(props.seenAveragePointsLeg)
-  );
-  emits('closeStatisticsVisibilitySettings');
-};
+const updateParameterVisibilityWrapper = (elem) =>
+  updateParameterVisibility(elem, emits);
 </script>
 
 <template>
   <div
     class="statistic__player-statistic statistic__visibility"
     v-show="seenStatisticsVisisbilitySetting"
-    @keyup.enter="changeParameterVisibility"
-    @keyup.esc="closeStatisticsVisibilitySettings"
+    @keyup.enter="changeParameterVisibility($event, $emit)"
+    @keyup.esc="
+      closeStatisticsVisibilitySettings(
+        player,
+        seenParametersGame.unRef(),
+        seenParametersSet.unRef(),
+        seenAveragePointsLeg,
+        $emit
+      )
+    "
   >
     <div
       class="control-seen-elements"
@@ -101,7 +79,13 @@ const closeStatisticsVisibilitySettings = () => {
         'statistic__setup-visibility_P1': props.player === 'P1',
         'statistic__setup-visibility_P2': props.player === 'P2'
       }"
-      @click="closeStatisticsVisibilitySettings"
+      @click="closeStatisticsVisibilitySettings(
+        player,
+        seenParametersGame.unRef(),
+        seenParametersSet.unRef(),
+        seenAveragePointsLeg,
+        $emit
+      )"
       title="Закрыть настройку видимости параметров"
     >
       <img
@@ -119,7 +103,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="матч"
           :parameterVisibility="props.seenParametersGame.averagePoints.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="averagePoints"
           :areSetsInGame="props.areSetsInGame"
@@ -128,7 +112,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="сет"
           :parameterVisibility="props.seenParametersSet.averagePoints.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="averagePoints"
           v-if="props.areSetsInGame"
@@ -137,7 +121,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="лег"
           :parameterVisibility="seenAveragePointsLeg"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="leg"
           data-parameter-name="averagePoints"
           :seenParametersHeader="true"
@@ -150,7 +134,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersGame.averageFirstNineDarts.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="averageFirstNineDarts"
           :seenParametersHeader="props.areSetsInGame"
@@ -160,7 +144,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersSet.averageFirstNineDarts.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="averageFirstNineDarts"
           v-if="props.areSetsInGame"
@@ -174,7 +158,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersGame.averagePointsWinLegs.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="averagePointsWinLegs"
           :seenParametersHeader="props.areSetsInGame"
@@ -184,7 +168,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersSet.averagePointsWinLegs.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="averagePointsWinLegs"
           v-if="props.areSetsInGame"
@@ -198,7 +182,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersGame.averagePointsLoseLegs.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="averagePointsLoseLegs"
           :seenParametersHeader="props.areSetsInGame"
@@ -208,7 +192,7 @@ const closeStatisticsVisibilitySettings = () => {
           :parameterVisibility="
             props.seenParametersSet.averagePointsLoseLegs.value
           "
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="averagePointsLoseLegs"
           v-if="props.areSetsInGame"
@@ -227,7 +211,7 @@ const closeStatisticsVisibilitySettings = () => {
           :key="key + 'game'"
           :parameterGroup="key.slice(1)"
           :parameterVisibility="point.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           :data-parameter-name="key"
           :seenParametersHeader="true"
@@ -240,7 +224,7 @@ const closeStatisticsVisibilitySettings = () => {
           :key="key + 'set'"
           :parameterGroup="key.slice(1)"
           :parameterVisibility="point.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           :data-parameter-name="key"
           :seenParametersHeader="props.areSetsInGame"
@@ -254,7 +238,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="матч"
           :parameterVisibility="props.seenParametersGame.percentDouble.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="percentDouble"
           :seenParametersHeader="props.areSetsInGame"
@@ -262,7 +246,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="сет"
           :parameterVisibility="props.seenParametersSet.percentDouble.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="percentDouble"
           v-if="props.areSetsInGame"
@@ -274,7 +258,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="матч"
           :parameterVisibility="props.seenParametersGame.highestCheckout.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="game"
           data-parameter-name="highestCheckout"
           :seenParametersHeader="props.areSetsInGame"
@@ -282,7 +266,7 @@ const closeStatisticsVisibilitySettings = () => {
         <ParameterVisibilitySetting
           parameterGroup="сет"
           :parameterVisibility="props.seenParametersSet.highestCheckout.value"
-          @update:parameterVisibility="updateParameterVisibility"
+          @update:parameterVisibility="updateParameterVisibilityWrapper"
           data-group-name="set"
           data-parameter-name="highestCheckout"
           v-if="props.areSetsInGame"

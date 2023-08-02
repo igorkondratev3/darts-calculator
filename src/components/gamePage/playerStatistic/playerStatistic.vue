@@ -1,6 +1,7 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { SeenParameters, SeenGroups } from './seenClases.js';
+import { useElementVisibility } from '@/composables/elementVisibility.js';
 import StatisticsVisibilitySettings from './components/statisticsVisibilitySettings.vue';
 import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
 import AuthState from '@/components/common/auth/authState.vue';
@@ -30,19 +31,36 @@ const props = defineProps({
   isPercentDoubleInStat: Boolean
 });
 
-const seenAuthComp = ref(false);
-const seenStatisticsVisisbilitySetting = ref(false);
-const seenAveragePointsLeg = ref(
+const {
+  visibility: authCompVisibility,
+  showElement: showAuthComp,
+  hideElement: hideAuthComp
+} = useElementVisibility();
+
+const {
+  visibility: seenStatisticsVisisbilitySetting,
+  showElement: showStatisticsVisisbilitySetting,
+  hideElement: hideStatisticsVisisbilitySetting
+} = useElementVisibility();
+
+const {
+  visibility: seenAveragePointsLeg,
+  showElement: showAveragePointsLeg,
+  hideElement: hideAveragePointsLeg
+} = useElementVisibility(
   Boolean(
     JSON.parse(localStorage.getItem(`seenAveragePointsLeg${props.player}`)) ??
       true
   )
-);
+);  
+
+
 const seenParametersGame = new SeenParameters(
   true,
   props.isPercentDoubleInStat,
   JSON.parse(localStorage.getItem(`seenParametersGame${props.player}`))
 );
+
 const seenParametersSet = props.areSetsInGame
   ? new SeenParameters(
       true,
@@ -61,16 +79,17 @@ const seenGroups = new SeenGroups(
   seenAveragePointsLeg
 );
 
+//то что ниже подумать и вынести - подумать об использовании композеблов внутри друугих композеблов
 const selectAll = () => {
   seenParametersGame.selectAll();
   if (props.areSetsInGame) seenParametersSet.selectAll();
-  seenAveragePointsLeg.value = true;
+  showAveragePointsLeg()
 };
 
 const removeSelection = () => {
   seenParametersGame.removeSelection();
   if (props.areSetsInGame) seenParametersSet.removeSelection();
-  seenAveragePointsLeg.value = false;
+  hideAveragePointsLeg()
 };
 
 const changeParameterSeen = (groupName, parameterName, value) => {
@@ -93,12 +112,12 @@ const changeParameterSeen = (groupName, parameterName, value) => {
       />
       <div
         class="statistic__player-statistic"
-        v-show="!seenStatisticsVisisbilitySetting && !seenAuthComp"
+        v-show="!seenStatisticsVisisbilitySetting && !authCompVisibility"
       >
         <AuthActions
           :player="player"
           :isSingle="true"
-          @openAuthComp="seenAuthComp = true"
+          @openAuthComp="showAuthComp"
         />
         <button
           class="statistic__setup-visibility"
@@ -106,7 +125,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
             'statistic__setup-visibility_P1': props.player === 'P1',
             'statistic__setup-visibility_P2': props.player === 'P2'
           }"
-          @click="seenStatisticsVisisbilitySetting = true"
+          @click="showStatisticsVisisbilitySetting"
           title="Настроить видимость параметров"
         >
           <img
@@ -150,9 +169,7 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         :seenStatisticsVisisbilitySetting="seenStatisticsVisisbilitySetting"
         :areSetsInGame="props.areSetsInGame"
         :isPercentDoubleInStat="props.isPercentDoubleInStat"
-        @closeStatisticsVisibilitySettings="
-          seenStatisticsVisisbilitySetting = false
-        "
+        @closeStatisticsVisibilitySettings="hideStatisticsVisisbilitySetting"
         @selectAll="selectAll"
         @removeSelection="removeSelection"
         :seenParametersGame="seenParametersGame"
@@ -161,8 +178,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
         v-model:seenAveragePointsLeg="seenAveragePointsLeg"
       />
       <AuthComp
-        v-if="seenAuthComp"
-        @closeAuthComp="seenAuthComp = false"
+        v-if="authCompVisibility"
+        @closeAuthComp="hideAuthComp"
         :player="props.player"
       />
     </div>
