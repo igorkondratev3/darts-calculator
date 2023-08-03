@@ -1,6 +1,9 @@
 <script setup>
-import { computed } from 'vue';
+import { toRef } from 'vue';
 import RoundPoints from './roundPoints/roundPoints.vue';
+import { useRoundPointsVisibility } from './composables.js';
+import { calculateRemainder } from './helpers.js';
+
 const props = defineProps({
   remainderBeforeGetPointsP1: Number,
   remainderBeforeGetPointsP2: Number,
@@ -13,55 +16,22 @@ const props = defineProps({
   setNumber: Number
 });
 
-const emit = defineEmits(['setPointsAndRemainder', 'legCompleted']);
+defineEmits(['setPointsAndRemainder', 'legCompleted']);
 
-const calculateRemainder = (roundPoints, player) => {
-  const shortPlayer = player === 'playerOne' ? 'P1' : 'P2';
-  let remainderAfterGetPoints =
-    props[`remainderBeforeGetPoints${shortPlayer}`] - roundPoints;
-  if (remainderAfterGetPoints > 1)
-    emit(
-      'setPointsAndRemainder',
-      roundPoints,
-      remainderAfterGetPoints,
-      player,
-      props.roundNumber
-    );
-  if (remainderAfterGetPoints === 0) emit('legCompleted', player);
-};
-
-const seenRoundPointsP1 = computed(() =>
-  Boolean(
-    (props.legNumber % 2 &&
-      props.setNumber % 2 &&
-      props.remainderBeforeGetPointsP2) ||
-      (props.legNumber % 2 === 0 &&
-        props.setNumber % 2 &&
-        props.remainderAfterGetPointsP2) ||
-      (props.legNumber % 2 === 0 &&
-        props.setNumber % 2 === 0 &&
-        props.remainderBeforeGetPointsP2) ||
-      (props.legNumber % 2 &&
-        props.setNumber % 2 === 0 &&
-        props.remainderAfterGetPointsP2)
-  )
+const roundPointsVisibilityP1 = useRoundPointsVisibility(
+  'P1',
+  toRef(props, 'legNumber'),
+  toRef(props, 'setNumber'),
+  toRef(props, 'remainderBeforeGetPointsP2'),
+  toRef(props, 'remainderAfterGetPointsP2')
 );
 
-const seenRoundPointsP2 = computed(() =>
-  Boolean(
-    (props.legNumber % 2 === 0 &&
-      props.setNumber % 2 &&
-      props.remainderBeforeGetPointsP1) ||
-      (props.legNumber % 2 &&
-        props.setNumber % 2 &&
-        props.remainderAfterGetPointsP1) ||
-      (props.legNumber % 2 &&
-        props.setNumber % 2 === 0 &&
-        props.remainderBeforeGetPointsP1) ||
-      (props.legNumber % 2 === 0 &&
-        props.setNumber % 2 === 0 &&
-        props.remainderAfterGetPointsP1)
-  )
+const roundPointsVisibilityP2 = useRoundPointsVisibility(
+  'P2',
+  toRef(props, 'legNumber'),
+  toRef(props, 'setNumber'),
+  toRef(props, 'remainderBeforeGetPointsP1'),
+  toRef(props, 'remainderAfterGetPointsP1')
 );
 </script>
 
@@ -71,32 +41,46 @@ const seenRoundPointsP2 = computed(() =>
       class="round-information__points-area round-information__points-area_margin-right"
     >
       <RoundPoints
-        :remainder="props.remainderBeforeGetPointsP1"
-        :points="props.roundPointsP1"
-        :seenRoundPoints="seenRoundPointsP1"
+        :remainder="remainderBeforeGetPointsP1"
+        :points="roundPointsP1"
+        :seenRoundPoints="roundPointsVisibilityP1"
         @setPoints="
-          (roundPoints) => calculateRemainder(roundPoints, 'playerOne')
+          (roundPoints) =>
+            calculateRemainder(
+              roundPoints,
+              'playerOne',
+              remainderBeforeGetPointsP1,
+              roundNumber,
+              $emit
+            )
         "
       />
     </div>
     <div class="round-information__remainder">
-      {{ props.remainderAfterGetPointsP1 }}
+      {{ remainderAfterGetPointsP1 }}
     </div>
     <div class="round-information__number-darts">
-      {{ props.roundNumber * 3 }}
+      {{ roundNumber * 3 }}
     </div>
     <div class="round-information__remainder">
-      {{ props.remainderAfterGetPointsP2 }}
+      {{ remainderAfterGetPointsP2 }}
     </div>
     <div
       class="round-information__points-area round-information__points-area_margin-left"
     >
       <RoundPoints
-        :remainder="props.remainderBeforeGetPointsP2"
-        :points="props.roundPointsP2"
-        :seenRoundPoints="seenRoundPointsP2"
+        :remainder="remainderBeforeGetPointsP2"
+        :points="roundPointsP2"
+        :seenRoundPoints="roundPointsVisibilityP2"
         @setPoints="
-          (roundPoints) => calculateRemainder(roundPoints, 'playerTwo')
+          (roundPoints) =>
+            calculateRemainder(
+              roundPoints,
+              'playerTwo',
+              remainderBeforeGetPointsP2,
+              roundNumber,
+              $emit
+            )
         "
       />
     </div>

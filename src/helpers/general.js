@@ -1,4 +1,4 @@
-import { useSvgStore } from '@/stores/svg';
+import { useSvgStore } from '@/stores/svg.js';
 
 export const getSvg = async (svgName) => {
   const URI = `${import.meta.env.VITE_BACKEND_URI}/svg?name=${svgName}`;
@@ -27,4 +27,10 @@ export const getSvg = async (svgName) => {
     'darts',
     'data:image/svg+xml;base64,' + window.btoa(text)
   );
+};
+
+
+export const scrollToElement = (event) => {
+  if (!event.currentTarget.value)
+    event.currentTarget.scrollIntoView({ block: 'center' });
 };
