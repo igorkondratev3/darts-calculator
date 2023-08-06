@@ -7,7 +7,7 @@ import SaveStatistic from './components/saveStatistic/saveStatistic.vue';
 import GameAverage from './components/gameAverage.vue';
 import GamePoints from './components/gamePoints.vue';
 import GameCheckout from './components/gameCheckout.vue';
-import { usePopUp } from './composables/popUp';
+import { usePopUp } from './composables/popUp.js';
 import { useSeenAuthComps } from './composables/seenAuthComps.js';
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/common/auth/authComp/authComp.vue'),
@@ -15,7 +15,7 @@ const AuthComp = defineAsyncComponent({
   delay: 0
 });
 const PopUp = defineAsyncComponent({
-  loader: () => import('@/components/popUp.vue')
+  loader: () => import('@/components/common/popUp/popUp.vue')
 });
 
 const props = defineProps({
