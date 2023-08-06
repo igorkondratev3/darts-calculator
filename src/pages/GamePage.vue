@@ -2,7 +2,7 @@
 import { ref, onMounted, defineAsyncComponent } from 'vue';
 import GameSetup from '@/components/gamePage/gameSetup/gameSetup.vue';
 import RoundInformation from '@/components/gamePage/roundInformation/roundInformation.vue';
-import NumberDartsModal from '@/components/gamePage/numberDartsModal.vue';
+import NumberDartsModal from '@/components/gamePage/numberDartsModal/numberDartsModal.vue';
 import LeavePageModal from '@/components/gamePage/leavePageModal.vue';
 import PlayerStatistic from '@/components/gamePage/playerStatistic/playerStatistic.vue';
 import PalyerScore from '@/components/gamePage/palyerScore.vue';

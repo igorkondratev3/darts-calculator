@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { useButtons } from './composables.js';
+
 const props = defineProps({
   seenZero: Boolean,
   seenOne: Boolean,
@@ -7,27 +9,14 @@ const props = defineProps({
   message: String
 });
 
-const buttons = ref([]);
 const buttonsBox = ref(null);
-
-const focusOnButton = (event) => {
-  if (
-    buttons.value[event.key] &&
-    buttons.value[event.key]?.style.display !== 'none'
-  )
-    buttons.value[event.key].focus();
-};
-
-const focusOnButtonBox = () => {
-  buttonsBox.value.focus();
-};
-//необходимо для корректной работы tab
+const { buttons, focusOnButton } = useButtons();
 </script>
 
 <template>
   <div
     class="dialog-content-wrapper number-darts-dialog"
-    @click="focusOnButtonBox"
+    @click="buttonsBox.focus()"
     @keyup="focusOnButton"
   >
     <div class="number-darts-dialog__message">{{ props.message }}</div>

@@ -1,9 +1,10 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { RouterLink } from 'vue-router';
 import LoadingAuth from '@/components/common/auth/authComp/components/loadingAuth.vue';
-import { deleteRefreshTokenFromDB } from '@/helpers/fetch.js';
-import { useUsersStore } from '@/stores/users';
+import { useUsersStore } from '@/stores/users.js';
+import { useElementVisibility } from '@/composables/elementVisibility.js';
+import { login, logout } from '@/helpers/auth.js';
 const AuthComp = defineAsyncComponent({
   loader: () => import('@/components/common/auth/authComp/authComp.vue'),
   loadingComponent: LoadingAuth,
@@ -16,27 +17,17 @@ defineProps({
 
 const usersStore = useUsersStore();
 
-const seenAuthComp = ref(false);
-
-const login = (player) => {
-  if (localStorage.getItem(`user${player}`)) {
-    usersStore.login(player, JSON.parse(localStorage.getItem(`user${player}`)));
-    return;
-  }
-  seenAuthComp.value = true;
-};
-
-const logout = (player) => {
-  deleteRefreshTokenFromDB(usersStore.users[player].refreshToken);
-  usersStore.logout(player);
-  localStorage.removeItem(`user${player}`);
-};
+const {
+  visibility: authCompVisibility,
+  showElement: showAuthComp,
+  hideElement: hideAuthComp
+} = useElementVisibility();
 </script>
 
 <template>
   <div
     class="start-page__player-navigation player-navigation"
-    v-show="!seenAuthComp"
+    v-show="!authCompVisibility"
   >
     <h4 class="player-navigation__name">
       {{ usersStore.users[player]?.name || `Игрок ${player.charAt(1)}` }}
@@ -55,7 +46,7 @@ const logout = (player) => {
     <button
       v-if="!usersStore.users[player]"
       class="base-button player-navigation__button player-navigation__login"
-      @click="login(player)"
+      @click="login(player, usersStore, showAuthComp)"
       :tabindex="player.at(-1)"
     >
       Войти
@@ -63,7 +54,7 @@ const logout = (player) => {
     <button
       v-else
       class="base-button player-navigation__button player-navigation__logout"
-      @click="logout(player)"
+      @click="logout(player, usersStore)"
       :tabindex="player.at(-1)"
     >
       Выйти
@@ -71,8 +62,8 @@ const logout = (player) => {
   </div>
   <AuthComp
     class="margin-top_less_755px"
-    v-if="seenAuthComp"
-    @closeAuthComp="seenAuthComp = false"
+    v-if="authCompVisibility"
+    @closeAuthComp="hideAuthComp"
     :player="player"
   />
 </template>

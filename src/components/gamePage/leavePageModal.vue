@@ -1,17 +1,13 @@
 <script setup>
 import { ref } from 'vue';
-const buttonsBox = ref(null);
 
-const focusOnButtonBox = () => {
-  buttonsBox.value.focus();
-};
-//необходимо для корректной работы tab
+const buttonsBox = ref(null);
 </script>
 
 <template>
   <div
     class="dialog-content-wrapper leave-page-dialog"
-    @click="focusOnButtonBox"
+    @click="buttonsBox.focus()"
   >
     <div class="leave-page-dialog__message">
       Вы собираетесь покинуть страницу начатого матча. Вы можете сохранить
