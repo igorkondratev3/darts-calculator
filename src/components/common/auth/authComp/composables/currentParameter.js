@@ -39,7 +39,7 @@ export const useCurrentParameter = (LoadingInput) => {
     if (header.value === 'Регистрация') {
       if (parameterNumber.value < 4) parameterNumber.value++;
       if (parameterNumber.value === 4)
-        auth.valuechildren[auth.children.length - 1].focus();
+        auth.children[auth.children.length - 1].focus();
     }
   };
 

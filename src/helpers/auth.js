@@ -11,3 +11,17 @@ export const logout = (player, usersStore) => {
   usersStore.logout(player);
   localStorage.removeItem(`user${player}`);
 };
+
+export const updateTokens = async (player, usersStore, json) => {
+  if (json && Object.hasOwn(json, 'newTokens')) {
+    usersStore.updateTokens(
+      player,
+      json.newTokens.token,
+      json.newTokens.refreshToken
+    );
+    const user = JSON.parse(localStorage.getItem(`user${player}`));
+    user.token = json.newTokens.token;
+    user.refreshToken = json.newTokens.refreshToken;
+    localStorage.setItem(`user${player}`, JSON.stringify(user));
+  }
+};

@@ -12,11 +12,14 @@ export const useUsersStore = defineStore('users', () => {
     users[player].value.token = token;
     users[player].value.refreshToken = refreshToken;
   };
+  const updateName = (player, newName) => {
+    users[player].value.name = newName;
+  };
   const swap = () => {
     const playerOne = users.P1.value;
     users.P1.value = users.P2.value;
     users.P2.value = playerOne;
   };
 
-  return { users, login, logout, updateTokens, swap };
+  return { users, login, logout, updateTokens, updateName, swap };
 });

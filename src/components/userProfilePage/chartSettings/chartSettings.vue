@@ -22,7 +22,10 @@ const { chartsSettingsVisibility, openChartSettings, closeChartSettings } =
 </script>
 
 <template>
-  <button class="charts__settings-button" @click="openChartSettings">
+  <button
+    class="charts__settings-button settings-button"
+    @click="openChartSettings"
+  >
     <img
       src="/src/assets/images/settings.svg"
       alt="settings"
@@ -30,8 +33,15 @@ const { chartsSettingsVisibility, openChartSettings, closeChartSettings } =
       title="настройка отображения графиков"
     />
   </button>
-  <div v-if="chartsSettingsVisibility" class="charts__settings settings">
-    <button class="charts__settings-button" @click="closeChartSettings">
+  <div
+    v-if="chartsSettingsVisibility"
+    class="charts__settings settings"
+    @keyup.esc="closeChartSettings"
+  >
+    <button
+      class="charts__settings-button settings-button"
+      @click="closeChartSettings"
+    >
       <img
         src="/src/assets/images/close.svg"
         alt="close"
@@ -66,29 +76,8 @@ const { chartsSettingsVisibility, openChartSettings, closeChartSettings } =
 <style lang="scss">
 .charts__settings-button {
   position: absolute;
-  right: 4px;
-  top: 4px;
-  align-self: flex-start;
-  border-radius: 50%;
-  transition: background-color 0.2s linear;
-
-  &:focus-visible {
-    outline: calc(var(--base) * 0.01) solid black;
-    outline-offset: calc(var(--base) * 0.02);
-  }
-
-  &:hover {
-    background-color: #aca6a6;
-  }
-
-  &:active {
-    box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
-  }
-}
-.icon-32 {
-  display: block;
-  width: 32px;
-  height: 32px;
+  right: calc(var(--base) * 0.04);
+  top: calc(var(--base) * 0.04);
 }
 
 .charts__settings {
@@ -100,17 +89,17 @@ const { chartsSettingsVisibility, openChartSettings, closeChartSettings } =
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 48px;
+  gap: calc(var(--base) * 0.48);
   max-width: 100%;
-  padding: 16px 32px;
-  border-radius: 16px;
+  padding: calc(var(--base) * 0.16) calc(var(--base) * 0.32);
+  border-radius: calc(var(--base) * 0.16);
   opacity: 95%;
   background-color: #cfcece;
 }
 
 .settings__header {
-  margin-bottom: 16px;
-  font-size: 24px;
+  margin-bottom: calc(var(--base) * 0.16);
+  font-size: calc(var(--base) * 0.24);
   text-align: center;
 }
 </style>

@@ -1,4 +1,6 @@
 import { ref } from 'vue';
+import { updateTokens } from '@/helpers/auth.js';
+import { setData, checkCustomError } from '@/helpers/fetch.js';
 
 export const useSetStatisticInDB = () => {
   const isStatisticSave = ref(false);
@@ -22,59 +24,21 @@ export const useSetStatisticInDB = () => {
       delete gameStatistic.percentDouble;
     }
 
-    const URI = `${import.meta.env.VITE_BACKEND_URI}/statistic/set`;
-    const fetchParams = {
-      method: 'POST',
-      body: JSON.stringify({
-        refreshToken: usersStore.users[player]?.refreshToken || '',
+    try {
+      const { response, json } = await setData(player, usersStore, {
         statistic: gameStatistic,
         legs: legNumber,
         legsWon: legsWonInGame,
         legsLose: legNumber - legsWonInGame,
         timeZone: new Date().getTimezoneOffset() / 60
-      }),
-      headers: {
-        authorization: `Bearer ${usersStore.users[player]?.token}`,
-        'Content-Type': 'application/json'
-      }
-    };
-    let response;
-    let json;
-    try {
-      response = await fetch(URI, fetchParams);
-      json = await response.json();
+      });
+      await updateTokens(player, usersStore, json);
+      await checkCustomError(json, response);
+      showDone.value = true;
     } catch (error) {
-      console.error(error);
-      emits('showPopUp', 'Ошибка доступа к серверу');
+      emits('showPopUp', error.message);
       isStatisticSave.value = false;
-      return;
     }
-
-    if (json && Object.hasOwn(json, 'newTokens')) {
-      usersStore.updateTokens(
-        player,
-        json.newTokens.token,
-        json.newTokens.refreshToken
-      );
-      const user = JSON.parse(localStorage.getItem(`user${player}`));
-      user.token = json.newTokens.token;
-      user.refreshToken = json.newTokens.refreshToken;
-      localStorage.setItem(`user${player}`, JSON.stringify(user));
-    }
-
-    if (json && Object.hasOwn(json, 'error')) {
-      console.error(json.error);
-      emits('showPopUp', json.error);
-      isStatisticSave.value = false;
-      return;
-    }
-
-    if (!json || (!response.ok && !Object.hasOwn(json, 'error'))) {
-      isStatisticSave.value = false;
-      emits('showPopUp', 'Не удалось сохранить статистику');
-      return;
-    }
-    showDone.value = true;
   };
 
   return { isStatisticSave, showDone, setStatisticInDB };

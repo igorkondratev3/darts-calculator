@@ -52,8 +52,7 @@ const {
     JSON.parse(localStorage.getItem(`seenAveragePointsLeg${props.player}`)) ??
       true
   )
-);  
-
+);
 
 const seenParametersGame = new SeenParameters(
   true,
@@ -83,13 +82,13 @@ const seenGroups = new SeenGroups(
 const selectAll = () => {
   seenParametersGame.selectAll();
   if (props.areSetsInGame) seenParametersSet.selectAll();
-  showAveragePointsLeg()
+  showAveragePointsLeg();
 };
 
 const removeSelection = () => {
   seenParametersGame.removeSelection();
   if (props.areSetsInGame) seenParametersSet.removeSelection();
-  hideAveragePointsLeg()
+  hideAveragePointsLeg();
 };
 
 const changeParameterSeen = (groupName, parameterName, value) => {
@@ -249,7 +248,8 @@ const changeParameterSeen = (groupName, parameterName, value) => {
     }
 
     &:active {
-      box-shadow: calc(var(--base) * 0.05) 5px calc(var(--base) * 0.05) gray;
+      box-shadow: calc(var(--base) * 0.05) calc(var(--base) * 0.05)
+        calc(var(--base) * 0.05) gray;
     }
 
     &_P1 {

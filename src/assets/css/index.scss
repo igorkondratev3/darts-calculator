@@ -55,7 +55,8 @@ body {
   }
 
   &:active {
-    box-shadow: 10px 5px 5px gray;
+    box-shadow: calc(var(--base) * 0.1) calc(var(--base) * 0.05)
+      calc(var(--base) * 0.05) gray;
   }
 
   &:disabled {

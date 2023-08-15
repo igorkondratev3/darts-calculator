@@ -1,7 +1,7 @@
 <script setup>
 import HomeButton from '@/components/homeButton.vue';
 import GameButton from '@/components/gameButton.vue';
-import UserProfile from '@/components/userProfilePage/userProfile.vue';
+import UserProfile from '@/components/userProfilePage/userProfile/userProfile.vue';
 import StatChart from '@/components/userProfilePage/statChart/statChart.vue';
 import ChartSetting from '@/components/userProfilePage/chartSettings/chartSettings.vue';
 import { useUsersStore } from '@/stores/users.js';
@@ -223,6 +223,30 @@ const { statistic, messageError, chartsSettings, getStatNamesWithValues } =
   align-self: center;
   margin-bottom: calc(var(--base) * 0.64);
   margin-top: calc(var(--base) * 0.32);
+}
+
+.settings-button {
+  align-self: flex-start;
+  border-radius: 50%;
+  transition: background-color 0.2s linear;
+
+  &:focus-visible {
+    outline: calc(var(--base) * 0.01) solid black;
+    outline-offset: calc(var(--base) * 0.02);
+  }
+
+  &:hover {
+    background-color: #aca6a6;
+  }
+
+  &:active {
+    box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
+  }
+}
+.icon-32 {
+  display: block;
+  width: calc(var(--base) * 0.32);
+  height: calc(var(--base) * 0.32);
 }
 
 .loading-message {

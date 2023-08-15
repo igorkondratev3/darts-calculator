@@ -2,11 +2,14 @@
 import { ref } from 'vue';
 import { useName } from './composables.js';
 
+const props = defineProps({
+  startName: String
+});
 defineEmits(['updateParameter']);
 
 const nameInput = ref(null);
 
-const name = useName(nameInput);
+const name = useName(nameInput, props.startName);
 </script>
 
 <template>

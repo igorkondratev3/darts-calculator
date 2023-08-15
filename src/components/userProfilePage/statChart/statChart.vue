@@ -197,7 +197,7 @@ const {
     }
 
     &:active {
-      box-shadow: 0px 5px 5px gray;
+      box-shadow: 0px calc(var(--base) * 0.05) calc(var(--base) * 0.05) gray;
     }
   }
 

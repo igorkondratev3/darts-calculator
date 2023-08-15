@@ -18,7 +18,7 @@ import { RouterLink } from 'vue-router';
     top: calc(var(--base) * 0.04);
     right: calc(var(--base) * 0.04);
     z-index: 2;
-    transform: translateY(calc(100% + calc(var(--base) * 0.04)));
+    transform: translateY(calc(100% + calc(var(--base) * 0.08)));
   }
 }
 </style>

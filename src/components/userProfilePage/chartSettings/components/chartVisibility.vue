@@ -42,12 +42,12 @@ defineEmits(['update:visibleCharts']);
 .chart-visibility__values {
   display: flex;
   flex-wrap: wrap;
-  max-width: 548px;
-  gap: 8px;
+  max-width: calc(var(--base) * 5.48);
+  gap: calc(var(--base) * 0.08);
 }
 
 .chart-visibility__box-value {
   /*связано с шириной блока родителя*/
-  width: 270px;
+  width: calc(var(--base) * 2.7);
 }
 </style>

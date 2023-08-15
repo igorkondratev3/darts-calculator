@@ -28,6 +28,10 @@ import PlayerNavigation from '@/components/startPage/playerNavigation.vue';
 @use '@/assets/css/mixins/fonts.scss';
 
 .start-page {
+  padding-bottom: calc(var(--base) * 0.9);
+  //с учетом высоты кнопки вне нормального потока
+  
+  
   &__header {
     font-size: calc(var(--base) * 0.64);
     font-weight: 700;

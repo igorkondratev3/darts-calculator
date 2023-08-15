@@ -1,9 +1,13 @@
-import { ref, onActivated } from 'vue';
+import { ref, onActivated, onMounted } from 'vue';
 
-export const useName = (nameInput) => {
-  const name = ref('');
+export const useName = (nameInput, startName = '') => {
+  const name = ref(startName);
 
   onActivated(() => {
+    nameInput.value.focus();
+  });
+
+  onMounted(() => {
     nameInput.value.focus();
   });
 
