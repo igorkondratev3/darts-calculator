@@ -15,6 +15,7 @@ const props = defineProps({
   globalRangeDate: Object
 });
 
+const chartDataWithoutZero = props.chartData.filter((val) => val.value > 0);
 const chartNameRU = translateName(props.chartName);
 const {
   chartDataInInterval,
@@ -26,6 +27,9 @@ const { hideZerosInChart, changeHideZerosInChart } =
   useVisibilityOfZerosInChart(toRef(props, 'globalVisibilityOfZeroValues'));
 const { chartWidth, chartHeight, lineWidth } =
   useChartSize(chartDataInInterval);
+const { chartWidth: chartWidthWithoutZero, lineWidth: lineWidthWithoutZero } =
+  useChartSize(chartDataInIntervalWithoutZero);
+
 const {
   parameterInfo,
   parameterInfoVisivility,
@@ -52,9 +56,15 @@ const {
         <span class="cross-line" v-show="hideZerosInChart"></span>
       </button>
       <div class="chart" @pointerleave="hideParameterInfo">
-        <svg class="chart__svg">
+        <svg
+          :class="{
+            chart__svg: !hideZerosInChart,
+            'chart__svg-without-zero': hideZerosInChart
+          }"
+        >
           <rect
             class="chart__line"
+            :class="{ 'chart__line_without-zero': hideZerosInChart }"
             v-for="(valueObj, index) of hideZerosInChart
               ? chartDataInIntervalWithoutZero
               : chartDataInInterval"
@@ -64,7 +74,16 @@ const {
                 calculateLineHeight(chartHeight, maxValue, valueObj.value)
               ) + '%'
             "
-            :x="String((calculateX(index, lineWidth) / chartWidth) * 100) + '%'"
+            :x="
+              hideZerosInChart
+                ? String(
+                    (calculateX(index, lineWidthWithoutZero) /
+                      chartWidthWithoutZero) *
+                      100
+                  ) + '%'
+                : String((calculateX(index, lineWidth) / chartWidth) * 100) +
+                  '%'
+            "
             :y="
               String(
                 (calculateY(chartHeight, maxValue, valueObj.value) /
@@ -96,8 +115,20 @@ const {
       </div>
     </div>
     <DateInterval
-      :minDate="formattedDate(props.chartData[0].date)"
-      :maxDate="formattedDate(props.chartData.at(-1).date)"
+      :minDate="
+        formattedDate(
+          hideZerosInChart && chartDataWithoutZero[0]
+            ? chartDataWithoutZero[0].date
+            : props.chartData[0].date
+        )
+      "
+      :maxDate="
+        formattedDate(
+          hideZerosInChart && chartDataWithoutZero[0]
+            ? chartDataWithoutZero.at(-1).date
+            : props.chartData.at(-1).date
+        )
+      "
       :globalRangeDate="props.globalRangeDate"
       @updateDates="updateDates"
     />
@@ -206,6 +237,11 @@ const {
     height: calc(var(--base) * v-bind(chartHeight) / 100);
   }
 
+  &__svg-without-zero {
+    width: calc(var(--base) * v-bind(chartWidthWithoutZero) / 100);
+    height: calc(var(--base) * v-bind(chartHeight) / 100);
+  }
+
   &__line {
     width: calc(var(--base) * v-bind(lineWidth) / 100);
     fill: #f0b375;
@@ -223,6 +259,10 @@ const {
 
     &:hover {
       fill: rgb(99, 161, 177);
+    }
+
+    &_without-zero {
+      width: calc(var(--base) * v-bind(lineWidthWithoutZero) / 100);
     }
   }
 }

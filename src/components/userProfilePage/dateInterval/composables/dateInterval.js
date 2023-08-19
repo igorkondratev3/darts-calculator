@@ -1,8 +1,8 @@
 import { ref, watch } from 'vue';
 
 export const useDateInterval = (minDate, maxDate, globalRangeDate, emits) => {
-  const startDate = ref(minDate);
-  const endDate = ref(maxDate);
+  const startDate = ref(minDate.value);
+  const endDate = ref(maxDate.value);
 
   watch(globalRangeDate, () => {
     startDate.value = globalRangeDate.start;
@@ -10,10 +10,20 @@ export const useDateInterval = (minDate, maxDate, globalRangeDate, emits) => {
     changeDateInterval();
   });
 
+  watch(minDate, () => {
+    startDate.value = minDate.value;
+    changeDateInterval();
+  });
+
+  watch(maxDate, () => {
+    startDate.value = maxDate.value;
+    changeDateInterval();
+  });
+
   const dateValidate = () => {
-    startDateValidate(startDate, minDate, maxDate);
-    endDateValidate(endDate, minDate, maxDate);
-    dateIntervalValidate(startDate, endDate, minDate, maxDate);
+    startDateValidate(startDate, minDate.value, maxDate.value);
+    endDateValidate(endDate, minDate.value, maxDate.value);
+    dateIntervalValidate(startDate, endDate, minDate.value, maxDate.value);
   };
 
   const changeDateInterval = () => {

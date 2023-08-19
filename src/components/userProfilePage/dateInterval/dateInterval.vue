@@ -1,4 +1,5 @@
 <script setup>
+import { toRef } from 'vue';
 import { useDateInterval } from './composables/dateInterval.js';
 
 const props = defineProps({
@@ -10,8 +11,8 @@ const props = defineProps({
 const emits = defineEmits(['updateDates']);
 
 const { startDate, endDate, changeDateInterval } = useDateInterval(
-  props.minDate,
-  props.maxDate,
+  toRef(props, 'minDate'),
+  toRef(props, 'maxDate'),
   props.globalRangeDate,
   emits
 );
