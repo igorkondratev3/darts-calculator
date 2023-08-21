@@ -38,7 +38,7 @@ const { isStatisticSave, showDone, setStatisticInDB } = useSetStatisticInDB();
     v-if="usersStore.users[player] && !showDone"
     :disabled="isStatisticSave"
   >
-    <img class="save-icon" src="/src/assets/images/add_circle.svg" alt="add" />
+    <img class="save-icon" src="/src/assets/images/save.svg" alt="save" />
   </button>
   <div
     class="game-statistic__save game-statistic__save-done"

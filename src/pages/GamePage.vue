@@ -10,7 +10,7 @@ import LoadingDialog from '@/components/gamePage/loadingDialog.vue';
 import HomeButton from '@/components/homeButton.vue';
 import StarterFlag from '@/components/gamePage/starterFlag.vue';
 import {
-  defineFocusForNewLeg,
+  defineWhoStartedLeg,
   defineFocusForNextPlayer,
   getNumberDarts,
   changeOldValues,
@@ -88,11 +88,8 @@ const startGame = (parameters) => {
   playerTwo = new Player(gameParameters.nameP2);
   isStartedGame.value = true;
   gameSetupModal.value.close();
-  whoStarted.value = defineFocusForNewLeg(
-    legNumber.value,
-    setNumber.value,
-    document.forms[0]
-  );
+  whoStarted.value = defineWhoStartedLeg(legNumber.value, setNumber.value);
+  defineFocusForNextPlayer(document.forms[0]);
 };
 
 const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
@@ -105,7 +102,7 @@ const setPointsAndRemainder = async (point, remainder, player, roundNumber) => {
   }
 
   if (
-    remainder <= 50 &&
+    (remainder <= 50 || (point === 0 && remainder <= 170)) &&
     ((player === 'playerOne' && gameParameters.isPercentDoubleInStatP1) ||
       (player === 'playerTwo' && gameParameters.isPercentDoubleInStatP2))
   ) {
@@ -216,11 +213,8 @@ const legCompleted = async (player) => {
   playerOne.legStatForEndGame.reset();
   playerTwo.legStatForEndGame.reset();
   legNumber.value++;
-  whoStarted.value = defineFocusForNewLeg(
-    legNumber.value,
-    setNumber.value,
-    document.forms[0]
-  );
+  whoStarted.value = defineWhoStartedLeg(legNumber.value, setNumber.value);
+  defineFocusForNextPlayer(document.forms[0]);
 };
 
 let statisticP1WithoutLastLeg = {};

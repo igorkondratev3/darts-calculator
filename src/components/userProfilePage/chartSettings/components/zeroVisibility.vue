@@ -6,10 +6,11 @@ defineEmits(['update:globalVisibilityOfZeroValues']);
 </script>
 
 <template>
-  <div class="settings__zero-seen">
+  <label class="settings__zero-seen zero-seen">
     <h3 class="settings__header">Отображать нулевые<br />значения</h3>
     <input
       type="checkbox"
+      class="zero-seen__value"
       :checked="globalVisibilityOfZeroValues"
       @change="
         $emit(
@@ -24,7 +25,7 @@ defineEmits(['update:globalVisibilityOfZeroValues']);
         )
       "
     />
-  </div>
+  </label>
 </template>
 
 <style>
