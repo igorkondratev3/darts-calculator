@@ -41,11 +41,11 @@ const isGameOver = ref(false);
 const isStartedGame = ref(false);
 const whoStarted = ref('P1');
 
-let showGameSetupInStart = true; //- для showmodal при hot reload
+//let showGameSetupInStart = true; //- для showmodal при hot reload
 onMounted(() => {
-  //if (!isStartedGame.value) gameSetupModal.value.showModal();
-  if (showGameSetupInStart)
-    setTimeout(() => gameSetupModal.value.showModal(), 0);
+  if (!isStartedGame.value) gameSetupModal.value.showModal();
+  //if (showGameSetupInStart)
+  //  setTimeout(() => gameSetupModal.value.showModal(), 0);
   /*settimeout чтобы корректно работало,
   но всё равно ошибка при внесении изменении в код текущей страницы
   при обычной работе приложения всё работает нормально
@@ -76,7 +76,7 @@ if (savedGame.savedGame) {
   setNumber.value = savedGame.savedGame.setNumber;
   legNumberInSets.value = savedGame.savedGame.legNumberInSets;
   savedGame.resetGame();
-  showGameSetupInStart = false; // - для showmodal при hot reload
+ // showGameSetupInStart = false; // - для showmodal при hot reload
   isStartedGame.value = true;
   setTimeout(() => defineFocusForNextPlayer(document.forms[0]), 0);
 }
