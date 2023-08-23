@@ -43,6 +43,7 @@ defineProps({
   .user-information {
     flex-direction: column;
     align-self: center;
+    align-items: center;
     margin-top: calc(var(--base) * 0.92);
   }
 }

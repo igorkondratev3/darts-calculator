@@ -142,8 +142,6 @@ const {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin: calc(var(--base) * 0.64) calc(var(--base) * 0.56)
-    calc(var(--base) * 0.32) calc(var(--base) * 0.56);
 
   &__info {
     position: absolute;

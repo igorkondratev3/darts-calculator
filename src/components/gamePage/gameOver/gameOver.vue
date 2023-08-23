@@ -277,7 +277,7 @@ const seenAuthComps = useSeenAuthComps();
   background-color: rgb(221, 231, 231);
 }
 
-@media (max-width: 750px) {
+@media (max-width: 805px) {
   .game-over__header {
     margin-top: calc(var(--base) * 0.64);
   }
@@ -335,6 +335,22 @@ const seenAuthComps = useSeenAuthComps();
       width: calc(var(--base) * 1);
     }
   }
+
+  .game-over__header {
+    font-size: calc(var(--base) * 0.48);
+  }
+
+  .game-statistic__header-group {
+    font-size: calc(var(--base) * 0.24);
+  }
+
+  .statistic-parameters__values {
+    font-size: calc(var(--base) * 0.16);
+  }
+
+  .statistic-parameters__header {
+    font-size: calc(var(--base) * 0.16);
+  }
 }
 
 @media (max-height: 740px) {
@@ -352,6 +368,13 @@ const seenAuthComps = useSeenAuthComps();
 @media (max-height: 420px) {
   .game-over {
     padding-top: calc(var(--base) * 1.92);
+  }
+}
+
+@media (max-width: 395px) {
+  .game-over__statistic {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 </style>

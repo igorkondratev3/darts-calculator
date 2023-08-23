@@ -110,47 +110,15 @@ const { errorMessage, beginChange, changeName } = useChangeName();
   }
 }
 
-.auth__clue-button {
-  align-self: flex-start;
-  margin-top: calc(var(--base) * 0.02);
-  margin-left: calc(var(--base) * 0.04);
-  padding: calc(var(--base) * 0.02);
-  cursor: pointer;
-  @include fonts.Advent($size: calc(var(--base) * 0.16));
-  font-style: italic;
-
-  &:focus-visible {
-    outline: calc(var(--base) * 0.01) solid black;
-  }
-
-  &:active {
-    text-shadow: calc(var(--base) * 0.08) calc(var(--base) * 0.03)
-      calc(var(--base) * 0.05) black;
-  }
-
-  &:disabled {
-    visibility: hidden;
-  }
-}
-
-.auth__clue {
-  position: absolute;
-  left: calc(50% - calc(var(--base) * 1.6));
-  top: calc(
-    calc(var(--base) * 0.64) + calc(var(--base) * 0.01) +
-      calc(var(--base) * 1.24) + calc(var(--base) * 0.08)
-  );
-  z-index: 2;
-  width: calc(var(--base) * 3.2);
-  padding: calc(var(--base) * 0.08);
-  opacity: 90%;
-  font-size: calc(var(--base) * 0.2);
-  background-color: rgb(232, 238, 233);
-}
-
 @media (max-width: 800px) {
-  .user-information__name {
+  .user-information__name-wrapper {
     align-self: center;
+    order: -1;
+    margin-bottom: calc(var(--base) * 0.04);
+  }
+
+  .user-information__change-name {
+    order: -1;
   }
 }
 </style>

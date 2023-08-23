@@ -14,6 +14,7 @@ defineProps({
 .error {
   position: absolute;
   bottom: 0;
+  z-index: 2;
   width: 100%;
   min-height: calc(var(--base) * 0.74);
   transform: translateY(calc(100% + calc(var(--base) * 0.04)));

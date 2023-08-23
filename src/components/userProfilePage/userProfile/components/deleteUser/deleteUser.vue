@@ -77,6 +77,7 @@ const deleteModal = ref(null);
   align-items: center;
   height: 100%;
   width: 100%;
+  padding: calc(var(--base) * 0.08);
   @include fonts.Advent;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.264);
@@ -99,16 +100,16 @@ const deleteModal = ref(null);
 }
 
 .delete-message {
-  max-width: 600px;
-  font-size: 32px;
+  max-width: calc(var(--base) * 6);
+  font-size: calc(var(--base) * 0.32);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: calc(var(--base) * 0.32);
   background-color: rgb(232, 238, 233);
-  padding: 16px;
-  border-radius: 16px;
-  margin-bottom: 128px;
+  padding: calc(var(--base) * 0.16);
+  border-radius: calc(var(--base) * 0.16);
+  margin-bottom: calc(var(--base) * 1.28);
 }
 .p-message {
   text-align: center;
@@ -116,7 +117,7 @@ const deleteModal = ref(null);
 
 .buttons {
   display: flex;
-  gap: 16px;
+  gap: calc(var(--base) * 0.16);
 }
 
 .delete-buttons {

@@ -221,8 +221,10 @@ const { statistic, messageError, chartsSettings, getStatNamesWithValues } =
   flex-wrap: wrap;
   justify-content: center;
   align-self: center;
+  gap: calc(var(--base) * 1.12);
   margin-bottom: calc(var(--base) * 0.64);
   margin-top: calc(var(--base) * 0.32);
+  padding-top: calc(var(--base) * 0.64);
 }
 
 .settings-button {

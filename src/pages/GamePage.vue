@@ -292,7 +292,7 @@ onBeforeRouteLeave((to) => {
   </dialog>
   <div class="page game-page game">
     <button class="base-button game__end-button" @click="endGame">
-      Заврешить
+      Завершить
     </button>
     <HomeButton />
     <header class="game__players-information players-information">

@@ -96,7 +96,7 @@ const { isStatisticSave, showDone, setStatisticInDB } = useSetStatisticInDB();
   display: block;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 805px) {
   .game-statistic__save {
     &_left {
       left: calc(var(--base) * 0.04);
