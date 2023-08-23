@@ -1,0 +1,1 @@
+.loading-auth{display:flex;flex-direction:column;width:var(--authWIdth);height:var(--authHeight);margin:0px calc(var(--base) * .04);padding:calc(var(--base) * .16);padding-top:0;border-radius:calc(var(--base) * .16);overflow:auto;background-color:#b6c3c5}
